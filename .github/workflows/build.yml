@@ -2,115 +2,94 @@ name: Continuous Flatpak Builder
 
 on:
   schedule:
-    - cron: "0 0 * * *"    # Every day (Builder)
-    - cron: "0 0 * * 0"    # Every Sunday (Discovery)
+    - cron: "0 0 * * *"
   workflow_dispatch:
+    inputs:
+      architecture:
+        description: 'Override: Architecture to build'
+        required: true
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - x86_64-linux
+          - aarch64-linux
 
 concurrency:
   group: flatpak-conveyor
   cancel-in-progress: false
 
 jobs:
-  # Job 1: Weekly update of the package list
-  update-list:
-    if: github.event_name == 'schedule' && github.event.schedule == '0 0 * * 0' || github.event_name == 'workflow_dispatch'
+  decide-arch:
     runs-on: ubuntu-latest
+    outputs:
+      system: ${{ steps.pick.outputs.system }}
+      os: ${{ steps.pick.outputs.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
-      
-      # NEW: Download the pre-built nix-index database so 'discover' works instantly
-      - name: Fetch nix-index database
+      - id: pick
         run: |
-          mkdir -p ~/.cache/nix-index
-          curl -L https://github.com/nix-community/nix-index-database/releases/latest/download/index-x86_64-linux -o ~/.cache/nix-index/files
+          INPUT_ARCH="${{ github.event.inputs.architecture }}"
+          
+          if [ "$INPUT_ARCH" = "x86_64-linux" ]; then
+            echo "system=x86_64-linux" >> $GITHUB_OUTPUT
+            echo "os=ubuntu-latest" >> $GITHUB_OUTPUT
+          elif [ "$INPUT_ARCH" = "aarch64-linux" ]; then
+            echo "system=aarch64-linux" >> $GITHUB_OUTPUT
+            echo "os=ubuntu-24.04-arm" >> $GITHUB_OUTPUT
+          else
+            # AUTO MODE: Even day of year = x86, Odd day = ARM
+            DAY_OF_YEAR=$(date +%-j)
+            if [ $((DAY_OF_YEAR % 2)) -eq 0 ]; then
+              echo "system=x86_64-linux" >> $GITHUB_OUTPUT
+              echo "os=ubuntu-latest" >> $GITHUB_OUTPUT
+            else
+              echo "system=aarch64-linux" >> $GITHUB_OUTPUT
+              echo "os=ubuntu-24.04-arm" >> $GITHUB_OUTPUT
+            fi
+          fi
 
-      - name: Build scanner
-        run: nix build .#scanner -o result-scanner
-      - name: Run Discover
-        run: ./result-scanner/bin/scanner discover
-      - name: Commit changes
-        run: |
-          git config user.email "ci@github.com"
-          git config user.name "CI Bot"
-          git add discovered.json
-          git commit -m "chore: weekly discovered.json update" && git push || exit 0
-
-  # Job 2: The Daily Conveyor Belt
   conveyor-belt:
-    needs: [update-list]
-    if: always() # Run even if update-list was skipped (which it usually is)
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - system: x86_64-linux
-            os: ubuntu-latest
-          - system: aarch64-linux
-            os: ubuntu-24.04-arm
-            
-    runs-on: ${{ matrix.os }}
+    needs: decide-arch
+    runs-on: ${{ needs.decide-arch.outputs.os }}
     permissions:
       contents: write
-      
     env:
       NIXPKGS_ALLOW_UNFREE: 1
       NIXPKGS_ALLOW_BROKEN: 1
       NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM: 1
-      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         
-      - name: Free up disk space for Nix
+      - name: Free up disk space
         uses: wimpysworld/nothing-but-nix@main
         
       - name: Install Nix
         uses: cachix/install-nix-action@v31
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Cache Nix store
-        uses: nix-community/cache-nix-action@v6
-        with:
-          primary-key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
-          restore-prefixes-first-match: nix-${{ runner.os }}-
-          gc-max-store-size-linux: 2G
-          purge: true
-          purge-prefixes: nix-${{ runner.os }}-
-          purge-last-accessed: 604800
 
       - name: Setup Rclone Config
         env:
           RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
         run: |
           mkdir -p ~/.config/rclone
-          # printf ensures JSON tokens in the OneDrive config are NOT mangled by bash
           printf '%s\n' "$RCLONE_CONF" > ~/.config/rclone/rclone.conf
 
       - name: Build Scanner Utility
         run: nix build .#scanner -o result-scanner
 
-      - name: Run Conveyor Belt
+      - name: Run Conveyor Belt (${{ needs.decide-arch.outputs.system }})
         run: |
           ./result-scanner/bin/scanner build-ci \
-            --system ${{ matrix.system }} \
+            --system ${{ needs.decide-arch.outputs.system }} \
             --remote "OneDriveISCTE:nixpkgs2flatpak" \
-            --state-file "state-${{ matrix.system }}.json"
+            --state-file "state-${{ needs.decide-arch.outputs.system }}.json"
 
       - name: Commit Conveyor State
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.email "ci@github.com"
           git config user.name "CI Bot"
-          git add state-${{ matrix.system }}.json
-          git commit -m "chore: update ${{ matrix.system }} state" || exit 0
-          
+          git add state-${{ needs.decide-arch.outputs.system }}.json
+          git commit -m "chore: update ${{ needs.decide-arch.outputs.system }} state" || exit 0
           for i in {1..10}; do
-            git pull --rebase origin main
-            if git push; then
-              break
-            fi
-            sleep $((RANDOM % 15 + 5))
+            git pull --rebase origin main && git push && break || sleep 15
           done
