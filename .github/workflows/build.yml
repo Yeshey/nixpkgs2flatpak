@@ -138,12 +138,17 @@ jobs:
             --remote "OneDriveISCTE:nixpkgs2flatpak" \
             --state-file "state-${{ needs.decide-arch.outputs.system }}.json"
 
-      - name: Commit Conveyor State
+      - name: Commit Progress and Metadata
         run: |
           git config user.email "ci@github.com"
           git config user.name "CI Bot"
+          
+          # Use -f and check if directory exists to avoid errors on the first-ever run
           git add state-${{ needs.decide-arch.outputs.system }}.json
-          git commit -m "chore: update ${{ needs.decide-arch.outputs.system }} state" || exit 0
+          [ -d local_repo ] && git add local_repo/summary local_repo/refs/ local_repo/config || true
+          
+          git commit -m "chore: progress update and metadata sync [${{ needs.decide-arch.outputs.system }}]" || exit 0
+          
           for i in {1..10}; do
             git pull --rebase origin main && git push && break || sleep 15
           done

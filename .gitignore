@@ -5,6 +5,12 @@
 /flatpak-repo/
 .nix-index/
 
+# Add these lines to ignore only the heavy parts of the repo:
+/local_repo/objects/
+/local_repo/deltas/
+/local_repo/tmp/
+/local_repo/.lock
+
 # Created by https://www.toptal.com/developers/gitignore/api/direnv,linux,rust,windows,visualstudiocode,macos,vim
 # Edit at https://www.toptal.com/developers/gitignore?templates=direnv,linux,rust,windows,visualstudiocode,macos,vim
 

@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use std::collections::HashMap;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::{Duration, Instant};
 use serde::{Deserialize, Serialize};
@@ -20,8 +20,6 @@ pub struct BuildCiOptions {
 pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
     let max_duration = Duration::from_secs(5 * 3600 + 30 * 60);
-    
-    let skip_pull = std::env::var("SKIP_PULL").unwrap_or_default() == "1";
 
     let discovered_content = fs::read_to_string("discovered.json")?;
     let discovered: HashMap<String, serde_json::Value> = serde_json::from_str(&discovered_content)?;
@@ -43,27 +41,18 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
     }
 
-    let local_repo = "/tmp/local_repo";
-    let _ = fs::remove_dir_all(local_repo);
-    fs::create_dir_all(local_repo)?;
-
-    if !skip_pull {
-        println!(">>> STEP 1: Pulling repository (Safe-sync)...");
-        let _ = Command::new("rclone")
-            .args([
-                "copy", &opts.remote, local_repo,
-                "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
-                "--fast-list", "--size-only", "-v", "--stats", "1m"
-            ])
-            .status();
-    }
-
-    if !PathBuf::from(format!("{}/config", local_repo)).exists() {
+    // We use a folder inside the Git workspace to store metadata
+    let local_repo = "local_repo";
+    
+    if !Path::new(local_repo).exists() {
+        println!(">>> Initializing local OSTree repo metadata...");
+        fs::create_dir_all(local_repo)?;
         let _ = Command::new("ostree").args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)]).status();
     }
+    
+    // Safety: Ensure free space check is disabled for CI
     let _ = Command::new("ostree").args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"]).status();
 
-    println!(">>> STEP 2: Starting build loop...");
     loop {
         if start_time.elapsed() > max_duration { break; }
 
@@ -75,7 +64,6 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
         let _ = fs::remove_dir_all("result");
         
-        // Helper to construct common nix build arguments
         let run_nix = |target: &str| {
             Command::new("nix")
                 .args(["build", "--impure", "-L", target])
@@ -85,10 +73,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                 .status()
         };
 
-        // --- ATTEMPT 1: Standard Build ---
         let build_result = run_nix(&format!(".#{}", pkg));
-
-        // Determine if we need the fallback
         let final_status = match build_result {
             Ok(status) if status.success() => Ok(status),
             _ => {
@@ -99,25 +84,27 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
         if let Ok(status) = final_status {
             if status.success() {
-                println!(">>> Build Succeeded. Importing...");
+                println!(">>> Importing bundle...");
                 let _ = Command::new("bash")
                     .arg("-c")
                     .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
                     .status();
 
+                println!(">>> Updating summary...");
                 let _ = Command::new("flatpak")
                     .args(["build-update-repo", "--generate-static-deltas", local_repo])
                     .status();
 
-                println!(">>> Syncing to OneDrive...");
+                println!(">>> Uploading ONLY new objects to OneDrive...");
+                // Note: We only upload the local_repo/objects and local_repo/deltas folders
+                // rclone copy will skip files that already exist on OneDrive
                 let _ = Command::new("rclone")
                     .args([
-                        "copy", local_repo, &opts.remote,
-                        "--transfers", "4", "--checkers", "8", "--tpslimit", "5", "--size-only"
+                        "copy", local_repo, &opts.remote, 
+                        "--transfers", "4", "--checkers", "8", "--tpslimit", "5", 
+                        "--fast-list", "--size-only"
                     ])
                     .status();
-            } else {
-                eprintln!(">>> Both attempts failed for {}.", pkg);
             }
         }
         idx = (idx + 1) % packages.len();
