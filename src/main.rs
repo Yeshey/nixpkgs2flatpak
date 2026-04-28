@@ -1,6 +1,6 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 mod desktop_parser;
 mod discover;
@@ -61,7 +61,7 @@ fn main() -> anyhow::Result<()> {
 
 fn stats(path: &str) -> anyhow::Result<()> {
     let content = std::fs::read_to_string(path)?;
-    let packages: HashMap<String, types::PackageInfo> = serde_json::from_str(&content)?;
+    let packages: BTreeMap<String, types::PackageInfo> = serde_json::from_str(&content)?; // Changed
     println!("Total packages: {}", packages.len());
     let mut by_runtime: HashMap<&str, usize> = HashMap::new();
     for p in packages.values() {

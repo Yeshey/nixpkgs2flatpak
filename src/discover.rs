@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::process::Command;
 
 use crate::desktop_parser;
@@ -27,7 +27,7 @@ pub fn run(opts: DiscoverOptions) -> Result<()> {
 
 fn locate_desktop_packages(
     database: &Option<String>,
-) -> Result<HashMap<String, PackageInfo>> {
+) -> Result<BTreeMap<String, PackageInfo>> {
     let mut cmd = Command::new("nix-locate");
     if let Some(db) = database {
         cmd.args(["--database", db]);
@@ -50,7 +50,7 @@ fn locate_desktop_packages(
     }
 
     let stdout = String::from_utf8_lossy(&raw.stdout);
-    let mut packages: HashMap<String, PackageInfo> = HashMap::new();
+    let mut packages: BTreeMap<String, PackageInfo> = BTreeMap::new();
 
     for line in stdout.lines() {
         let line = line.trim();

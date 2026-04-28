@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -22,7 +22,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let max_duration = Duration::from_secs(5 * 3600 + 30 * 60);
 
     let discovered_content = fs::read_to_string("discovered.json")?;
-    let discovered: HashMap<String, serde_json::Value> = serde_json::from_str(&discovered_content)?;
+    let discovered: BTreeMap<String, serde_json::Value> = serde_json::from_str(&discovered_content)?;
     let mut packages: Vec<String> = discovered.into_keys().collect();
     packages.sort();
 
