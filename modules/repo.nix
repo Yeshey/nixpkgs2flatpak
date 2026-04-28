@@ -2,7 +2,7 @@
   perSystem = { pkgs, ... }: {
     packages.repo-builder = pkgs.writeShellApplication {
       name = "build-nixpkgs2flatpak-repo";
-      runtimeInputs = with pkgs; [ flatpak ostree ];
+      runtimeInputs = with pkgs;[ flatpak ostree ];
       text = ''
         set -euo pipefail
 
@@ -16,7 +16,7 @@
         echo "Importing bundles from $BUNDLES_DIR …"
         find "$BUNDLES_DIR" -name '*.flatpak' -print0 | while IFS= read -r -d "" bundle; do
           echo "  → $bundle"
-          flatpak build-export "$REPO_PATH" "$bundle" \
+          flatpak build-import-bundle "$REPO_PATH" "$bundle" \
             ''${GPG_KEY_ID:+--gpg-sign="$GPG_KEY_ID"} \
             || echo "  WARNING: failed to import $bundle, skipping"
         done

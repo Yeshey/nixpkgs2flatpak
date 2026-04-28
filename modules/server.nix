@@ -16,7 +16,13 @@
         domain = lib.mkOption {
           type        = lib.types.str;
           example     = "flatpak.example.com";
-          description = "Public domain name to serve the repo from.";
+          description = "Public domain name or IP to serve the repo from. (Do NOT include http://)";
+        };
+        
+        enableSSL = lib.mkOption {
+          type        = lib.types.bool;
+          default     = true;
+          description = "Enable HTTPS and auto-fetch Let's Encrypt certs. Set to false if using a raw IP.";
         };
 
         gpgKeyId = lib.mkOption {
@@ -26,7 +32,8 @@
         };
 
         acmeEmail = lib.mkOption {
-          type        = lib.types.str;
+          type        = lib.types.nullOr lib.types.str;
+          default     = null;
           description = "Email address for Let's Encrypt certificate notifications.";
         };
       };
@@ -40,11 +47,11 @@
         };
         users.groups.nixpkgs2flatpak = {};
 
-        systemd.tmpfiles.rules = [
+        systemd.tmpfiles.rules =[
           "d ${cfg.repoPath} 0755 nixpkgs2flatpak nixpkgs2flatpak -"
         ];
 
-        security.acme = {
+        security.acme = lib.mkIf cfg.enableSSL {
           acceptTerms = true;
           defaults.email = cfg.acmeEmail;
         };
@@ -52,19 +59,24 @@
         services.nginx = {
           enable = true;
           virtualHosts.${cfg.domain} = {
-            enableACME = true;
-            forceSSL   = true;
+            enableACME = cfg.enableSSL;
+            forceSSL   = cfg.enableSSL;
             root       = cfg.repoPath;
             extraConfig = ''
               autoindex on;
               add_header Access-Control-Allow-Origin "*";
               add_header Cache-Control "public, max-age=300";
 
-              # Flatpak clients expect these MIME types
+              # Because of the Nginx add_header quirk, we MUST duplicate 
+              # the parent headers here to satisfy the NixOS config analyzer.
               location ~* \.flatpak$ {
+                add_header Access-Control-Allow-Origin "*";
+                add_header Cache-Control "public, max-age=300";
                 add_header Content-Type application/octet-stream;
               }
               location = /summary {
+                add_header Access-Control-Allow-Origin "*";
+                add_header Cache-Control "public, max-age=300";
                 add_header Content-Type application/octet-stream;
               }
             '';
