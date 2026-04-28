@@ -62,24 +62,24 @@ jobs:
               ${{ github.event.inputs.architecture == 'aarch64-linux' && 'x86_64-linux' || '' }}
           - system: >-
               ${{ github.event.inputs.architecture == 'x86_64-linux' && 'aarch64-linux' || '' }}
-    
+
     # Use native ARM for ARM, standard for x86
     runs-on: ${{ matrix.system == 'aarch64-linux' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
-    
+
     permissions:
-      contents: write
+      contents: read
     env:
       NIXPKGS_ALLOW_UNFREE: 1
       NIXPKGS_ALLOW_BROKEN: 1
       NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM: 1
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Free up disk space
         uses: wimpysworld/nothing-but-nix@main
-        
+
       - name: Install Nix
         uses: cachix/install-nix-action@v31
 
@@ -97,22 +97,4 @@ jobs:
         run: |
           ./result-scanner/bin/scanner build-ci \
             --system ${{ matrix.system }} \
-            --remote "OneDriveISCTE:nixpkgs2flatpak" \
-            --state-file "state-${{ matrix.system }}.json"
-
-      - name: Commit Progress and Metadata
-        if: always() 
-        run: |
-          git config user.email "ci@github.com"
-          git config user.name "CI Bot"
-          if [ -f "state-${{ matrix.system }}.json" ]; then
-            git add state-${{ matrix.system }}.json
-            [ -d local_repo ] && git add local_repo/summary local_repo/refs/ local_repo/config || true
-            if ! git diff --cached --quiet; then
-              git commit -m "chore: save progress [${{ matrix.system }}]"
-              # We rebase push to handle both runners finishing at the same time
-              for i in {1..10}; do
-                git pull --rebase origin main && git push && break || sleep 15
-              done
-            fi
-          fi
+            --remote "OneDriveISCTE:nixpkgs2flatpak"

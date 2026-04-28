@@ -1,5 +1,6 @@
 use clap::{Parser, Subcommand};
-use std::collections::{BTreeMap, HashMap}; // Added HashMap here
+use std::collections::{BTreeMap, HashMap};
+use std::cmp::Reverse;
 
 mod desktop_parser;
 mod discover;
@@ -35,10 +36,10 @@ enum Commands {
     BuildCi {
         #[arg(long)]
         system: String,
+        /// rclone remote path, e.g. "OneDriveISCTE:nixpkgs2flatpak".
+        /// State files (state-<system>.json) are read from and written to this remote.
         #[arg(long)]
         remote: String,
-        #[arg(long)]
-        state_file: String,
     },
 }
 
@@ -52,8 +53,8 @@ fn main() -> anyhow::Result<()> {
             })?
         }
         Commands::Stats { input } => stats(&input)?,
-        Commands::BuildCi { system, remote, state_file } => {
-            ci_builder::run(ci_builder::BuildCiOptions { system, remote, state_file })?
+        Commands::BuildCi { system, remote } => {
+            ci_builder::run(ci_builder::BuildCiOptions { system, remote })?
         }
     }
     Ok(())
@@ -63,14 +64,14 @@ fn stats(path: &str) -> anyhow::Result<()> {
     let content = std::fs::read_to_string(path)?;
     let packages: BTreeMap<String, types::PackageInfo> = serde_json::from_str(&content)?;
     println!("Total packages: {}", packages.len());
-    
+
     let mut by_runtime: HashMap<&str, usize> = HashMap::new();
     for p in packages.values() {
         *by_runtime.entry(p.runtime_hint.as_str()).or_insert(0) += 1;
     }
-    
+
     let mut counts: Vec<_> = by_runtime.iter().collect();
-    counts.sort_by_key(|(_, n)| std::cmp::Reverse(**n));
+    counts.sort_by_key(|(_, n)| Reverse(**n));
     for (runtime, count) in counts {
         println!("  {:45} {}", runtime, count);
     }
