@@ -18,6 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
+      
+      # NEW: Download the pre-built nix-index database so 'discover' works instantly
+      - name: Fetch nix-index database
+        run: |
+          mkdir -p ~/.cache/nix-index
+          curl -L https://github.com/nix-community/nix-index-database/releases/latest/download/index-x86_64-linux -o ~/.cache/nix-index/files
+
       - name: Build scanner
         run: nix build .#scanner -o result-scanner
       - name: Run Discover
