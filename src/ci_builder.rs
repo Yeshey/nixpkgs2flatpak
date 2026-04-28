@@ -20,7 +20,7 @@ pub struct BuildCiOptions {
 pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
     let max_duration = Duration::from_secs(5 * 3600 + 30 * 60);
-
+    
     let skip_pull = std::env::var("SKIP_PULL").is_ok();
 
     let discovered_content = fs::read_to_string("discovered.json")?;
@@ -47,42 +47,20 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let _ = fs::remove_dir_all(local_repo);
     fs::create_dir_all(local_repo)?;
 
-    if skip_pull {
-        println!(">>> SKIP_PULL is set. Starting with a fresh local repository.");
-    } else {
-        println!(">>> STEP 1: Pulling repository from OneDrive...");
+    if !skip_pull {
+        println!(">>> STEP 1: Pulling repository (Safe-sync)...");
         let _ = Command::new("rclone")
             .args([
                 "copy", &opts.remote, local_repo,
-                "--transfers", "8",
-                "--checkers", "8",
-                "--tpslimit", "5",
-                "--fast-list",
-                "--size-only",
-                "-v",
-                "--stats", "1m"
+                "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
+                "--fast-list", "--size-only", "-v", "--stats", "1m"
             ])
             .status();
     }
 
-    // Always ensure the repo is initialized locally
     if !PathBuf::from(format!("{}/config", local_repo)).exists() {
-        println!(">>> Initializing local OSTree repo...");
         let _ = Command::new("ostree").args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)]).status();
     }
-    
-    // ── NEW: SELF-HEALING LOGIC ──
-    // If objects exist but the summary is missing (because you deleted it), fix it immediately!
-    if !PathBuf::from(format!("{}/summary", local_repo)).exists() && PathBuf::from(format!("{}/objects", local_repo)).exists() {
-        println!(">>> Summary missing but objects found. Repairing repository...");
-        let _ = Command::new("flatpak").args(["build-update-repo", "--generate-static-deltas", local_repo]).status();
-        
-        println!(">>> Pushing repaired summary back to OneDrive...");
-        let _ = Command::new("rclone")
-            .args(["copy", local_repo, &opts.remote, "--transfers", "4", "--tpslimit", "5", "--size-only"])
-            .status();
-    }
-
     let _ = Command::new("ostree").args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"]).status();
 
     println!(">>> STEP 2: Starting build loop...");
@@ -97,30 +75,31 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
         let _ = fs::remove_dir_all("result");
         
-        // --- ATTEMPT 1: Standard Build ---
-        let mut build_status = Command::new("nix")
-            .args(["build", "--impure", "-L", &format!(".#{}", pkg)])
-            .env("NIXPKGS_ALLOW_UNFREE", "1")
-            .env("NIXPKGS_ALLOW_BROKEN", "1")
-            .env("NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM", "1")
-            .status();
-
-        // --- ATTEMPT 2: Fallback (No Icon) ---
-        if build_status.is_err() || !build_status.unwrap().success() {
-            println!(">>> Standard build failed. Attempting -noicon fallback...");
-            build_status = Command::new("nix")
-                .args(["build", "--impure", "-L", &format!(".#{}-noicon", pkg)])
+        // Helper to construct common nix build arguments
+        let run_nix = |target: &str| {
+            Command::new("nix")
+                .args(["build", "--impure", "-L", target])
                 .env("NIXPKGS_ALLOW_UNFREE", "1")
                 .env("NIXPKGS_ALLOW_BROKEN", "1")
                 .env("NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM", "1")
-                .status();
-        }
+                .status()
+        };
 
-        if let Ok(status) = build_status {
+        // --- ATTEMPT 1: Standard Build ---
+        let build_result = run_nix(&format!(".#{}", pkg));
+
+        // Determine if we need the fallback
+        let final_status = match build_result {
+            Ok(status) if status.success() => Ok(status),
+            _ => {
+                println!(">>> Standard build failed. Attempting -noicon fallback...");
+                run_nix(&format!(".#{}-noicon", pkg))
+            }
+        };
+
+        if let Ok(status) = final_status {
             if status.success() {
                 println!(">>> Build Succeeded. Importing...");
-                
-                // Use shell to expand the glob safely
                 let _ = Command::new("bash")
                     .arg("-c")
                     .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
@@ -130,16 +109,15 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     .args(["build-update-repo", "--generate-static-deltas", local_repo])
                     .status();
 
-                println!(">>> Syncing back to OneDrive...");
+                println!(">>> Syncing to OneDrive...");
                 let _ = Command::new("rclone")
                     .args([
-                        "copy", local_repo, &opts.remote, 
-                        "--transfers", "4", "--checkers", "8", "--tpslimit", "5", 
-                        "--fast-list", "--size-only"
+                        "copy", local_repo, &opts.remote,
+                        "--transfers", "4", "--checkers", "8", "--tpslimit", "5", "--size-only"
                     ])
                     .status();
             } else {
-                eprintln!(">>> Both attempts failed for {}. Skipping.", pkg);
+                eprintln!(">>> Both attempts failed for {}.", pkg);
             }
         }
         idx = (idx + 1) % packages.len();
