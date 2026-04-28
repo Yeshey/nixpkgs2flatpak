@@ -60,10 +60,25 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         .status();
 
     if !PathBuf::from(format!("{}/config", local_repo)).exists() {
+        println!(">>> Initializing new OSTree repo...");
         let _ = Command::new("ostree").args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)]).status();
     }
+    
+    // ── NEW: SELF-HEALING LOGIC ──
+    // If objects exist but the summary is missing (because you deleted it), fix it immediately!
+    if !PathBuf::from(format!("{}/summary", local_repo)).exists() && PathBuf::from(format!("{}/objects", local_repo)).exists() {
+        println!(">>> Summary missing but objects found. Repairing repository...");
+        let _ = Command::new("flatpak").args(["build-update-repo", "--generate-static-deltas", local_repo]).status();
+        
+        println!(">>> Pushing repaired summary back to OneDrive...");
+        let _ = Command::new("rclone")
+            .args(["copy", local_repo, &opts.remote, "--transfers", "4", "--tpslimit", "5", "--size-only"])
+            .status();
+    }
+
     let _ = Command::new("ostree").args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"]).status();
 
+    println!(">>> STEP 2: Starting build loop...");
     loop {
         if start_time.elapsed() > max_duration { break; }
 
@@ -93,19 +108,19 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     .args(["build-update-repo", "--generate-static-deltas", local_repo])
                     .status();
 
-                println!(">>> Syncing to OneDrive (Safe-sync)...");
-                let _ = Command::new("rclone")
-                    .args([
-                        "copy", local_repo, &opts.remote,
-                        "--transfers", "8",
-                        "--checkers", "8",
-                        "--tpslimit", "10",
-                        "--fast-list",
-                        "--size-only",
-                        "-v",
-                        "--stats", "1m"
-                    ])
-                    .status();
+                    println!(">>> Syncing to OneDrive (Safe-sync)...");
+                    let _ = Command::new("rclone")
+                        .args([
+                            "copy", local_repo, &opts.remote,
+                            "--transfers", "8",
+                            "--checkers", "8",
+                            "--tpslimit", "10",
+                            "--fast-list",
+                            "--size-only",
+                            "-v",
+                            "--stats", "1m"
+                            ])
+                            .status();
             }
         }
         idx = (idx + 1) % packages.len();
