@@ -2,22 +2,12 @@
 let
   discoveredFile = ../discovered.json;
   discovered = if builtins.pathExists discoveredFile then builtins.fromJSON (builtins.readFile discoveredFile) else {};
-
-  defaultPermissions = {
-    share       = [ "network" "ipc" ];
-    sockets     = [ "x11" "wayland" "fallback-x11" "pulseaudio" "session-bus" "system-bus" ];
-    devices     = [ "all" ];
-    filesystems = [ "host" ];
-    talk-names  = [ "*" ];
-  };
 in
 {
   perSystem = { pkgs, config, system, ... }:
     let
       mkFlatpak = inputs.nix2flatpak.lib.${system}.mkFlatpak;
-      defs      = config.flatpakDefs; 
-
-      allNames = lib.unique (builtins.attrNames discovered ++ builtins.attrNames defs);
+      defs = config.flatpakDefs; 
 
       mkEntry = name: info:
         let
@@ -26,50 +16,48 @@ in
               nixpkgsAttr     = info.attrPath;
               appId           = info.appId;
               runtime         = if lib.hasInfix "kde" info.runtimeHint then "org.kde.Platform/6.10" else "org.gnome.Platform/49";
-              permissions     = defaultPermissions;
-              extraEnv        = {};
-              extraLibs       = [];
-              skipAbiChecks   = true;
-              packageOverride = null;
-              command         = null;
+              permissions     = {
+                share       = [ "network" "ipc" ];
+                sockets     = [ "x11" "wayland" "fallback-x11" "pulseaudio" "session-bus" "system-bus" ];
+                devices     = [ "all" ];
+                filesystems = [ "host" ];
+                talk-names  = [ "*" ];
+              };
+              extraEnv = {}; extraLibs = []; skipAbiChecks = true; packageOverride = null; command = null;
           };
 
           attrPathList = lib.splitString "." def.nixpkgsAttr;
+          
+          # Attempt to get the package, catching 'throw' errors (removed packages)
           pkgAttempt = builtins.tryEval (
             if def.packageOverride != null then def.packageOverride
             else if lib.hasAttrByPath attrPathList pkgs then lib.getAttrFromPath attrPathList pkgs
             else null
           );
+          
           pkg = if pkgAttempt.success then pkgAttempt.value else null;
 
-          baseArgs = {
+          # Heuristic: If name starts with _, it's often a problematic alias or large icon app.
+          # We'll default icons to null for these to prevent the "1024px" crash.
+          forceNoIcon = lib.hasPrefix "_" name;
+
+          flatpakArgs = {
             inherit (def) appId runtime permissions skipAbiChecks;
             package = pkg;
+            icon = if forceNoIcon then null else (def.icon or (info.icon or null));
           } // lib.optionalAttrs (def.extraEnv != {}) { inherit (def) extraEnv; }
             // lib.optionalAttrs (def.extraLibs != []) { inherit (def) extraLibs; }
             // lib.optionalAttrs (def.command != null) { inherit (def) command; };
 
-          # The "Bulletproof" attempt:
-          # 1. Try normally.
-          # 2. If it fails (Bad icon, too large icon), try with icon forced to null.
-          attemptNormal = builtins.tryEval (mkFlatpak baseArgs);
-          attemptNoIcon = builtins.tryEval (mkFlatpak (baseArgs // { icon = null; }));
+          # We can't catch build failures, only eval failures.
+          attempt = builtins.tryEval (mkFlatpak flatpakArgs);
         in
-          if pkg == null then { ok = false; value = null; }
-          else if attemptNormal.success then { ok = true; value = attemptNormal.value; }
-          else if attemptNoIcon.success then { ok = true; value = attemptNoIcon.value; }
+          if pkg != null && attempt.success
+          then { ok = true; value = attempt.value; }
           else { ok = false; value = null; };
 
-      mkAttempt = name:
-        let 
-          info = discovered.${name} or {
-             attrPath = defs.${name}.nixpkgsAttr;
-             appId = defs.${name}.appId;
-             runtimeHint = "org.gnome.Platform/49";
-          };
-        in mkEntry name info;
-
-      allAttempts = lib.genAttrs allNames mkAttempt;
+      allNames = lib.unique (builtins.attrNames discovered ++ builtins.attrNames defs);
+      allAttempts = lib.genAttrs allNames (name: mkEntry name (discovered.${name} or {}));
       successfulOnly = lib.filterAttrs (_: e: e.ok) allAttempts;
     in {
       packages = lib.mapAttrs (_: e: e.value) successfulOnly;
