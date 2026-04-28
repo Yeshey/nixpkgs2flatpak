@@ -2,7 +2,8 @@ name: Continuous Flatpak Builder
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *"    # Every day (Builder)
+    - cron: "0 0 * * 0"    # Every Sunday (Discovery)
   workflow_dispatch:
 
 concurrency:
@@ -10,7 +11,28 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Job 1: Weekly update of the package list
+  update-list:
+    if: github.event_name == 'schedule' && github.event.schedule == '0 0 * * 0' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - name: Build scanner
+        run: nix build .#scanner -o result-scanner
+      - name: Run Discover
+        run: ./result-scanner/bin/scanner discover
+      - name: Commit changes
+        run: |
+          git config user.email "ci@github.com"
+          git config user.name "CI Bot"
+          git add discovered.json
+          git commit -m "chore: weekly discovered.json update" && git push || exit 0
+
+  # Job 2: The Daily Conveyor Belt
   conveyor-belt:
+    needs: [update-list]
+    if: always() # Run even if update-list was skipped (which it usually is)
     strategy:
       fail-fast: false
       matrix:

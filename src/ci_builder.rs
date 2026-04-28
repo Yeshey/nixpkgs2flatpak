@@ -42,41 +42,29 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     }
 
     let local_repo = "/tmp/local_repo";
-    let _ = fs::remove_dir_all(local_repo); // Start fresh to save CI disk space
+    let _ = fs::remove_dir_all(local_repo);
     fs::create_dir_all(local_repo)?;
 
-    println!("Pulling current repository state from OneDrive...");
+    println!("Fast-syncing repository from OneDrive...");
     let _ = Command::new("rclone")
-        .args(["copy", &opts.remote, local_repo, "--transfers", "16", "--checkers", "16"])
+        .args(["copy", &opts.remote, local_repo, "--transfers", "16", "--checkers", "16", "--fast-list"])
         .status();
 
     if !PathBuf::from(format!("{}/config", local_repo)).exists() {
-        println!("Initializing new OSTree repo...");
-        let _ = Command::new("ostree")
-            .args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)])
-            .status();
+        let _ = Command::new("ostree").args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)]).status();
     }
-
-    // CRITICAL: Disable the 3% free space safety check which kills builds on GitHub
-    let _ = Command::new("ostree")
-        .args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"])
-        .status();
+    let _ = Command::new("ostree").args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"]).status();
 
     loop {
-        if start_time.elapsed() > max_duration {
-            println!("Time limit reached.");
-            break;
-        }
+        if start_time.elapsed() > max_duration { break; }
 
         let pkg = &packages[idx];
-        println!("\n--- Processing: {} ({}/{}) ---", pkg, idx + 1, packages.len());
+        println!("\n--- [ {}/{} ] Building: {} ---", idx + 1, packages.len(), pkg);
 
         state.last_package = Some(pkg.clone());
         fs::write(&opts.state_file, serde_json::to_string_pretty(&state)?)?;
 
         let _ = fs::remove_dir_all("result");
-        
-        // Pass env vars for unfree/broken and use --impure
         let build_status = Command::new("nix")
             .args(["build", "--impure", &format!(".#{}", pkg)])
             .env("NIXPKGS_ALLOW_UNFREE", "1")
@@ -86,37 +74,24 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
         if let Ok(status) = build_status {
             if status.success() {
-                if let Ok(entries) = fs::read_dir("result") {
-                    for entry in entries.flatten() {
-                        let path = entry.path();
-                        if path.extension().and_then(|s| s.to_str()) == Some("flatpak") {
-                            println!("Importing bundle...");
-                            let imp = Command::new("flatpak")
-                                .args(["build-import-bundle", local_repo, path.to_str().unwrap()])
-                                .status();
-                            
-                            if imp.is_ok() && imp.unwrap().success() {
-                                println!("Updating repo metadata...");
-                                let _ = Command::new("flatpak")
-                                    .args(["build-update-repo", "--generate-static-deltas", local_repo])
-                                    .status();
+                println!("Importing bundle...");
+                // Note: assuming flatpak build-import-bundle result/*.flatpak
+                let _ = Command::new("bash")
+                    .arg("-c")
+                    .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
+                    .status();
 
-                                println!("Syncing to OneDrive...");
-                                let _ = Command::new("rclone")
-                                    .args(["copy", local_repo, &opts.remote, "--transfers", "16"])
-                                    .status();
-                            }
-                            break; 
-                        }
-                    }
-                }
-            } else {
-                eprintln!("Build failed for {}.", pkg);
+                let _ = Command::new("flatpak")
+                    .args(["build-update-repo", "--generate-static-deltas", local_repo])
+                    .status();
+
+                println!("Syncing updates to OneDrive...");
+                let _ = Command::new("rclone")
+                    .args(["copy", local_repo, &opts.remote, "--transfers", "16", "--checkers", "16", "--fast-list"])
+                    .status();
             }
         }
-
         idx = (idx + 1) % packages.len();
     }
-
     Ok(())
 }

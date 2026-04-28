@@ -1,18 +1,14 @@
 { inputs, lib, ... }:
 let
   discoveredFile = ../discovered.json;
-
-  discovered =
-    if builtins.pathExists discoveredFile
-    then builtins.fromJSON (builtins.readFile discoveredFile)
-    else {};
+  discovered = if builtins.pathExists discoveredFile then builtins.fromJSON (builtins.readFile discoveredFile) else {};
 
   defaultPermissions = {
-    share       =[ "network" "ipc" ];
-    sockets     =[ "x11" "wayland" "fallback-x11" "pulseaudio" "session-bus" "system-bus" ];
-    devices     =[ "all" ];
+    share       = [ "network" "ipc" ];
+    sockets     = [ "x11" "wayland" "fallback-x11" "pulseaudio" "session-bus" "system-bus" ];
+    devices     = [ "all" ];
     filesystems = [ "host" ];
-    talk-names  =[ "*" ];
+    talk-names  = [ "*" ];
   };
 in
 {
@@ -32,7 +28,7 @@ in
               runtime         = if lib.hasInfix "kde" info.runtimeHint then "org.kde.Platform/6.10" else "org.gnome.Platform/49";
               permissions     = defaultPermissions;
               extraEnv        = {};
-              extraLibs       =[];
+              extraLibs       = [];
               skipAbiChecks   = true;
               packageOverride = null;
               command         = null;
@@ -46,7 +42,6 @@ in
           );
           pkg = if pkgAttempt.success then pkgAttempt.value else null;
 
-          # Basic arguments
           baseArgs = {
             inherit (def) appId runtime permissions skipAbiChecks;
             package = pkg;
@@ -54,8 +49,9 @@ in
             // lib.optionalAttrs (def.extraLibs != []) { inherit (def) extraLibs; }
             // lib.optionalAttrs (def.command != null) { inherit (def) command; };
 
-          # Strategy: Try building with icon detection. 
-          # If that fails (likely non-square icon), try again with icon forced to null.
+          # The "Bulletproof" attempt:
+          # 1. Try normally.
+          # 2. If it fails (Bad icon, too large icon), try with icon forced to null.
           attemptNormal = builtins.tryEval (mkFlatpak baseArgs);
           attemptNoIcon = builtins.tryEval (mkFlatpak (baseArgs // { icon = null; }));
         in
@@ -69,7 +65,7 @@ in
           info = discovered.${name} or {
              attrPath = defs.${name}.nixpkgsAttr;
              appId = defs.${name}.appId;
-             runtimeHint = defs.${name}.runtime or "org.gnome.Platform/49";
+             runtimeHint = "org.gnome.Platform/49";
           };
         in mkEntry name info;
 
