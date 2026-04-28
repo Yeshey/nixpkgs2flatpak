@@ -133,17 +133,29 @@ jobs:
             --remote "OneDriveISCTE:nixpkgs2flatpak" \
             --state-file "state-${{ needs.decide-arch.outputs.system }}.json"
 
+      # ── RESILIENCE STEP ──
+      # This runs even if you cancel the workflow!
       - name: Commit Progress and Metadata
+        if: always() 
         run: |
           git config user.email "ci@github.com"
           git config user.name "CI Bot"
           
-          # Use -f and check if directory exists to avoid errors on the first-ever run
-          git add state-${{ needs.decide-arch.outputs.system }}.json
-          [ -d local_repo ] && git add local_repo/summary local_repo/refs/ local_repo/config || true
-          
-          git commit -m "chore: progress update and metadata sync [${{ needs.decide-arch.outputs.system }}]" || exit 0
-          
-          for i in {1..10}; do
-            git pull --rebase origin main && git push && break || sleep 15
-          done
+          # Only proceed if the state file exists (it might not if the run failed early)
+          if [ -f "state-${{ needs.decide-arch.outputs.system }}.json" ]; then
+            git add state-${{ needs.decide-arch.outputs.system }}.json
+            
+            # Add metadata if it exists
+            [ -d local_repo ] && git add local_repo/summary local_repo/refs/ local_repo/config || true
+            
+            if ! git diff --cached --quiet; then
+              git commit -m "chore: save progress [${{ needs.decide-arch.outputs.system }}]"
+              
+              # Attempt to push up to 10 times (handling concurrency)
+              for i in {1..10}; do
+                git pull --rebase origin main && git push && break || sleep 15
+              done
+            else
+              echo "No new progress to save."
+            fi
+          fi
