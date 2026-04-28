@@ -21,6 +21,8 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
     let max_duration = Duration::from_secs(5 * 3600 + 30 * 60);
 
+    let skip_pull = std::env::var("SKIP_PULL").is_ok();
+
     let discovered_content = fs::read_to_string("discovered.json")?;
     let discovered: HashMap<String, serde_json::Value> = serde_json::from_str(&discovered_content)?;
     let mut packages: Vec<String> = discovered.into_keys().collect();
@@ -45,22 +47,27 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let _ = fs::remove_dir_all(local_repo);
     fs::create_dir_all(local_repo)?;
 
-    println!(">>> STEP 1: Pulling repository (Safe-sync to avoid throttling)...");
-    let _ = Command::new("rclone")
-        .args([
-            "copy", &opts.remote, local_repo,
-            "--transfers", "8",      // Reduced from 16 to 8
-            "--checkers", "8",       // Reduced from 16 to 8
-            "--tpslimit", "10",      // Limit API requests per second to avoid 429 errors
-            "--fast-list",
-            "--size-only",
-            "-v",
-            "--stats", "1m"
-        ])
-        .status();
+    if skip_pull {
+        println!(">>> SKIP_PULL is set. Starting with a fresh local repository.");
+    } else {
+        println!(">>> STEP 1: Pulling repository from OneDrive...");
+        let _ = Command::new("rclone")
+            .args([
+                "copy", &opts.remote, local_repo,
+                "--transfers", "8",
+                "--checkers", "8",
+                "--tpslimit", "5",
+                "--fast-list",
+                "--size-only",
+                "-v",
+                "--stats", "1m"
+            ])
+            .status();
+    }
 
+    // Always ensure the repo is initialized locally
     if !PathBuf::from(format!("{}/config", local_repo)).exists() {
-        println!(">>> Initializing new OSTree repo...");
+        println!(">>> Initializing local OSTree repo...");
         let _ = Command::new("ostree").args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)]).status();
     }
     
