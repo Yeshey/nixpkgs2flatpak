@@ -15,6 +15,10 @@ on:
         description: 'Skip pulling existing repo from OneDrive (for testing)'
         type: boolean
         default: false
+      skip_update:
+        description: 'Skip updating discovered.json list'
+        type: boolean
+        default: false
 
 concurrency:
   group: flatpak-conveyor
@@ -22,11 +26,11 @@ concurrency:
 
 jobs:
   # ── JOB 1: WEEKLY DISCOVERY ────────────────────────────────────────────────
-  # This runs every Sunday or when manually triggered.
-  # It updates discovered.json with new nixpkgs apps.
   update-list:
-    # Run if it's Sunday OR if manually triggered
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '0 0 * * 0')
+    # Run if it's the Sunday schedule OR if manual and skip_update is false
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 0 * * 0') ||
+      (github.event_name == 'workflow_dispatch' && inputs.skip_update == false)
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -53,7 +57,6 @@ jobs:
           git commit -m "chore: update discovered.json" && git push || echo "No changes to discover."
 
   # ── JOB 2: ARCHITECTURE DECIDER ────────────────────────────────────────────
-  # Determines if today is an x86 day or an ARM day.
   decide-arch:
     needs: [update-list]
     if: always() # Run even if update-list was skipped
@@ -75,16 +78,15 @@ jobs:
             OS="ubuntu-24.04-arm"
             REASON="Manual override"
           else
-            # AUTO MODE: Even day of year = x86, Odd day = ARM
             DAY_OF_YEAR=$(date +%-j)
             if [ $((DAY_OF_YEAR % 2)) -eq 0 ]; then
               SYSTEM="x86_64-linux"
               OS="ubuntu-latest"
-              REASON="Automatic (Even day of year: $DAY_OF_YEAR)"
+              REASON="Automatic (Even day: $DAY_OF_YEAR)"
             else
               SYSTEM="aarch64-linux"
               OS="ubuntu-24.04-arm"
-              REASON="Automatic (Odd day of year: $DAY_OF_YEAR)"
+              REASON="Automatic (Odd day: $DAY_OF_YEAR)"
             fi
           fi
           
@@ -93,13 +95,13 @@ jobs:
           
           echo "==============================================="
           echo " Chosen Architecture: $SYSTEM"
-          echo " Runner OS:           $OS"
           echo " Decision Reason:     $REASON"
           echo "==============================================="
 
   # ── JOB 3: CONVEYOR BELT ───────────────────────────────────────────────────
   conveyor-belt:
     needs: decide-arch
+    if: always() # Ensure this runs even if Job 1 was skipped
     runs-on: ${{ needs.decide-arch.outputs.os }}
     permissions:
       contents: write
@@ -107,7 +109,9 @@ jobs:
       NIXPKGS_ALLOW_UNFREE: 1
       NIXPKGS_ALLOW_BROKEN: 1
       NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM: 1
-      SKIP_PULL: ${{ github.event.inputs.skip_pull == 'true' && '1' || '' }}
+      # Boolean inputs in GHA context are actual booleans, 
+      # but env vars must be strings.
+      SKIP_PULL: ${{ inputs.skip_pull == true && '1' || '' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
