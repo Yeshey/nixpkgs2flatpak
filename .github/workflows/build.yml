@@ -24,6 +24,11 @@ jobs:
     permissions:
       contents: write
       
+    env:
+      NIXPKGS_ALLOW_UNFREE: 1
+      NIXPKGS_ALLOW_BROKEN: 1
+      NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM: 1
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -47,13 +52,14 @@ jobs:
           purge-last-accessed: 604800
 
       - name: Setup Rclone Config
-        # No apt-get needed! Just drop the configuration file.
+        env:
+          RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
         run: |
           mkdir -p ~/.config/rclone
-          echo "${{ secrets.RCLONE_CONF }}" > ~/.config/rclone/rclone.conf
+          # printf ensures JSON tokens in the OneDrive config are NOT mangled by bash
+          printf '%s\n' "$RCLONE_CONF" > ~/.config/rclone/rclone.conf
 
       - name: Build Scanner Utility
-        # The scanner now automatically bundles rclone and flatpak via Nix!
         run: nix build .#scanner -o result-scanner
 
       - name: Run Conveyor Belt

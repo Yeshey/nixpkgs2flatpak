@@ -19,7 +19,6 @@ pub struct BuildCiOptions {
 
 pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
-    // GitHub limits runs to 6 hours. We gracefully stop at 5.5 hours to commit state.
     let max_duration = Duration::from_secs(5 * 3600 + 30 * 60);
 
     let discovered_content = fs::read_to_string("discovered.json")?;
@@ -27,10 +26,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let mut packages: Vec<String> = discovered.into_keys().collect();
     packages.sort();
 
-    if packages.is_empty() {
-        println!("No packages found.");
-        return Ok(());
-    }
+    if packages.is_empty() { return Ok(()); }
 
     let mut state: State = if PathBuf::from(&opts.state_file).exists() {
         serde_json::from_str(&fs::read_to_string(&opts.state_file)?)?
@@ -45,27 +41,20 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
     }
 
-    let mount_dir = PathBuf::from("/tmp/repo_mount");
-    fs::create_dir_all(&mount_dir)?;
+    let local_repo = "/tmp/local_repo";
+    fs::create_dir_all(local_repo)?;
 
-    println!("Mounting rclone remote {} to {:?}", opts.remote, mount_dir);
-    let mut rclone = Command::new("rclone")
-        .args([
-            "mount",
-            &opts.remote,
-            mount_dir.to_str().unwrap(),
-            "--vfs-cache-mode=full",
-            "--vfs-cache-max-size=10G",
-            "--vfs-write-back=5s",
-        ])
-        .spawn()
-        .context("Failed to start rclone mount")?;
-
-    std::thread::sleep(Duration::from_secs(5));
-
-    let _ = Command::new("flatpak")
-        .args(["build-init-repo", "--mode=archive-z2", mount_dir.to_str().unwrap()])
+    println!("Pulling current repository state from OneDrive (Fast sync)...");
+    let _ = Command::new("rclone")
+        .args(["copy", &opts.remote, local_repo, "--transfers", "8"])
         .status();
+
+    if !PathBuf::from(format!("{}/config", local_repo)).exists() {
+        println!("Initializing new OSTree repo...");
+        let _ = Command::new("ostree")
+            .args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)])
+            .status();
+    }
 
     loop {
         if start_time.elapsed() > max_duration {
@@ -91,15 +80,20 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     for entry in entries.flatten() {
                         let path = entry.path();
                         if path.extension().and_then(|s| s.to_str()) == Some("flatpak") {
-                            println!("Importing bundle directly into remote OSTree...");
+                            println!("Importing bundle into OSTree...");
                             let imp = Command::new("flatpak")
-                                .args(["build-import-bundle", mount_dir.to_str().unwrap(), path.to_str().unwrap()])
+                                .args(["build-import-bundle", local_repo, path.to_str().unwrap()])
                                 .status();
                             
                             if imp.is_ok() && imp.unwrap().success() {
-                                println!("Generating deltas and updating remote summary...");
+                                println!("Generating deltas...");
                                 let _ = Command::new("flatpak")
-                                    .args(["build-update-repo", "--generate-static-deltas", mount_dir.to_str().unwrap()])
+                                    .args(["build-update-repo", "--generate-static-deltas", local_repo])
+                                    .status();
+
+                                println!("Uploading changes to OneDrive...");
+                                let _ = Command::new("rclone")
+                                    .args(["copy", local_repo, &opts.remote, "--transfers", "4", "--checkers", "8"])
                                     .status();
                             }
                             break; 
@@ -113,14 +107,6 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
         idx = (idx + 1) % packages.len();
     }
-
-    println!("Unmounting remote and syncing cache to OneDrive...");
-    
-    // Cleanly unmount the FUSE directory to force rclone to push its cache
-    let _ = Command::new("fusermount3").args(["-uz", mount_dir.to_str().unwrap()]).status();
-    let _ = Command::new("fusermount").args(["-uz", mount_dir.to_str().unwrap()]).status();
-    
-    let _ = rclone.wait();
 
     Ok(())
 }
