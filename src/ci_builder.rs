@@ -90,7 +90,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
     let local_repo = "local_repo";
 
-    if !Path::new(local_repo).exists() {
+    if !Path::new(local_repo).join("objects").exists() {
         println!(">>> Initializing local OSTree repo...");
         fs::create_dir_all(local_repo)?;
         let _ = Command::new("ostree")
@@ -155,10 +155,14 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
 
         // ── Persist progress immediately after every package ──────────────────
+        // Write to a temp file then rename so the file is never half-written.
         let new_state = State { last_package: Some(pkg.clone()) };
         let filename = state_filename(&opts.system);
+        let tmp_filename = format!("{}.tmp", filename);
         if let Ok(json) = serde_json::to_string_pretty(&new_state) {
-            let _ = fs::write(&filename, &json);
+            if fs::write(&tmp_filename, &json).is_ok() {
+                let _ = fs::rename(&tmp_filename, &filename);
+            }
         }
         push_state(&opts.remote, &opts.system);
 
