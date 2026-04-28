@@ -72,7 +72,19 @@ in
           then { ok = true;  value = attempt.value; }
           else { ok = false; value = null; };
 
-      allAttempts    = lib.mapAttrs mkEntry discovered;
+      allNames = lib.unique (builtins.attrNames discovered ++ builtins.attrNames defs);
+
+      mkAttempt = name:
+        let 
+          info = discovered.${name} or {
+             attrPath = defs.${name}.nixpkgsAttr;
+             appId = defs.${name}.appId;
+             runtimeHint = defs.${name}.runtime or "org.freedesktop.Platform/24.08";
+          };
+        in mkEntry name info;
+
+      # Create an attempt for every combined package
+      allAttempts = lib.genAttrs allNames mkAttempt;
       successfulOnly = lib.filterAttrs (_: e: e.ok) allAttempts;
     in {
       packages = lib.mapAttrs (_: e: e.value) successfulOnly;

@@ -1,21 +1,11 @@
-use std::collections::HashMap;
-
-/// Pick the best Flatpak runtime based on package name, .desktop Categories,
-/// and the app's human-readable Name — no `nix eval` required.
-///
-/// Returns a static string slice because all possible values are known at compile time.
-pub fn detect(
-    attr_path: &str,
-    categories: &[String],
-    fields: &HashMap<String, String>,
-) -> &'static str {
+/// Pick the best Flatpak runtime based on package name and .desktop filename.
+pub fn detect(attr_path: &str, desktop_filename: &str) -> &'static str {
     let attr  = attr_path.to_lowercase();
-    let name  = fields.get("Name").map(|s| s.to_lowercase()).unwrap_or_default();
-    let cats: Vec<String> = categories.iter().map(|c| c.to_lowercase()).collect();
+    let fname = desktop_filename.to_lowercase();
 
     let any_contains = |signals: &[&str]| {
         signals.iter().any(|s| {
-            cats.iter().any(|c| c.contains(s)) || attr.contains(s) || name.contains(s)
+            attr.contains(s) || fname.contains(s)
         })
     };
 
@@ -32,7 +22,7 @@ pub fn detect(
     }
 
     // Electron bundles: use GNOME runtime (smallest workable choice)
-    if any_contains(&["electron"]) || attr.contains("electron") {
+    if any_contains(&["electron"]) {
         return "org.gnome.Platform/49";
     }
 
