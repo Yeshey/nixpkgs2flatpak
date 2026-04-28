@@ -26,49 +26,42 @@ in
       mkEntry = name: info:
         let
           hasCurated = defs ? ${name};
-
-          def =
-            if hasCurated
-            then defs.${name}
-            else {
+          def = if hasCurated then defs.${name} else {
               nixpkgsAttr     = info.attrPath;
               appId           = info.appId;
-              runtime         = info.runtimeHint;
+              runtime         = if lib.hasInfix "kde" info.runtimeHint then "org.kde.Platform/6.10" else "org.gnome.Platform/49";
               permissions     = defaultPermissions;
               extraEnv        = {};
               extraLibs       =[];
               skipAbiChecks   = true;
               packageOverride = null;
               command         = null;
-            };
+          };
 
           attrPathList = lib.splitString "." def.nixpkgsAttr;
-
-          # FIX: Wrap the package fetch in tryEval to catch "throw" errors 
-          # from removed or broken packages (like chatmcp)
           pkgAttempt = builtins.tryEval (
-            if def.packageOverride != null
-            then def.packageOverride
-            else if lib.hasAttrByPath attrPathList pkgs
-            then lib.getAttrFromPath attrPathList pkgs
+            if def.packageOverride != null then def.packageOverride
+            else if lib.hasAttrByPath attrPathList pkgs then lib.getAttrFromPath attrPathList pkgs
             else null
           );
-
           pkg = if pkgAttempt.success then pkgAttempt.value else null;
 
-          flatpakArgs =
-            {
-              inherit (def) appId runtime permissions skipAbiChecks;
-              package = pkg;
-            }
-            // lib.optionalAttrs (def.extraEnv  != {}) { inherit (def) extraEnv;  }
-            // lib.optionalAttrs (def.extraLibs !=[]) { inherit (def) extraLibs; }
-            // lib.optionalAttrs (def.command   != null) { inherit (def) command; };
+          # Basic arguments
+          baseArgs = {
+            inherit (def) appId runtime permissions skipAbiChecks;
+            package = pkg;
+          } // lib.optionalAttrs (def.extraEnv != {}) { inherit (def) extraEnv; }
+            // lib.optionalAttrs (def.extraLibs != []) { inherit (def) extraLibs; }
+            // lib.optionalAttrs (def.command != null) { inherit (def) command; };
 
-          attempt = builtins.tryEval (mkFlatpak flatpakArgs);
+          # Strategy: Try building with icon detection. 
+          # If that fails (likely non-square icon), try again with icon forced to null.
+          attemptNormal = builtins.tryEval (mkFlatpak baseArgs);
+          attemptNoIcon = builtins.tryEval (mkFlatpak (baseArgs // { icon = null; }));
         in
-          if pkg != null && attempt.success
-          then { ok = true;  value = attempt.value; }
+          if pkg == null then { ok = false; value = null; }
+          else if attemptNormal.success then { ok = true; value = attemptNormal.value; }
+          else if attemptNoIcon.success then { ok = true; value = attemptNoIcon.value; }
           else { ok = false; value = null; };
 
       mkAttempt = name:
