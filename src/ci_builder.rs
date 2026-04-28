@@ -96,16 +96,31 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         fs::write(&opts.state_file, serde_json::to_string_pretty(&state)?)?;
 
         let _ = fs::remove_dir_all("result");
-        let build_status = Command::new("nix")
+        
+        // --- ATTEMPT 1: Standard Build ---
+        let mut build_status = Command::new("nix")
             .args(["build", "--impure", "-L", &format!(".#{}", pkg)])
             .env("NIXPKGS_ALLOW_UNFREE", "1")
             .env("NIXPKGS_ALLOW_BROKEN", "1")
             .env("NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM", "1")
             .status();
 
+        // --- ATTEMPT 2: Fallback (No Icon) ---
+        if build_status.is_err() || !build_status.unwrap().success() {
+            println!(">>> Standard build failed. Attempting -noicon fallback...");
+            build_status = Command::new("nix")
+                .args(["build", "--impure", "-L", &format!(".#{}-noicon", pkg)])
+                .env("NIXPKGS_ALLOW_UNFREE", "1")
+                .env("NIXPKGS_ALLOW_BROKEN", "1")
+                .env("NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM", "1")
+                .status();
+        }
+
         if let Ok(status) = build_status {
             if status.success() {
-                println!(">>> Importing bundle...");
+                println!(">>> Build Succeeded. Importing...");
+                
+                // Use shell to expand the glob safely
                 let _ = Command::new("bash")
                     .arg("-c")
                     .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
@@ -115,19 +130,16 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     .args(["build-update-repo", "--generate-static-deltas", local_repo])
                     .status();
 
-                    println!(">>> Syncing to OneDrive (Safe-sync)...");
-                    let _ = Command::new("rclone")
-                        .args([
-                            "copy", local_repo, &opts.remote,
-                            "--transfers", "8",
-                            "--checkers", "8",
-                            "--tpslimit", "10",
-                            "--fast-list",
-                            "--size-only",
-                            "-v",
-                            "--stats", "1m"
-                            ])
-                            .status();
+                println!(">>> Syncing back to OneDrive...");
+                let _ = Command::new("rclone")
+                    .args([
+                        "copy", local_repo, &opts.remote, 
+                        "--transfers", "4", "--checkers", "8", "--tpslimit", "5", 
+                        "--fast-list", "--size-only"
+                    ])
+                    .status();
+            } else {
+                eprintln!(">>> Both attempts failed for {}. Skipping.", pkg);
             }
         }
         idx = (idx + 1) % packages.len();
