@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::Result;
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -41,7 +41,6 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
     }
 
-    // We use a folder inside the Git workspace to store metadata
     let local_repo = "local_repo";
     
     if !Path::new(local_repo).exists() {
@@ -50,7 +49,6 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         let _ = Command::new("ostree").args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)]).status();
     }
     
-    // Safety: Ensure free space check is disabled for CI
     let _ = Command::new("ostree").args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"]).status();
 
     loop {
@@ -84,20 +82,17 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
         if let Ok(status) = final_status {
             if status.success() {
-                println!(">>> Importing bundle...");
+                println!(">>> Build Succeeded. Importing...");
                 let _ = Command::new("bash")
                     .arg("-c")
                     .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
                     .status();
 
-                println!(">>> Updating summary...");
                 let _ = Command::new("flatpak")
                     .args(["build-update-repo", "--generate-static-deltas", local_repo])
                     .status();
 
                 println!(">>> Uploading ONLY new objects to OneDrive...");
-                // Note: We only upload the local_repo/objects and local_repo/deltas folders
-                // rclone copy will skip files that already exist on OneDrive
                 let _ = Command::new("rclone")
                     .args([
                         "copy", local_repo, &opts.remote, 
