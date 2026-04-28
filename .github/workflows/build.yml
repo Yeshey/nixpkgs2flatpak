@@ -61,7 +61,7 @@ jobs:
           ./result-scanner/bin/scanner build-ci \
             --system ${{ matrix.system }} \
             --remote "OneDriveISCTE:nixpkgs2flatpak" \
-            --state "state-${{ matrix.system }}.json"
+            --state-file "state-${{ matrix.system }}.json"
 
       - name: Commit Conveyor State
         env:
