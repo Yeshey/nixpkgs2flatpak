@@ -6,11 +6,11 @@ on:
   workflow_dispatch:
     inputs:
       architecture:
-        description: 'Override: Architecture to build'
+        description: 'Manual Override (default runs both)'
         required: true
-        default: 'auto'
+        default: 'both'
         type: choice
-        options: [auto, x86_64-linux, aarch64-linux]
+        options: [both, x86_64-linux, aarch64-linux]
       skip_update:
         description: 'Skip updating discovered.json list'
         type: boolean
@@ -23,7 +23,6 @@ concurrency:
 jobs:
   # ── JOB 1: WEEKLY DISCOVERY ────────────────────────────────────────────────
   update-list:
-    # Run if it's the Sunday schedule OR if manual and skip_update is false
     if: |
       (github.event_name == 'schedule' && github.event.schedule == '0 0 * * 0') ||
       (github.event_name == 'workflow_dispatch' && inputs.skip_update == false)
@@ -33,72 +32,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
-      
-      - name: Fetch pre-built nix-index database
+      - name: Fetch nix-index
         run: |
           mkdir -p ~/.cache/nix-index
           curl -L https://github.com/nix-community/nix-index-database/releases/latest/download/index-x86_64-linux -o ~/.cache/nix-index/files
-
       - name: Build scanner
         run: nix build .#scanner -o result-scanner
-
       - name: Run Discover
         run: ./result-scanner/bin/scanner discover
-
       - name: Commit discovered.json
         run: |
           git config user.email "ci@github.com"
           git config user.name "CI Bot"
           git add discovered.json
-          git commit -m "chore: update discovered.json" && git push || echo "No changes to discover."
+          git commit -m "chore: update discovered.json" && git push || echo "No changes."
 
-  # ── JOB 2: ARCHITECTURE DECIDER ────────────────────────────────────────────
-  decide-arch:
-    needs: [update-list]
-    if: always() # Run even if update-list was skipped
-    runs-on: ubuntu-latest
-    outputs:
-      system: ${{ steps.pick.outputs.system }}
-      os: ${{ steps.pick.outputs.os }}
-    steps:
-      - id: pick
-        run: |
-          INPUT_ARCH="${{ github.event.inputs.architecture }}"
-          
-          if [ "$INPUT_ARCH" = "x86_64-linux" ]; then
-            SYSTEM="x86_64-linux"
-            OS="ubuntu-latest"
-            REASON="Manual override"
-          elif [ "$INPUT_ARCH" = "aarch64-linux" ]; then
-            SYSTEM="aarch64-linux"
-            OS="ubuntu-24.04-arm"
-            REASON="Manual override"
-          else
-            DAY_OF_YEAR=$(date +%-j)
-            if [ $((DAY_OF_YEAR % 2)) -eq 0 ]; then
-              SYSTEM="x86_64-linux"
-              OS="ubuntu-latest"
-              REASON="Automatic (Even day: $DAY_OF_YEAR)"
-            else
-              SYSTEM="aarch64-linux"
-              OS="ubuntu-24.04-arm"
-              REASON="Automatic (Odd day: $DAY_OF_YEAR)"
-            fi
-          fi
-          
-          echo "system=$SYSTEM" >> $GITHUB_OUTPUT
-          echo "os=$OS" >> $GITHUB_OUTPUT
-          
-          echo "==============================================="
-          echo " Chosen Architecture: $SYSTEM"
-          echo " Decision Reason:     $REASON"
-          echo "==============================================="
-
-  # ── JOB 3: CONVEYOR BELT ───────────────────────────────────────────────────
+  # ── JOB 2: CONVEYOR BELT (PARALLEL) ────────────────────────────────────────
   conveyor-belt:
-    needs: decide-arch
+    needs: [update-list]
     if: always()
-    runs-on: ${{ needs.decide-arch.outputs.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # This setup spawns TWO parallel runners
+        system: [x86_64-linux, aarch64-linux]
+        exclude:
+          # Handle manual overrides from workflow_dispatch
+          - system: >-
+              ${{ github.event.inputs.architecture == 'aarch64-linux' && 'x86_64-linux' || '' }}
+          - system: >-
+              ${{ github.event.inputs.architecture == 'x86_64-linux' && 'aarch64-linux' || '' }}
+    
+    # Use native ARM for ARM, standard for x86
+    runs-on: ${{ matrix.system == 'aarch64-linux' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+    
     permissions:
       contents: write
     env:
@@ -126,36 +93,26 @@ jobs:
       - name: Build Scanner Utility
         run: nix build .#scanner -o result-scanner
 
-      - name: Run Conveyor Belt (${{ needs.decide-arch.outputs.system }})
+      - name: Run Conveyor Belt (${{ matrix.system }})
         run: |
           ./result-scanner/bin/scanner build-ci \
-            --system ${{ needs.decide-arch.outputs.system }} \
+            --system ${{ matrix.system }} \
             --remote "OneDriveISCTE:nixpkgs2flatpak" \
-            --state-file "state-${{ needs.decide-arch.outputs.system }}.json"
+            --state-file "state-${{ matrix.system }}.json"
 
-      # ── RESILIENCE STEP ──
-      # This runs even if you cancel the workflow!
       - name: Commit Progress and Metadata
         if: always() 
         run: |
           git config user.email "ci@github.com"
           git config user.name "CI Bot"
-          
-          # Only proceed if the state file exists (it might not if the run failed early)
-          if [ -f "state-${{ needs.decide-arch.outputs.system }}.json" ]; then
-            git add state-${{ needs.decide-arch.outputs.system }}.json
-            
-            # Add metadata if it exists
+          if [ -f "state-${{ matrix.system }}.json" ]; then
+            git add state-${{ matrix.system }}.json
             [ -d local_repo ] && git add local_repo/summary local_repo/refs/ local_repo/config || true
-            
             if ! git diff --cached --quiet; then
-              git commit -m "chore: save progress [${{ needs.decide-arch.outputs.system }}]"
-              
-              # Attempt to push up to 10 times (handling concurrency)
+              git commit -m "chore: save progress [${{ matrix.system }}]"
+              # We rebase push to handle both runners finishing at the same time
               for i in {1..10}; do
                 git pull --rebase origin main && git push && break || sleep 15
               done
-            else
-              echo "No new progress to save."
             fi
           fi
