@@ -1,0 +1,50 @@
+{
+  "zed-editor": {
+    "attrPath": "zed-editor",
+    "pname": "zed-editor",
+    "appId": "dev.zed.Zed",
+    "desktopFile": "dev.zed.Zed.desktop",
+    "runtimeHint": "org.freedesktop.Platform/24.08",
+    "categories": [
+      "Utility",
+      "TextEditor",
+      "Development",
+      "IDE"
+    ]
+  },
+  "joplin-desktop": {
+    "attrPath": "joplin-desktop",
+    "pname": "joplin-desktop",
+    "appId": "org.nixpkgs.Joplin",
+    "desktopFile": "joplin.desktop",
+    "runtimeHint": "org.freedesktop.Platform/24.08",
+    "categories": [
+      "Office"
+    ]
+  },
+  "cups": {
+    "attrPath": "cups",
+    "pname": "cups",
+    "appId": "org.nixpkgs.ManagePrinting",
+    "desktopFile": "cups.desktop",
+    "runtimeHint": "org.freedesktop.Platform/24.08",
+    "categories": [
+      "System",
+      "Settings",
+      "Printing",
+      "HardwareSettings",
+      "X-Red-Hat-Base"
+    ]
+  },
+  "gtk4": {
+    "attrPath": "gtk4",
+    "pname": "gtk4",
+    "appId": "org.gtk.Demo4",
+    "desktopFile": "org.gtk.Demo4.desktop",
+    "runtimeHint": "org.gnome.Platform/49",
+    "categories": [
+      "Development",
+      "GTK"
+    ]
+  }
+}

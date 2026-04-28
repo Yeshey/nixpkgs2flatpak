@@ -1,0 +1,110 @@
+name: Build Flatpaks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - discovered.json
+      - "pkgs/**"
+      - "modules/**"
+      - "src/**"
+  schedule:
+    # Regenerate discovered.json and rebuild weekly
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+
+jobs:
+  # ── 1. Keep discovered.json up to date ──────────────────────────────────────
+  discover:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Build scanner
+        run: nix build .#scanner -o result-scanner
+      - name: Update nix-index database
+        run: nix-index
+      - name: Regenerate discovered.json
+        run: ./result-scanner/bin/scanner discover --output discovered.json
+      - name: Commit if changed
+        run: |
+          git config user.email "ci@github.com"
+          git config user.name "CI Bot"
+          git add discovered.json
+          git diff --staged --quiet || git commit -m "chore: update discovered.json" && git push
+
+  # ── 2. Extract the package list as a matrix ──────────────────────────────────
+  matrix:
+    needs: discover
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.list.outputs.packages }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        run: |
+          # Split into chunks of 256 to stay under GHA matrix limits
+          packages=$(jq -c '[keys[]]' discovered.json)
+          echo "packages=$packages" >> "$GITHUB_OUTPUT"
+
+  # ── 3. Build each package in parallel, failures are isolated ─────────────────
+  build:
+    needs: matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 32
+      matrix:
+        package: ${{ fromJson(needs.matrix.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Build ${{ matrix.package }}
+        run: |
+          nix build ".#${{ matrix.package }}" \
+            --no-link \
+            --print-out-paths \
+            --keep-going \
+            2>&1 | tail -5
+        continue-on-error: true  # one broken package must not block all others
+
+      - name: Collect bundle
+        run: |
+          result=$(nix build ".#${{ matrix.package }}" --no-link --print-out-paths 2>/dev/null || true)
+          if [ -n "$result" ]; then
+            mkdir -p bundles
+            cp "$result"/*.flatpak bundles/ 2>/dev/null || true
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle-${{ matrix.package }}
+          path: bundles/*.flatpak
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # ── 4. Assemble the OSTree repo and deploy ───────────────────────────────────
+  repo:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: actions/download-artifact@v4
+        with:
+          path: bundles
+          pattern: bundle-*
+          merge-multiple: true
+      - name: Build OSTree repo
+        run: |
+          nix run .#repo-builder -- ./flatpak-repo ./bundles
+      - name: Deploy to server
+        # Adapt to your deployment method — rsync, S3, Cloudflare R2, etc.
+        run: |
+          echo "Deploy flatpak-repo/ to your server here."
+          # rsync -az --delete flatpak-repo/ user@host:/srv/flatpak/
