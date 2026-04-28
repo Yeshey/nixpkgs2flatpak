@@ -2,12 +2,12 @@ name: Continuous Flatpak Builder
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Wakes up every day at Midnight
-  workflow_dispatch:     # Allows you to trigger it manually via the GH UI
+    - cron: "0 0 * * *"
+  workflow_dispatch:
 
 concurrency:
   group: flatpak-conveyor
-  cancel-in-progress: false # Do not cancel in progress, we want it running
+  cancel-in-progress: false
 
 jobs:
   conveyor-belt:
@@ -18,7 +18,7 @@ jobs:
           - system: x86_64-linux
             os: ubuntu-latest
           - system: aarch64-linux
-            os: ubuntu-24.04-arm   # GitHub's new native free ARM runner!
+            os: ubuntu-24.04-arm
             
     runs-on: ${{ matrix.os }}
     permissions:
@@ -46,18 +46,17 @@ jobs:
           purge-prefixes: nix-${{ runner.os }}-
           purge-last-accessed: 604800
 
-      - name: Setup OS Dependencies (Rclone, Flatpak, FUSE)
+      - name: Setup Rclone Config
+        # No apt-get needed! Just drop the configuration file.
         run: |
-          sudo apt-get update
-          sudo apt-get install -y rclone flatpak fuse3
           mkdir -p ~/.config/rclone
           echo "${{ secrets.RCLONE_CONF }}" > ~/.config/rclone/rclone.conf
 
       - name: Build Scanner Utility
+        # The scanner now automatically bundles rclone and flatpak via Nix!
         run: nix build .#scanner -o result-scanner
 
       - name: Run Conveyor Belt
-        # Mounts OneDrive, builds flatpaks, and updates the OSTree repo directly
         run: |
           ./result-scanner/bin/scanner build-ci \
             --system ${{ matrix.system }} \
@@ -73,7 +72,6 @@ jobs:
           git add state-${{ matrix.system }}.json
           git commit -m "chore: update ${{ matrix.system }} state" || exit 0
           
-          # Retry push up to 10 times to prevent git push conflicts if x86 and ARM finish simultaneously
           for i in {1..10}; do
             git pull --rebase origin main
             if git push; then

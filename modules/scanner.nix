@@ -8,11 +8,13 @@
 
         cargoLock.lockFile = ../Cargo.lock;
 
-        # nix-locate must be available at runtime for `scanner discover`
+        # Add makeWrapper so we can inject dependencies
         nativeBuildInputs = [ pkgs.makeWrapper ];
+        
+        # Inject nix-index, rclone, flatpak, and ostree directly into the Rust binary's PATH!
         postInstall = ''
           wrapProgram $out/bin/scanner \
-            --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.nix-index ]}
+            --prefix PATH : ${pkgs.lib.makeBinPath[ pkgs.nix-index pkgs.rclone pkgs.flatpak pkgs.ostree ]}
         '';
 
         meta.description = "Discover nixpkgs packages with .desktop files";
