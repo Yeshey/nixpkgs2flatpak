@@ -6,6 +6,7 @@ mod desktop_parser;
 mod discover;
 mod runtime_detector;
 mod types;
+mod ci_builder;
 
 #[derive(Parser)]
 #[command(name = "scanner")]
@@ -31,9 +32,17 @@ enum Commands {
         #[arg(short, long, default_value = "discovered.json")]
         input: String,
     },
+    BuildCi {
+        #[arg(long)]
+        system: String,
+        #[arg(long)]
+        remote: String,
+        #[arg(long)]
+        state_file: String,
+    },
 }
 
-fn main() -> Result<()> {
+fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
     match cli.command {
         Commands::Discover { output, database } => {
@@ -43,6 +52,9 @@ fn main() -> Result<()> {
             })?
         }
         Commands::Stats { input } => stats(&input)?,
+        Commands::BuildCi { system, remote, state_file } => {
+            ci_builder::run(ci_builder::BuildCiOptions { system, remote, state_file })?
+        }
     }
     Ok(())
 }
