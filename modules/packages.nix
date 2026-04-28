@@ -33,7 +33,6 @@ in
             else {
               nixpkgsAttr     = info.attrPath;
               appId           = info.appId;
-              # Fallback to GNOME 49 since nix2flatpak has its index pre-built!
               runtime         = info.runtimeHint;
               permissions     = defaultPermissions;
               extraEnv        = {};
@@ -45,12 +44,17 @@ in
 
           attrPathList = lib.splitString "." def.nixpkgsAttr;
 
-          pkg =
+          # FIX: Wrap the package fetch in tryEval to catch "throw" errors 
+          # from removed or broken packages (like chatmcp)
+          pkgAttempt = builtins.tryEval (
             if def.packageOverride != null
             then def.packageOverride
             else if lib.hasAttrByPath attrPathList pkgs
             then lib.getAttrFromPath attrPathList pkgs
-            else null;
+            else null
+          );
+
+          pkg = if pkgAttempt.success then pkgAttempt.value else null;
 
           flatpakArgs =
             {
