@@ -49,7 +49,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let _ = Command::new("rclone")
         .args([
             "copy", &opts.remote, local_repo,
-            "--transfers", "6",      // Reduced from 16 to 4
+            "--transfers", "8",      // Reduced from 16 to 8
             "--checkers", "8",       // Reduced from 16 to 8
             "--tpslimit", "10",      // Limit API requests per second to avoid 429 errors
             "--fast-list",
@@ -97,7 +97,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                 let _ = Command::new("rclone")
                     .args([
                         "copy", local_repo, &opts.remote,
-                        "--transfers", "6",
+                        "--transfers", "8",
                         "--checkers", "8",
                         "--tpslimit", "10",
                         "--fast-list",
