@@ -17,12 +17,30 @@ in
       mkFlatpak = inputs.nix2flatpak.lib.${system}.mkFlatpak;
       defs = config.flatpakDefs; 
 
-      # Robustly fetch a package, returning null if it 'throws' or doesn't exist
+      # NEW: The Icon Sanitizer logic
+      fixIcon = pkg: appId: pkgs.runCommand "fixed-icon-${appId}.png" {
+        nativeBuildInputs = [ pkgs.imagemagick ];
+      } ''
+        # 1. Try to find the icon by appId, then by any name
+        # We look for PNGs first, then SVGs
+        SRC=$(find ${pkg}/share/icons -name "${appId}.png" -o -name "${appId}.svg" | head -n 1)
+        if [ -z "$SRC" ]; then
+          SRC=$(find ${pkg}/share/icons -name "*.png" -o -name "*.svg" | head -n 1)
+        fi
+
+        if [ -n "$SRC" ]; then
+          echo "Processing icon: $SRC"
+          # convert: resize to fit in 512x512, center it, pad with transparency to make it square
+          magick "$SRC" -resize 512x512 -background none -gravity center -extent 512x512 $out
+        else
+          echo "No icon found in package."
+          exit 1
+        fi
+      '';
+
       safeGetPkg = attrPath: let
         pathList = lib.splitString "." attrPath;
-        # First check if the attribute exists at all to avoid unnecessary tryEval
         exists = lib.hasAttrByPath pathList pkgs;
-        # Then tryEval to catch 'throw'/removed aliases
         attempt = if exists then builtins.tryEval (lib.getAttrFromPath pathList pkgs) else { success = false; };
       in if attempt.success then attempt.value else null;
 
@@ -44,24 +62,28 @@ in
         } // lib.optionalAttrs (def.extraEnv != {}) { inherit (def) extraEnv; }
           // lib.optionalAttrs (def.extraLibs != []) { inherit (def) extraLibs; }
           // lib.optionalAttrs (def.command != null) { inherit (def) command; };
+
+        # Logic for "Fixed" version
+        fixedIconDerivation = if pkg != null then (builtins.tryEval (fixIcon pkg def.appId)) else { success = false; };
       in {
         inherit pkg;
-        # Standard version
+        # Standard: nix2flatpak auto-detects
         standard = if pkg == null then null else mkFlatpak flatpakArgs;
-        # Fallback version (No Icon) to bypass size/squareness errors
-        noicon   = if pkg == null then null else mkFlatpak (flatpakArgs // { icon = null; });
+        
+        # Fixed: Force the ImageMagick-processed icon
+        fixed    = if pkg == null || !fixedIconDerivation.success then null 
+                   else mkFlatpak (flatpakArgs // { icon = fixedIconDerivation.value; });
       };
 
       allNames = lib.unique (builtins.attrNames discovered ++ builtins.attrNames defs);
-      
-      # Generate a massive attribute set of { "name" = ...; "name-noicon" = ...; }
       processed = lib.genAttrs allNames (name: makeEntry name (discovered.${name} or {}));
       
       finalPackages = lib.foldl' (acc: name: let
         entry = processed.${name};
       in acc // (lib.optionalAttrs (entry.standard != null) {
         "${name}" = entry.standard;
-        "${name}-noicon" = entry.noicon;
+        # We rename the fallback to -fixed
+        "${name}-fixed" = entry.fixed;
       })) {} allNames;
 
     in {

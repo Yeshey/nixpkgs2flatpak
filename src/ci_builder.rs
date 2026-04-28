@@ -75,8 +75,8 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         let final_status = match build_result {
             Ok(status) if status.success() => Ok(status),
             _ => {
-                println!(">>> Standard build failed. Attempting -noicon fallback...");
-                run_nix(&format!(".#{}-noicon", pkg))
+                println!(">>> Standard build failed (likely bad icon). Attempting -fixed icon fallback...");
+                run_nix(&format!(".#{}-fixed", pkg))
             }
         };
 
