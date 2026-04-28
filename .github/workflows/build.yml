@@ -2,7 +2,7 @@ name: Continuous Flatpak Builder
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *"    # Every day at Midnight
   workflow_dispatch:
     inputs:
       architecture:
@@ -20,7 +20,42 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # ── JOB 1: WEEKLY DISCOVERY ────────────────────────────────────────────────
+  # This runs every Sunday or when manually triggered.
+  # It updates discovered.json with new nixpkgs apps.
+  update-list:
+    # Run if it's Sunday OR if manually triggered
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '0 0 * * 0')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      
+      - name: Fetch pre-built nix-index database
+        run: |
+          mkdir -p ~/.cache/nix-index
+          curl -L https://github.com/nix-community/nix-index-database/releases/latest/download/index-x86_64-linux -o ~/.cache/nix-index/files
+
+      - name: Build scanner
+        run: nix build .#scanner -o result-scanner
+
+      - name: Run Discover
+        run: ./result-scanner/bin/scanner discover
+
+      - name: Commit discovered.json
+        run: |
+          git config user.email "ci@github.com"
+          git config user.name "CI Bot"
+          git add discovered.json
+          git commit -m "chore: update discovered.json" && git push || echo "No changes to discover."
+
+  # ── JOB 2: ARCHITECTURE DECIDER ────────────────────────────────────────────
+  # Determines if today is an x86 day or an ARM day.
   decide-arch:
+    needs: [update-list]
+    if: always() # Run even if update-list was skipped
     runs-on: ubuntu-latest
     outputs:
       system: ${{ steps.pick.outputs.system }}
@@ -31,23 +66,37 @@ jobs:
           INPUT_ARCH="${{ github.event.inputs.architecture }}"
           
           if [ "$INPUT_ARCH" = "x86_64-linux" ]; then
-            echo "system=x86_64-linux" >> $GITHUB_OUTPUT
-            echo "os=ubuntu-latest" >> $GITHUB_OUTPUT
+            SYSTEM="x86_64-linux"
+            OS="ubuntu-latest"
+            REASON="Manual override"
           elif [ "$INPUT_ARCH" = "aarch64-linux" ]; then
-            echo "system=aarch64-linux" >> $GITHUB_OUTPUT
-            echo "os=ubuntu-24.04-arm" >> $GITHUB_OUTPUT
+            SYSTEM="aarch64-linux"
+            OS="ubuntu-24.04-arm"
+            REASON="Manual override"
           else
             # AUTO MODE: Even day of year = x86, Odd day = ARM
             DAY_OF_YEAR=$(date +%-j)
             if [ $((DAY_OF_YEAR % 2)) -eq 0 ]; then
-              echo "system=x86_64-linux" >> $GITHUB_OUTPUT
-              echo "os=ubuntu-latest" >> $GITHUB_OUTPUT
+              SYSTEM="x86_64-linux"
+              OS="ubuntu-latest"
+              REASON="Automatic (Even day of year: $DAY_OF_YEAR)"
             else
-              echo "system=aarch64-linux" >> $GITHUB_OUTPUT
-              echo "os=ubuntu-24.04-arm" >> $GITHUB_OUTPUT
+              SYSTEM="aarch64-linux"
+              OS="ubuntu-24.04-arm"
+              REASON="Automatic (Odd day of year: $DAY_OF_YEAR)"
             fi
           fi
+          
+          echo "system=$SYSTEM" >> $GITHUB_OUTPUT
+          echo "os=$OS" >> $GITHUB_OUTPUT
+          
+          echo "==============================================="
+          echo " Chosen Architecture: $SYSTEM"
+          echo " Runner OS:           $OS"
+          echo " Decision Reason:     $REASON"
+          echo "==============================================="
 
+  # ── JOB 3: CONVEYOR BELT ───────────────────────────────────────────────────
   conveyor-belt:
     needs: decide-arch
     runs-on: ${{ needs.decide-arch.outputs.os }}
