@@ -21,7 +21,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
     let max_duration = Duration::from_secs(5 * 3600 + 30 * 60);
     
-    let skip_pull = std::env::var("SKIP_PULL").is_ok();
+    let skip_pull = std::env::var("SKIP_PULL").unwrap_or_default() == "1";
 
     let discovered_content = fs::read_to_string("discovered.json")?;
     let discovered: HashMap<String, serde_json::Value> = serde_json::from_str(&discovered_content)?;

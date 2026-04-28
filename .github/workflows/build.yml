@@ -101,7 +101,7 @@ jobs:
   # ── JOB 3: CONVEYOR BELT ───────────────────────────────────────────────────
   conveyor-belt:
     needs: decide-arch
-    if: always() # Ensure this runs even if Job 1 was skipped
+    if: always()
     runs-on: ${{ needs.decide-arch.outputs.os }}
     permissions:
       contents: write
@@ -109,9 +109,8 @@ jobs:
       NIXPKGS_ALLOW_UNFREE: 1
       NIXPKGS_ALLOW_BROKEN: 1
       NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM: 1
-      # Boolean inputs in GHA context are actual booleans, 
-      # but env vars must be strings.
-      SKIP_PULL: ${{ inputs.skip_pull == true && '1' || '' }}
+      SKIP_PULL: ${{ (github.event.inputs.skip_pull == 'true') && '1' || '0' }}
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
