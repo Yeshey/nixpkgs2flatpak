@@ -25,6 +25,18 @@
           description = "Enable HTTPS and auto-fetch Let's Encrypt certs. Set to false if using a raw IP.";
         };
 
+        isDefault = lib.mkOption {
+          type        = lib.types.bool;
+          default     = false;
+          description = "Whether this virtual host should be the default for the server's IP address.";
+        };
+
+        openFirewall = lib.mkOption {
+          type        = lib.types.bool;
+          default     = false;
+          description = "Whether to automatically open the required ports (80 and 443) in the firewall.";
+        };
+
         gpgKeyId = lib.mkOption {
           type    = lib.types.nullOr lib.types.str;
           default = null;
@@ -39,6 +51,12 @@
       };
 
       config = lib.mkIf cfg.enable {
+        # ── Firewall ──
+        networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall (
+          [ 80 ] ++ (lib.optional cfg.enableSSL 443)
+        );
+
+        # ── User Setup ──
         users.users.nixpkgs2flatpak = {
           isSystemUser = true;
           group        = "nixpkgs2flatpak";
@@ -47,7 +65,7 @@
         };
         users.groups.nixpkgs2flatpak = {};
 
-        systemd.tmpfiles.rules =[
+        systemd.tmpfiles.rules = [
           "d ${cfg.repoPath} 0755 nixpkgs2flatpak nixpkgs2flatpak -"
         ];
 
@@ -56,19 +74,21 @@
           defaults.email = cfg.acmeEmail;
         };
 
+        # ── Nginx ──
         services.nginx = {
           enable = true;
           virtualHosts.${cfg.domain} = {
             enableACME = cfg.enableSSL;
             forceSSL   = cfg.enableSSL;
+            default    = cfg.isDefault;
             root       = cfg.repoPath;
             extraConfig = ''
               autoindex on;
+              disable_symlinks off;
+              
               add_header Access-Control-Allow-Origin "*";
               add_header Cache-Control "public, max-age=300";
 
-              # Because of the Nginx add_header quirk, we MUST duplicate 
-              # the parent headers here to satisfy the NixOS config analyzer.
               location ~* \.flatpak$ {
                 add_header Access-Control-Allow-Origin "*";
                 add_header Cache-Control "public, max-age=300";
