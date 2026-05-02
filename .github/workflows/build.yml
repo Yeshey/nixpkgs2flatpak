@@ -101,9 +101,6 @@ jobs:
         run: |
           # 1. Disable Ubuntu 24.04 AppArmor restrictions on bubblewrap sandboxing
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
-          
-          # 2. Create an empty system repo directory so Flatpak doesn't crash scanning it
-          sudo mkdir -p /var/lib/flatpak/repo
 
       - name: Build Scanner Utility
         run: nix build .#scanner -o result-scanner
