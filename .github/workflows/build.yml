@@ -18,7 +18,7 @@ on:
 
 concurrency:
   group: flatpak-conveyor
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   # ── JOB 1: WEEKLY DISCOVERY ────────────────────────────────────────────────
@@ -50,7 +50,7 @@ jobs:
   # ── JOB 2: CONVEYOR BELT (PARALLEL) ────────────────────────────────────────
   conveyor-belt:
     needs: [update-list]
-    if: always()
+    if: ${{ !cancelled() && (needs.update-list.result == 'success' || needs.update-list.result == 'skipped') }}
     strategy:
       fail-fast: false
       matrix:
