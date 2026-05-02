@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       test_package:
-        description: 'Test a single package by its attribute name (leave blank for standard loop)'
+        description: 'Test a single package by its nixpkgs name (leave blank for standard loop)'
         required: false
         type: string
       architecture:
@@ -21,7 +21,7 @@ on:
         default: false
 
 concurrency:
-  group: flatpak-conveyor
+  group: flatpak-conveyor-${{ github.event.inputs.test_package || github.ref }}
   cancel-in-progress: true
 
 jobs:
