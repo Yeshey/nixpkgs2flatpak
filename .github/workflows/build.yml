@@ -83,6 +83,9 @@ jobs:
 
       - name: Free up disk space
         uses: wimpysworld/nothing-but-nix@main
+        with:
+          ️hatchet-protocol: 'cleave'
+          root-safe-haven: '10240'   # Reserve 10GB on the / filesystem
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
