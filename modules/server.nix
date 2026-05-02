@@ -56,15 +56,6 @@
           [ 80 ] ++ (lib.optional cfg.enableSSL 443)
         );
 
-        # ── User Setup ──
-        users.users.nixpkgs2flatpak = {
-          isSystemUser = true;
-          group        = "nixpkgs2flatpak";
-          home         = "/var/lib/nixpkgs2flatpak";
-          createHome   = true;
-        };
-        users.groups.nixpkgs2flatpak = {};
-
         systemd.tmpfiles.rules = [
           "d ${cfg.repoPath} 0755 nixpkgs2flatpak nixpkgs2flatpak -"
         ];
@@ -86,7 +77,7 @@
           requires    = [ "remote-fs.target" ];
           serviceConfig = {
             Type                 = "oneshot";
-            User                 = "nixpkgs2flatpak";
+            User                 = "root";
             Nice                 = 10;
             IOSchedulingClass    = "best-effort";
             IOSchedulingPriority = 5;
@@ -119,7 +110,7 @@
           requires    = [ "remote-fs.target" ];
           serviceConfig = {
             Type                 = "oneshot";
-            User                 = "nixpkgs2flatpak";
+            User                 = "root";
             Nice                 = 19;
             IOSchedulingClass    = "idle";
             # Delta generation can take hours on a large repo; don't let
