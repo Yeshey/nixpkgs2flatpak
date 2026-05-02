@@ -84,8 +84,8 @@ jobs:
       - name: Free up disk space
         uses: wimpysworld/nothing-but-nix@main
         with:
-          ️hatchet-protocol: 'cleave'
-          root-safe-haven: '10240'   # Reserve 10GB on the / filesystem
+          hatchet-protocol: 'rampage'
+          root-safe-haven: '15360'
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
@@ -96,6 +96,14 @@ jobs:
         run: |
           mkdir -p ~/.config/rclone
           printf '%s\n' "$RCLONE_CONF" > ~/.config/rclone/rclone.conf
+
+      - name: Fix Ubuntu Runner for Nix Flatpak
+        run: |
+          # 1. Disable Ubuntu 24.04 AppArmor restrictions on bubblewrap sandboxing
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
+          
+          # 2. Create an empty system repo directory so Flatpak doesn't crash scanning it
+          sudo mkdir -p /var/lib/flatpak/repo
 
       - name: Build Scanner Utility
         run: nix build .#scanner -o result-scanner
