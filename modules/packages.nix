@@ -5,10 +5,17 @@ let
 
   defaultPermissions = {
     share       = [ "network" "ipc" ];
-    sockets     = [ "x11" "wayland" "fallback-x11" "pulseaudio" "session-bus" "system-bus" ];
-    devices     = [ "all" ];
+    sockets     =[ "x11" "wayland" "pulseaudio" "session-bus" "system-bus" ];
+    devices     =[ "all" ];
     filesystems = [ "host" ];
     talk-names  = [ "*" ];
+  };
+
+  # Instruct GUI frameworks to attempt Wayland first, then fallback to X11.
+  defaultExtraEnv = {
+    "QT_QPA_PLATFORM" = "wayland;xcb";
+    "SDL_VIDEODRIVER" = "wayland,x11";
+    "GDK_BACKEND"     = "wayland,x11";
   };
 in
 {
@@ -51,7 +58,8 @@ in
             appId           = info.appId;
             runtime         = if lib.hasInfix "kde" info.runtimeHint then "org.kde.Platform/6.10" else "org.gnome.Platform/49";
             permissions     = defaultPermissions;
-            extraEnv = {}; extraLibs = []; skipAbiChecks = true; packageOverride = null; command = null;
+            extraEnv        = defaultExtraEnv;
+            extraLibs       =[]; skipAbiChecks = true; packageOverride = null; command = null;
         };
 
         pkg = if def.packageOverride != null then def.packageOverride else safeGetPkg def.nixpkgsAttr;

@@ -1,6 +1,7 @@
 use anyhow::Result;
 use std::collections::BTreeMap;
 use std::fs;
+use std::io::Write;
 use std::path::Path;
 use std::process::Command;
 use std::time::{Duration, Instant};
@@ -16,16 +17,12 @@ pub struct BuildCiOptions {
     pub remote: String,
 }
 
-/// The filename used for the state file, both locally and inside the remote.
 fn state_filename(system: &str) -> String {
     format!("state-{}.json", system)
 }
 
-/// Download the state file from OneDrive into the working directory.
-/// Returns a default State if the remote file doesn't exist yet.
 fn pull_state(remote: &str, system: &str) -> State {
     let filename = state_filename(system);
-    // "remote:path/file" → rclone copies it to the local filename
     let remote_path = format!("{}/{}", remote, filename);
     let status = Command::new("rclone")
         .args(["copyto", &remote_path, &filename, "--retries", "3"])
@@ -51,8 +48,6 @@ fn pull_state(remote: &str, system: &str) -> State {
     }
 }
 
-/// Upload the state file from the working directory to OneDrive.
-/// Called after every package so progress is never lost, even on forced cancellation.
 fn push_state(remote: &str, system: &str) {
     let filename = state_filename(system);
     let remote_path = format!("{}/{}", remote, filename);
@@ -70,12 +65,11 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
     let discovered_content = fs::read_to_string("discovered.json")?;
     let discovered: BTreeMap<String, serde_json::Value> = serde_json::from_str(&discovered_content)?;
-    let mut packages: Vec<String> = discovered.into_keys().collect();
+    let mut packages: Vec<String> = discovered.keys().cloned().collect();
     packages.sort();
 
     if packages.is_empty() { return Ok(()); }
 
-    // ── Restore position from OneDrive ────────────────────────────────────────
     let state = pull_state(&opts.remote, &opts.system);
 
     let mut idx = 0;
@@ -131,6 +125,12 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
             }
         };
 
+        let app_id = discovered.get(&pkg)
+            .and_then(|v| v.get("appId"))
+            .and_then(|v| v.as_str())
+            .unwrap_or("")
+            .to_string();
+
         if let Ok(status) = final_status {
             if status.success() {
                 println!(">>> Build succeeded. Importing into local repo...");
@@ -139,8 +139,68 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
                     .status();
 
+                // ── TESTING PHASE ──
+                if !app_id.is_empty() {
+                    println!(">>> Testing application launch on virtual display for {}...", app_id);
+
+                    let _ = Command::new("flatpak")
+                        .args(["--user", "remote-add", "--no-gpg-verify", "--if-not-exists", "test_repo", local_repo])
+                        .status();
+
+                    let _ = Command::new("flatpak")
+                        .args(["--user", "install", "--noninteractive", "-y", "test_repo", &app_id])
+                        .status();
+
+                    // Run the app with a 5-second timeout on a fake X11 display
+                    let test_status = Command::new("xvfb-run")
+                        .args(["-a", "timeout", "5", "flatpak", "run", &app_id])
+                        .status();
+
+                    let _ = Command::new("flatpak")
+                        .args(["--user", "uninstall", "--noninteractive", "-y", &app_id])
+                        .status();
+
+                    let passed = match test_status {
+                        Ok(s) => {
+                            let code = s.code().unwrap_or(0);
+                            // 0 = Clean exit, 124 = Time ran out (it stayed alive!), 137/143 = Terminated
+                            code == 0 || code == 124 || code == 137 || code == 143
+                        },
+                        Err(_) => false,
+                    };
+
+                    if !passed {
+                        println!("!!! TEST FAILED: {} crashed upon launch. Skipping upload.", app_id);
+                        if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open("failed_apps.log") {
+                            let _ = writeln!(f, "{} ({})", pkg, app_id);
+                        }
+                        
+                        // Push failure log to OneDrive
+                        let _ = Command::new("rclone")
+                            .args(["copyto", "failed_apps.log", &format!("{}/failed_apps.log", opts.remote)])
+                            .status();
+
+                        // Advance state, skip rclone upload, move to next package
+                        let new_state = State { last_package: Some(pkg.clone()) };
+                        let filename = state_filename(&opts.system);
+                        let tmp_filename = format!("{}.tmp", filename);
+                        if let Ok(json) = serde_json::to_string_pretty(&new_state) {
+                            if fs::write(&tmp_filename, &json).is_ok() {
+                                let _ = fs::rename(&tmp_filename, &filename);
+                            }
+                        }
+                        push_state(&opts.remote, &opts.system);
+                        
+                        if std::env::var("CI_SINGLE_PACKAGE").is_ok() { break; }
+                        idx = (idx + 1) % packages.len();
+                        continue;
+                    } else {
+                        println!(">>> Test passed! App successfully stayed alive.");
+                    }
+                }
+
                 println!(">>> Uploading new objects to OneDrive...");
-            
+                
                 // 1. Upload objects first. It's safe if interrupted because objects are content-addressed.
                 let objects_status = Command::new("rclone")
                     .args([
@@ -169,8 +229,6 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
             }
         }
 
-        // ── Persist progress immediately after every package ──────────────────
-        // Write to a temp file then rename so the file is never half-written.
         let new_state = State { last_package: Some(pkg.clone()) };
         let filename = state_filename(&opts.system);
         let tmp_filename = format!("{}.tmp", filename);
@@ -181,6 +239,8 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
         push_state(&opts.remote, &opts.system);
 
+        // Escape hatch if we only wanted to test a single package
+        if std::env::var("CI_SINGLE_PACKAGE").is_ok() { break; }
         idx = (idx + 1) % packages.len();
     }
     Ok(())

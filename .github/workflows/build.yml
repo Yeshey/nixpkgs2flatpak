@@ -5,6 +5,10 @@ on:
     - cron: "0 0 * * *"    # Every day at Midnight
   workflow_dispatch:
     inputs:
+      test_package:
+        description: 'Test a single package by its attribute name (leave blank for standard loop)'
+        required: false
+        type: string
       architecture:
         description: 'Manual Override (default runs both)'
         required: true
@@ -92,6 +96,21 @@ jobs:
 
       - name: Build Scanner Utility
         run: nix build .#scanner -o result-scanner
+
+      - name: Isolate Single Package (If requested)
+        if: ${{ github.event.inputs.test_package != '' }}
+        run: |
+          echo "Isolating package: ${{ github.event.inputs.test_package }}"
+          
+          # Use Nix to guarantee jq is available, and safely filter the JSON
+          nix run nixpkgs#jq -- \
+            'with_entries(select(.key == "${{ github.event.inputs.test_package }}"))' \
+            discovered.json > isolated.json
+            
+          mv isolated.json discovered.json
+          
+          # Set the environment variable to tell the Rust builder to stop after 1 run
+          echo "CI_SINGLE_PACKAGE=1" >> $GITHUB_ENV
 
       - name: Run Conveyor Belt (${{ matrix.system }})
         run: |
