@@ -76,8 +76,7 @@
           after       = [ "remote-fs.target" ];
           requires    = [ "remote-fs.target" ];
           
-          # Inject required commands into the systemd environment
-          path        = with pkgs;[ util-linux coreutils findutils flatpak rclone ];
+          path        = with pkgs;[ util-linux coreutils findutils flatpak rclone rsync ];
           
           serviceConfig = {
             Type                 = "oneshot";
@@ -100,7 +99,6 @@
             rm -rf "$CACHE_DIR"
             mkdir -p "$UPPER" "$WORK" "$MERGED"
 
-            # Mount local disk on top of the OneDrive repo
             mount -t overlay overlay -o lowerdir="$REPO",upperdir="$UPPER",workdir="$WORK" "$MERGED"
 
             cleanup() {
@@ -118,14 +116,60 @@
             echo "Removing OverlayFS whiteout devices..."
             find "$UPPER" -type c -delete
 
-            echo "Pushing compiled metadata to OneDrive via API..."
-            # Upload ONLY the files that were generated/changed
-            rclone copy "$UPPER" "OneDriveISCTE:nixpkgs2flatpak" \
+            echo "Pushing compiled metadata DIRECTLY into the active mount..."
+            # Using rclone local-to-local copy directly into the mount folder.
+            # This passes through FUSE, guaranteeing the VFS cache is instantly consistent!
+            rclone copy "$UPPER" "$REPO" \
               --config /root/.config/rclone/rclone.conf \
-              --fast-list --transfers 4 --checkers 8
+              --fast-list --transfers 4
 
             echo "Summary successfully updated."
           '';
+        };
+
+        # ── Nginx ──
+        services.nginx = {
+          enable = true;
+          virtualHosts.${cfg.domain} = {
+            enableACME = cfg.enableSSL;
+            forceSSL   = cfg.enableSSL;
+            default    = cfg.isDefault;
+            root       = cfg.repoPath;
+            extraConfig = ''
+              autoindex on;
+              disable_symlinks off;
+              add_header Access-Control-Allow-Origin "*";
+
+              # 1. Objects are immutable (they never change hashes). Cache them for a year!
+              location ^~ /objects/ {
+                add_header Access-Control-Allow-Origin "*";
+                add_header Cache-Control "public, max-age=31536000";
+                add_header Content-Type application/octet-stream;
+              }
+
+              # 2. Summary and Refs change constantly. NEVER cache them!
+              location = /summary {
+                add_header Access-Control-Allow-Origin "*";
+                add_header Cache-Control "no-cache, no-store, must-revalidate";
+                add_header Content-Type application/octet-stream;
+              }
+              location = /summary.sig {
+                add_header Access-Control-Allow-Origin "*";
+                add_header Cache-Control "no-cache, no-store, must-revalidate";
+                add_header Content-Type application/octet-stream;
+              }
+              location ^~ /refs/ {
+                add_header Access-Control-Allow-Origin "*";
+                add_header Cache-Control "no-cache, no-store, must-revalidate";
+              }
+              
+              # Fallback for anything else
+              location / {
+                add_header Access-Control-Allow-Origin "*";
+                add_header Cache-Control "public, max-age=300";
+              }
+            '';
+          };
         };
 
         systemd.timers.nixpkgs2flatpak-update-summary = {
@@ -146,7 +190,7 @@
           requires    = [ "remote-fs.target" ];
           
           # Inject required commands into the systemd environment
-          path        = with pkgs;[ util-linux coreutils findutils flatpak rclone ];
+          path        = with pkgs;[ util-linux coreutils findutils flatpak rclone rsync ];
           
           serviceConfig = {
             Type                 = "oneshot";
@@ -187,8 +231,10 @@
             echo "Removing OverlayFS whiteout devices..."
             find "$UPPER" -type c -delete
 
-            echo "Pushing deltas to OneDrive via API..."
-            rclone copy "$UPPER" "OneDriveISCTE:nixpkgs2flatpak" \
+            echo "Pushing deltas DIRECTLY into the active mount..."
+            # Using rclone local-to-local copy directly into the mount folder.
+            # This passes through FUSE, guaranteeing the VFS cache is instantly consistent!
+            rclone copy "$UPPER" "$REPO" \
               --config /root/.config/rclone/rclone.conf \
               --fast-list --transfers 4 --checkers 8
 
@@ -203,35 +249,6 @@
             OnCalendar         = "Sun 03:00";
             Persistent         = true;
             RandomizedDelaySec = "30min";
-          };
-        };
-
-        # ── Nginx ──
-        services.nginx = {
-          enable = true;
-          virtualHosts.${cfg.domain} = {
-            enableACME = cfg.enableSSL;
-            forceSSL   = cfg.enableSSL;
-            default    = cfg.isDefault;
-            root       = cfg.repoPath;
-            extraConfig = ''
-              autoindex on;
-              disable_symlinks off;
-              
-              add_header Access-Control-Allow-Origin "*";
-              add_header Cache-Control "public, max-age=300";
-
-              location ~* \.flatpak$ {
-                add_header Access-Control-Allow-Origin "*";
-                add_header Cache-Control "public, max-age=300";
-                add_header Content-Type application/octet-stream;
-              }
-              location = /summary {
-                add_header Access-Control-Allow-Origin "*";
-                add_header Cache-Control "public, max-age=300";
-                add_header Content-Type application/octet-stream;
-              }
-            '';
           };
         };
       };
