@@ -78,6 +78,8 @@
         # CI runners are ephemeral and only see a slice of the full package set,
         # so they never touch the summary file. The server, which has the complete
         # OneDrive repo mounted, owns the summary and regenerates it here.
+        # Hourly: fast summary update — what flatpak remote-ls and installs need.
+        # No static deltas here; those are expensive and handled separately below.
         systemd.services.nixpkgs2flatpak-update-summary = {
           description = "Regenerate nixpkgs2flatpak Flatpak repo summary";
           after       = [ "remote-fs.target" ];
@@ -93,7 +95,6 @@
             set -euo pipefail
             echo "Updating OSTree summary at ${cfg.repoPath} ..."
             ${pkgs.flatpak}/bin/flatpak build-update-repo \
-              --generate-static-deltas \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
               ${cfg.repoPath}
             echo "Summary updated."
@@ -104,12 +105,45 @@
           description = "Periodically regenerate nixpkgs2flatpak Flatpak repo summary";
           wantedBy    = [ "timers.target" ];
           timerConfig = {
-            # New CI builds upload objects continuously so the lag between
-            # upload and visibility in `flatpak remote-ls` is at most ~1 hour.
             OnCalendar         = "hourly";
-            # Catch up on any runs missed while the server was down.
             Persistent         = true;
             RandomizedDelaySec = "5min";
+          };
+        };
+
+        # Weekly: expensive static delta generation — improves update download
+        # size for existing users but not required for installs or remote-ls.
+        systemd.services.nixpkgs2flatpak-generate-deltas = {
+          description = "Generate static deltas for nixpkgs2flatpak Flatpak repo";
+          after       = [ "remote-fs.target" ];
+          requires    = [ "remote-fs.target" ];
+          serviceConfig = {
+            Type                 = "oneshot";
+            User                 = "nixpkgs2flatpak";
+            Nice                 = 19;
+            IOSchedulingClass    = "idle";
+            # Delta generation can take hours on a large repo; don't let
+            # systemd kill it on a default timeout.
+            TimeoutStartSec      = "infinity";
+          };
+          script = ''
+            set -euo pipefail
+            echo "Generating static deltas at ${cfg.repoPath} ..."
+            ${pkgs.flatpak}/bin/flatpak build-update-repo \
+              --generate-static-deltas \
+              ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
+              ${cfg.repoPath}
+            echo "Delta generation complete."
+          '';
+        };
+
+        systemd.timers.nixpkgs2flatpak-generate-deltas = {
+          description = "Weekly static delta generation for nixpkgs2flatpak";
+          wantedBy    = [ "timers.target" ];
+          timerConfig = {
+            OnCalendar         = "Sun 03:00";
+            Persistent         = true;
+            RandomizedDelaySec = "30min";
           };
         };
 
