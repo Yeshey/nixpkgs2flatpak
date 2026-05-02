@@ -12,6 +12,15 @@ struct State {
     last_package: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone)]
+struct PkgMeta {
+    #[serde(rename = "appId")]
+    app_id: String,
+    runtime: String,
+    #[serde(rename = "isCurated")]
+    is_curated: bool,
+}
+
 pub struct BuildCiOptions {
     pub system: String,
     pub remote: String,
@@ -63,27 +72,60 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
     let max_duration = Duration::from_secs(5 * 3600 + 30 * 60);
 
-    let discovered_content = fs::read_to_string("discovered.json")?;
-    let discovered: BTreeMap<String, serde_json::Value> = serde_json::from_str(&discovered_content)?;
-    let mut packages: Vec<String> = discovered.keys().cloned().collect();
-    packages.sort();
+    println!(">>> Fetching final package metadata from Nix...");
+    let meta_status = Command::new("nix")
+        .args(["build", ".#ci-metadata", "-o", "ci-metadata-result", "--impure"])
+        .status()?;
+    
+    if !meta_status.success() {
+        anyhow::bail!("Failed to evaluate ci-metadata from Nix.");
+    }
+
+    let metadata_content = fs::read_to_string("ci-metadata-result")?;
+    let metadata: BTreeMap<String, PkgMeta> = serde_json::from_str(&metadata_content)?;
+    
+    let mut packages: Vec<String> = metadata.keys().cloned().collect();
+
+    // Sort: Curated apps FIRST, then alphabetically
+    packages.sort_by(|a, b| {
+        let meta_a = &metadata[a];
+        let meta_b = &metadata[b];
+        match meta_b.is_curated.cmp(&meta_a.is_curated) {
+            std::cmp::Ordering::Equal => a.cmp(b),
+            other => other,
+        }
+    });
+
+    // SINGLE PACKAGE OVERRIDE
+    let single_pkg = std::env::var("TARGET_PACKAGE").ok();
+    if let Some(target) = &single_pkg {
+        if packages.contains(target) {
+            packages = vec![target.clone()];
+            println!(">>> TARGET_PACKAGE set. Only building '{}'.", target);
+        } else {
+            println!("!!! Target package '{}' not found in metadata. It might not exist in Nixpkgs.", target);
+            return Ok(());
+        }
+    }
 
     if packages.is_empty() { return Ok(()); }
 
     let state = pull_state(&opts.remote, &opts.system);
-
     let mut idx = 0;
-    if let Some(last) = &state.last_package {
-        if let Some(pos) = packages.iter().position(|p| p == last) {
-            idx = (pos + 1) % packages.len();
-            println!(">>> Resuming after '{}' (index {}).", last, idx);
-        } else {
-            println!(">>> Last package '{}' not found in current list; starting from the beginning.", last);
+    
+    // Only resume from state if we are doing the endless loop
+    if single_pkg.is_none() {
+        if let Some(last) = &state.last_package {
+            if let Some(pos) = packages.iter().position(|p| p == last) {
+                idx = (pos + 1) % packages.len();
+                println!(">>> Resuming after '{}' (index {}).", last, idx);
+            } else {
+                println!(">>> Last package '{}' not found in current list; starting from the beginning.", last);
+            }
         }
     }
 
     let local_repo = "local_repo";
-
     if !Path::new(local_repo).join("objects").exists() {
         println!(">>> Initializing local OSTree repo...");
         fs::create_dir_all(local_repo)?;
@@ -96,6 +138,12 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         .args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"])
         .status();
 
+    // ── FLATHUB SETUP FOR RUNTIMES ──
+    println!(">>> Ensuring Flathub remote is configured to pull runtimes for testing...");
+    let _ = Command::new("flatpak")
+        .args(["--user", "remote-add", "--if-not-exists", "flathub", "https://dl.flathub.org/repo/flathub.flatpakrepo"])
+        .status();
+
     loop {
         if start_time.elapsed() > max_duration {
             println!(">>> Time limit reached. Stopping.");
@@ -103,7 +151,9 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
 
         let pkg = packages[idx].clone();
-        println!("\n>>> [ {}/{} ] Building: {}", idx + 1, packages.len(), pkg);
+        let is_curated = metadata[&pkg].is_curated;
+        let tag = if is_curated { "[CURATED]" } else { "[AUTO]" };
+        println!("\n>>> [ {}/{} ] {} Building: {}", idx + 1, packages.len(), tag, pkg);
 
         let _ = fs::remove_dir_all("result");
 
@@ -125,11 +175,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
             }
         };
 
-        let app_id = discovered.get(&pkg)
-            .and_then(|v| v.get("appId"))
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string();
+        let app_id = &metadata[&pkg].app_id;
 
         if let Ok(status) = final_status {
             if status.success() {
@@ -147,23 +193,23 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                         .args(["--user", "remote-add", "--no-gpg-verify", "--if-not-exists", "test_repo", local_repo])
                         .status();
 
+                    // --noninteractive forces Flatpak to auto-download required runtimes from Flathub
                     let _ = Command::new("flatpak")
-                        .args(["--user", "install", "--noninteractive", "-y", "test_repo", &app_id])
+                        .args(["--user", "install", "--noninteractive", "-y", "test_repo", app_id])
                         .status();
 
                     // Run the app with a 5-second timeout on a fake X11 display
                     let test_status = Command::new("xvfb-run")
-                        .args(["-a", "timeout", "5", "flatpak", "run", &app_id])
+                        .args(["-a", "timeout", "5", "flatpak", "run", app_id])
                         .status();
 
                     let _ = Command::new("flatpak")
-                        .args(["--user", "uninstall", "--noninteractive", "-y", &app_id])
+                        .args(["--user", "uninstall", "--noninteractive", "-y", app_id])
                         .status();
 
                     let passed = match test_status {
                         Ok(s) => {
                             let code = s.code().unwrap_or(0);
-                            // 0 = Clean exit, 124 = Time ran out (it stayed alive!), 137/143 = Terminated
                             code == 0 || code == 124 || code == 137 || code == 143
                         },
                         Err(_) => false,
@@ -175,12 +221,15 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                             let _ = writeln!(f, "{} ({})", pkg, app_id);
                         }
                         
-                        // Push failure log to OneDrive
                         let _ = Command::new("rclone")
                             .args(["copyto", "failed_apps.log", &format!("{}/failed_apps.log", opts.remote)])
                             .status();
 
-                        // Advance state, skip rclone upload, move to next package
+                        if single_pkg.is_some() {
+                            println!(">>> Single package test complete. Exiting without altering state bookmark.");
+                            break; 
+                        }
+
                         let new_state = State { last_package: Some(pkg.clone()) };
                         let filename = state_filename(&opts.system);
                         let tmp_filename = format!("{}.tmp", filename);
@@ -191,7 +240,6 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                         }
                         push_state(&opts.remote, &opts.system);
                         
-                        if std::env::var("CI_SINGLE_PACKAGE").is_ok() { break; }
                         idx = (idx + 1) % packages.len();
                         continue;
                     } else {
@@ -200,8 +248,6 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                 }
 
                 println!(">>> Uploading new objects to OneDrive...");
-                
-                // 1. Upload objects first. It's safe if interrupted because objects are content-addressed.
                 let objects_status = Command::new("rclone")
                     .args([
                         "copy", &format!("{}/objects", local_repo), &format!("{}/objects", opts.remote),
@@ -211,14 +257,12 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     .status();
 
                 if objects_status.map_or(false, |s| s.success()) {
-                    // 2. Upload refs only AFTER objects are fully present on the remote.
                     let _ = Command::new("rclone")
                         .args([
                             "copy", local_repo, &opts.remote,
                             "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
                             "--fast-list", "--size-only",
                             "--exclude", "/objects/**",
-                            // Never overwrite the server's authoritative summary files.
                             "--exclude", "summary",
                             "--exclude", "summary.sig",
                         ])
@@ -227,6 +271,11 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     println!(">>> Warning: Failed to upload objects. Skipping refs upload to prevent remote corruption.");
                 }
             }
+        }
+
+        if single_pkg.is_some() {
+            println!(">>> Single package test complete. Exiting without altering state bookmark.");
+            break; 
         }
 
         let new_state = State { last_package: Some(pkg.clone()) };
@@ -239,8 +288,6 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
         push_state(&opts.remote, &opts.system);
 
-        // Escape hatch if we only wanted to test a single package
-        if std::env::var("CI_SINGLE_PACKAGE").is_ok() { break; }
         idx = (idx + 1) % packages.len();
     }
     Ok(())

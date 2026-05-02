@@ -5,6 +5,7 @@ let
 
   defaultPermissions = {
     share       = [ "network" "ipc" ];
+    # Removed fallback-x11 so XWayland is always provided just in case.
     sockets     =[ "x11" "wayland" "pulseaudio" "session-bus" "system-bus" ];
     devices     =[ "all" ];
     filesystems = [ "host" ];
@@ -24,20 +25,16 @@ in
       mkFlatpak = inputs.nix2flatpak.lib.${system}.mkFlatpak;
       defs = config.flatpakDefs; 
 
-      # NEW: The Icon Sanitizer logic
       fixIcon = pkg: appId: pkgs.runCommand "fixed-icon-${appId}.png" {
-        nativeBuildInputs = [ pkgs.imagemagick ];
+        nativeBuildInputs =[ pkgs.imagemagick ];
       } ''
-        # 1. Try to find the icon by appId, then by any name
-        # We look for PNGs first, then SVGs
         SRC=$(find ${pkg}/share/icons -name "${appId}.png" -o -name "${appId}.svg" | head -n 1)
         if [ -z "$SRC" ]; then
           SRC=$(find ${pkg}/share/icons -name "*.png" -o -name "*.svg" | head -n 1)
         fi
 
-        if [ -n "$SRC" ]; then
+        if[ -n "$SRC" ]; then
           echo "Processing icon: $SRC"
-          # convert: resize to fit in 512x512, center it, pad with transparency to make it square
           magick "$SRC" -resize 512x512 -background none -gravity center -extent 512x512 $out
         else
           echo "No icon found in package."
@@ -68,33 +65,49 @@ in
           inherit (def) appId runtime permissions skipAbiChecks;
           package = pkg;
         } // lib.optionalAttrs (def.extraEnv != {}) { inherit (def) extraEnv; }
-          // lib.optionalAttrs (def.extraLibs != []) { inherit (def) extraLibs; }
+          // lib.optionalAttrs (def.extraLibs !=[]) { inherit (def) extraLibs; }
           // lib.optionalAttrs (def.command != null) { inherit (def) command; };
 
-        # Logic for "Fixed" version
         fixedIconDerivation = if pkg != null then (builtins.tryEval (fixIcon pkg def.appId)) else { success = false; };
       in {
         inherit pkg;
-        # Standard: nix2flatpak auto-detects
         standard = if pkg == null then null else mkFlatpak flatpakArgs;
-        
-        # Fixed: Force the ImageMagick-processed icon
         fixed    = if pkg == null || !fixedIconDerivation.success then null 
                    else mkFlatpak (flatpakArgs // { icon = fixedIconDerivation.value; });
       };
 
       allNames = lib.unique (builtins.attrNames discovered ++ builtins.attrNames defs);
-      processed = lib.genAttrs allNames (name: makeEntry name (discovered.${name} or {}));
+      processed = lib.genAttrs allNames (name: makeEntry name (discovered.${name} or {
+        attrPath = name; appId = name; runtimeHint = "";
+      }));
       
       finalPackages = lib.foldl' (acc: name: let
         entry = processed.${name};
       in acc // (lib.optionalAttrs (entry.standard != null) {
         "${name}" = entry.standard;
-        # We rename the fallback to -fixed
         "${name}-fixed" = entry.fixed;
       })) {} allNames;
 
+      # EXPORT METADATA FOR RUST BUILDER
+      makeMetadata = name: let
+        hasCurated = defs ? ${name};
+        info = discovered.${name} or { attrPath = name; appId = name; runtimeHint = ""; };
+        def = if hasCurated then defs.${name} else {
+            appId           = info.appId;
+            runtime         = if lib.hasInfix "kde" info.runtimeHint then "org.kde.Platform/6.10" else "org.gnome.Platform/49";
+        };
+      in {
+        inherit (def) appId runtime;
+        isCurated = hasCurated;
+      };
+
+      metadataJson = pkgs.writeText "ci-metadata.json" (builtins.toJSON (
+        lib.genAttrs allNames (name: makeMetadata name)
+      ));
+
     in {
-      packages = finalPackages;
+      packages = finalPackages // {
+        ci-metadata = metadataJson;
+      };
     };
 }
