@@ -77,18 +77,49 @@
           requires    = [ "remote-fs.target" ];
           serviceConfig = {
             Type                 = "oneshot";
-            User                 = "root";
+            User                 = "root";     # Must be root to mount OverlayFS
             Nice                 = 10;
             IOSchedulingClass    = "best-effort";
             IOSchedulingPriority = 5;
           };
           script = ''
             set -euo pipefail
-            echo "Updating OSTree summary at ${cfg.repoPath} ..."
+            
+            REPO="${cfg.repoPath}"
+            CACHE_DIR="/var/cache/nixpkgs2flatpak-overlay"
+            UPPER="$CACHE_DIR/upper"
+            WORK="$CACHE_DIR/work"
+            MERGED="$CACHE_DIR/merged"
+
+            echo "Preparing OverlayFS Trapdoor..."
+            umount -q "$MERGED" 2>/dev/null || true
+            rm -rf "$CACHE_DIR"
+            mkdir -p "$UPPER" "$WORK" "$MERGED"
+
+            # Mount local disk on top of the OneDrive repo
+            mount -t overlay overlay -o lowerdir="$REPO",upperdir="$UPPER",workdir="$WORK" "$MERGED"
+
+            cleanup() {
+              echo "Cleaning up OverlayFS..."
+              umount -q "$MERGED" 2>/dev/null || true
+              rm -rf "$CACHE_DIR"
+            }
+            trap cleanup EXIT
+
+            echo "Updating OSTree summary at $MERGED ..."
             ${pkgs.flatpak}/bin/flatpak build-update-repo \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
-              ${cfg.repoPath}
-            echo "Summary updated."
+              "$MERGED"
+
+            echo "Removing OverlayFS whiteout devices..."
+            find "$UPPER" -type c -delete
+
+            echo "Pushing compiled metadata to OneDrive via API..."
+            # Upload ONLY the files that were generated/changed
+            ${pkgs.rclone}/bin/rclone copy "$UPPER" "OneDriveISCTE:nixpkgs2flatpak" \
+              --fast-list --transfers 4 --checkers 8
+
+            echo "Summary successfully updated."
           '';
         };
 
@@ -107,23 +138,50 @@
         systemd.services.nixpkgs2flatpak-generate-deltas = {
           description = "Generate static deltas for nixpkgs2flatpak Flatpak repo";
           after       = [ "remote-fs.target" ];
-          requires    = [ "remote-fs.target" ];
+          requires    =[ "remote-fs.target" ];
           serviceConfig = {
             Type                 = "oneshot";
             User                 = "root";
             Nice                 = 19;
             IOSchedulingClass    = "idle";
-            # Delta generation can take hours on a large repo; don't let
-            # systemd kill it on a default timeout.
             TimeoutStartSec      = "infinity";
           };
           script = ''
             set -euo pipefail
-            echo "Generating static deltas at ${cfg.repoPath} ..."
+
+            REPO="${cfg.repoPath}"
+            CACHE_DIR="/var/cache/nixpkgs2flatpak-delta-overlay"
+            UPPER="$CACHE_DIR/upper"
+            WORK="$CACHE_DIR/work"
+            MERGED="$CACHE_DIR/merged"
+
+            echo "Preparing OverlayFS Trapdoor..."
+            umount -q "$MERGED" 2>/dev/null || true
+            rm -rf "$CACHE_DIR"
+            mkdir -p "$UPPER" "$WORK" "$MERGED"
+
+            mount -t overlay overlay -o lowerdir="$REPO",upperdir="$UPPER",workdir="$WORK" "$MERGED"
+
+            cleanup() {
+              echo "Cleaning up OverlayFS..."
+              umount -q "$MERGED" 2>/dev/null || true
+              rm -rf "$CACHE_DIR"
+            }
+            trap cleanup EXIT
+
+            echo "Generating static deltas at $MERGED ..."
             ${pkgs.flatpak}/bin/flatpak build-update-repo \
               --generate-static-deltas \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
-              ${cfg.repoPath}
+              "$MERGED"
+
+            echo "Removing OverlayFS whiteout devices..."
+            find "$UPPER" -type c -delete
+
+            echo "Pushing deltas to OneDrive via API..."
+            ${pkgs.rclone}/bin/rclone copy "$UPPER" "OneDriveISCTE:nixpkgs2flatpak" \
+              --fast-list --transfers 4 --checkers 8
+
             echo "Delta generation complete."
           '';
         };
