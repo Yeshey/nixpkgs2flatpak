@@ -200,7 +200,15 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
                     // Run the app with a 5-second timeout on a fake X11 display
                     let test_status = Command::new("xvfb-run")
-                        .args(["-a", "timeout", "5", "flatpak", "run", app_id])
+                        .args([
+                            "-a", 
+                            "-s", "-screen 0 1024x768x24 +extension GLX", 
+                            "timeout", "5", 
+                            "flatpak", "run", 
+                            "--env=LIBGL_ALWAYS_SOFTWARE=1", 
+                            "--env=GALLIUM_DRIVER=llvmpipe", 
+                            app_id
+                        ])
                         .status();
 
                     let _ = Command::new("flatpak")
