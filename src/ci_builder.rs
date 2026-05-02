@@ -139,16 +139,15 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
                     .status();
 
-                let _ = Command::new("flatpak")
-                    .args(["build-update-repo", "--generate-static-deltas", local_repo])
-                    .status();
-
                 println!(">>> Uploading new objects to OneDrive...");
                 let _ = Command::new("rclone")
                     .args([
                         "copy", local_repo, &opts.remote,
                         "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
                         "--fast-list", "--size-only",
+                        // Never overwrite the server's authoritative summary files.
+                        "--exclude", "summary",
+                        "--exclude", "summary.sig",
                     ])
                     .status();
             }

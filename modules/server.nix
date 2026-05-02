@@ -74,6 +74,45 @@
           defaults.email = cfg.acmeEmail;
         };
 
+        # ── Summary regeneration timer ──────────────────────────────────────────
+        # CI runners are ephemeral and only see a slice of the full package set,
+        # so they never touch the summary file. The server, which has the complete
+        # OneDrive repo mounted, owns the summary and regenerates it here.
+        systemd.services.nixpkgs2flatpak-update-summary = {
+          description = "Regenerate nixpkgs2flatpak Flatpak repo summary";
+          after       = [ "remote-fs.target" ];
+          requires    = [ "remote-fs.target" ];
+          serviceConfig = {
+            Type                 = "oneshot";
+            User                 = "nixpkgs2flatpak";
+            Nice                 = 10;
+            IOSchedulingClass    = "best-effort";
+            IOSchedulingPriority = 5;
+          };
+          script = ''
+            set -euo pipefail
+            echo "Updating OSTree summary at ${cfg.repoPath} ..."
+            ${pkgs.flatpak}/bin/flatpak build-update-repo \
+              --generate-static-deltas \
+              ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
+              ${cfg.repoPath}
+            echo "Summary updated."
+          '';
+        };
+
+        systemd.timers.nixpkgs2flatpak-update-summary = {
+          description = "Periodically regenerate nixpkgs2flatpak Flatpak repo summary";
+          wantedBy    = [ "timers.target" ];
+          timerConfig = {
+            # New CI builds upload objects continuously so the lag between
+            # upload and visibility in `flatpak remote-ls` is at most ~1 hour.
+            OnCalendar         = "hourly";
+            # Catch up on any runs missed while the server was down.
+            Persistent         = true;
+            RandomizedDelaySec = "5min";
+          };
+        };
+
         # ── Nginx ──
         services.nginx = {
           enable = true;
