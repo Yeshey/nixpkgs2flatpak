@@ -139,12 +139,25 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
                     .status();
 
-                println!(">>> Uploading new objects to OneDrive...");
+                println!(">>> Uploading refs to OneDrive...");
+                let _ = Command::new("rclone")
+                    .args([
+                        "copy",
+                        &format!("{}/refs", local_repo),
+                        &format!("{}/refs", &opts.remote),
+                        "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
+                    ])
+                    .status();
+
+                // Then upload the bulk objects (may be large; safe to interrupt).
+                println!(">>> Uploading objects to OneDrive...");
                 let _ = Command::new("rclone")
                     .args([
                         "copy", local_repo, &opts.remote,
                         "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
                         "--fast-list", "--size-only",
+                        // refs already uploaded above.
+                        "--exclude", "refs/**",
                         // Never overwrite the server's authoritative summary files.
                         "--exclude", "summary",
                         "--exclude", "summary.sig",
