@@ -75,9 +75,13 @@
           description = "Regenerate nixpkgs2flatpak Flatpak repo summary";
           after       = [ "remote-fs.target" ];
           requires    = [ "remote-fs.target" ];
+          
+          # Inject required commands into the systemd environment
+          path        = with pkgs;[ util-linux coreutils findutils flatpak rclone ];
+          
           serviceConfig = {
             Type                 = "oneshot";
-            User                 = "root";     # Must be root to mount OverlayFS
+            User                 = "root";
             Nice                 = 10;
             IOSchedulingClass    = "best-effort";
             IOSchedulingPriority = 5;
@@ -107,7 +111,7 @@
             trap cleanup EXIT
 
             echo "Updating OSTree summary at $MERGED ..."
-            ${pkgs.flatpak}/bin/flatpak build-update-repo \
+            flatpak build-update-repo \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
               "$MERGED"
 
@@ -116,7 +120,8 @@
 
             echo "Pushing compiled metadata to OneDrive via API..."
             # Upload ONLY the files that were generated/changed
-            ${pkgs.rclone}/bin/rclone copy "$UPPER" "OneDriveISCTE:nixpkgs2flatpak" \
+            rclone copy "$UPPER" "OneDriveISCTE:nixpkgs2flatpak" \
+              --config /root/.config/rclone/rclone.conf \
               --fast-list --transfers 4 --checkers 8
 
             echo "Summary successfully updated."
@@ -138,7 +143,11 @@
         systemd.services.nixpkgs2flatpak-generate-deltas = {
           description = "Generate static deltas for nixpkgs2flatpak Flatpak repo";
           after       = [ "remote-fs.target" ];
-          requires    =[ "remote-fs.target" ];
+          requires    = [ "remote-fs.target" ];
+          
+          # Inject required commands into the systemd environment
+          path        = with pkgs;[ util-linux coreutils findutils flatpak rclone ];
+          
           serviceConfig = {
             Type                 = "oneshot";
             User                 = "root";
@@ -170,7 +179,7 @@
             trap cleanup EXIT
 
             echo "Generating static deltas at $MERGED ..."
-            ${pkgs.flatpak}/bin/flatpak build-update-repo \
+            flatpak build-update-repo \
               --generate-static-deltas \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
               "$MERGED"
@@ -179,7 +188,8 @@
             find "$UPPER" -type c -delete
 
             echo "Pushing deltas to OneDrive via API..."
-            ${pkgs.rclone}/bin/rclone copy "$UPPER" "OneDriveISCTE:nixpkgs2flatpak" \
+            rclone copy "$UPPER" "OneDriveISCTE:nixpkgs2flatpak" \
+              --config /root/.config/rclone/rclone.conf \
               --fast-list --transfers 4 --checkers 8
 
             echo "Delta generation complete."
