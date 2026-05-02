@@ -140,16 +140,32 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     .status();
 
                 println!(">>> Uploading new objects to OneDrive...");
-                let _ = Command::new("rclone")
+            
+                // 1. Upload objects first. It's safe if interrupted because objects are content-addressed.
+                let objects_status = Command::new("rclone")
                     .args([
-                        "copy", local_repo, &opts.remote,
+                        "copy", &format!("{}/objects", local_repo), &format!("{}/objects", opts.remote),
                         "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
                         "--fast-list", "--size-only",
-                        // Never overwrite the server's authoritative summary files.
-                        "--exclude", "summary",
-                        "--exclude", "summary.sig",
                     ])
                     .status();
+
+                if objects_status.map_or(false, |s| s.success()) {
+                    // 2. Upload refs only AFTER objects are fully present on the remote.
+                    let _ = Command::new("rclone")
+                        .args([
+                            "copy", local_repo, &opts.remote,
+                            "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
+                            "--fast-list", "--size-only",
+                            "--exclude", "/objects/**",
+                            // Never overwrite the server's authoritative summary files.
+                            "--exclude", "summary",
+                            "--exclude", "summary.sig",
+                        ])
+                        .status();
+                } else {
+                    println!(">>> Warning: Failed to upload objects. Skipping refs upload to prevent remote corruption.");
+                }
             }
         }
 
