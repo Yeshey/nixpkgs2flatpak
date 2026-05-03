@@ -131,22 +131,17 @@
         services.nginx = {
           enable = true;
 
-          appendConfig = ''
-            # Fix worker starvation on slow FUSE/rclone mounts
-            sendfile off;
-            aio threads;
-
-            # Keep connections alive longer for high-latency fetches
-            send_timeout        600s;
-            keepalive_timeout   300s;
-          '';
-
           virtualHosts.${cfg.domain} = {
             enableACME = cfg.enableSSL;
             forceSSL   = cfg.enableSSL;
             default    = cfg.isDefault;
             root       = cfg.repoPath;
             extraConfig = ''
+              sendfile off;
+              aio threads;
+              send_timeout 600s;
+              keepalive_timeout 300s;
+
               autoindex on;
               disable_symlinks off;
               add_header Access-Control-Allow-Origin "*";
