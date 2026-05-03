@@ -130,6 +130,17 @@
         # ── Nginx ──
         services.nginx = {
           enable = true;
+
+          appendConfig = ''
+            # Fix worker starvation on slow FUSE/rclone mounts
+            sendfile off;
+            aio threads;
+
+            # Keep connections alive longer for high-latency fetches
+            send_timeout        600s;
+            keepalive_timeout   300s;
+          '';
+
           virtualHosts.${cfg.domain} = {
             enableACME = cfg.enableSSL;
             forceSSL   = cfg.enableSSL;
