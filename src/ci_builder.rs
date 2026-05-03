@@ -70,7 +70,9 @@ fn push_state(remote: &str, system: &str) {
 
 pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
-    let max_duration = Duration::from_secs(5 * 3600 + 30 * 60);
+    
+    // --- TIME LIMIT: 5 Hours and 20 Minutes ---
+    let max_duration = Duration::from_secs(5 * 3600 + 20 * 60);
 
     println!(">>> Fetching final package metadata from Nix...");
     let meta_status = Command::new("nix")
@@ -125,28 +127,15 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
     }
 
-    let local_repo = "local_repo";
-    if !Path::new(local_repo).join("objects").exists() {
-        println!(">>> Initializing local OSTree repo...");
-        fs::create_dir_all(local_repo)?;
-        let _ = Command::new("ostree")
-            .args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)])
-            .status();
-    }
-
-    let _ = Command::new("ostree")
-        .args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"])
-        .status();
-
-    // ── FLATHUB SETUP FOR RUNTIMES ──
     println!(">>> Ensuring Flathub remote is configured to pull runtimes for testing...");
     let _ = Command::new("flatpak")
         .args(["--user", "remote-add", "--if-not-exists", "flathub", "https://dl.flathub.org/repo/flathub.flatpakrepo"])
         .status();
 
     loop {
+        // Stop exactly at 5h 20m.
         if start_time.elapsed() > max_duration {
-            println!(">>> Time limit reached. Stopping.");
+            println!(">>> Time limit (5h 20m) reached. Stopping gracefully to avoid GitHub Force Kill.");
             break;
         }
 
@@ -155,7 +144,24 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         let tag = if is_curated { "[CURATED]" } else { "[AUTO]" };
         println!("\n>>> [ {}/{} ] {} Building: {}", idx + 1, packages.len(), tag, pkg);
 
+        // ─── DISK SPACE MANAGEMENT ───
+        let local_repo = "local_repo";
         let _ = fs::remove_dir_all("result");
+        let _ = fs::remove_dir_all(local_repo);
+
+        if single_pkg.is_none() {
+            println!(">>> Running Nix garbage collection to free up disk space...");
+            let _ = Command::new("nix-store").arg("--gc").status();
+        }
+
+        println!(">>> Initializing clean local OSTree repo for this package...");
+        let _ = fs::create_dir_all(local_repo);
+        let _ = Command::new("ostree")
+            .args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)])
+            .status();
+        let _ = Command::new("ostree")
+            .args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"])
+            .status();
 
         let run_nix = |target: &str| {
             Command::new("nix")
@@ -184,7 +190,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     .arg("-c")
                     .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
                     .status();
-
+                    
                 // ── TESTING PHASE ──
                 if !app_id.is_empty() {
                     println!(">>> Testing application launch on virtual display for {}...", app_id);

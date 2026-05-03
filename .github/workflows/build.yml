@@ -102,7 +102,6 @@ jobs:
           # 1. Disable Ubuntu AppArmor restrictions on bubblewrap sandboxing
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
           
-          # 2. Properly initialize a completely valid (but empty) system repository
           sudo mkdir -p /var/lib/flatpak/repo
           sudo chown $USER:$USER /var/lib/flatpak/repo
           nix run nixpkgs#ostree -- init --mode=bare-user-only --repo=/var/lib/flatpak/repo
