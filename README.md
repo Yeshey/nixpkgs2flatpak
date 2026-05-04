@@ -46,9 +46,9 @@ The project uses a **Dendritic Pattern** (via `flake-parts` and `import-tree`). 
 
 ## To-Do
 - [ ] Currently, `nix-index` only sees what is in the official binary cache (Hydra). Since unfree packages are not cached, they aren't automatically discovered.
-- [ ] Test packages, and don't expose them if they don't even launch.
+- [x] Test packages, and don't expose them if they don't even launch.
 - [ ] Move away from `--no-gpg-verify`.
-- [ ] The first flatpak bundles being built should be the ones defined manually in this repo.
+- [x] The first flatpak bundles being built should be the ones defined manually in this repo.
 ---
 
 Shoutout to [neobrain](https://github.com/neobrain) and their [**nix2flatpak**](https://github.com/neobrain/nix2flatpak) converter that inspired this project.
