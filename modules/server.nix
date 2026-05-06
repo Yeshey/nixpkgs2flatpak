@@ -182,7 +182,7 @@
           description = "Periodically regenerate nixpkgs2flatpak Flatpak repo summary";
           wantedBy    = [ "timers.target" ];
           timerConfig = {
-            OnCalendar         = "hourly";
+            OnCalendar         = "*-*-* *:00/3:00";
             Persistent         = true;
             RandomizedDelaySec = "5min";
           };
