@@ -51,16 +51,16 @@ pub struct BuildCiOptions {
 ///   index 449 → (449/26=17→'r', 449%26=7→'h') = "rh"
 ///   index 450 → (450/26=17→'r', 450%26=8→'i') = "ri"
 fn runner_for_package(name: &str) -> u8 {
-    let mut chars = name.chars();
-    let c0 = match chars.next() {
-        Some(c) if c.is_ascii_lowercase() => c,
+    let b = name.as_bytes();
+    let b0 = match b.first() {
+        Some(&c) if c.is_ascii_lowercase() => c,
         _ => return 4,
     };
-    let c1 = match chars.next() {
-        Some(c) if c.is_ascii_lowercase() => c,
+    let b1 = match b.get(1) {
+        Some(&c) if c.is_ascii_lowercase() => c,
         _ => return 4,
     };
-    let idx = (c0 as u8 - b'a') as usize * 26 + (c1 as u8 - b'a') as usize;
+    let idx = (b0 - b'a') as usize * 26 + (b1 - b'a') as usize;
     if      idx < 225 { 1 }   // aa–iq
     else if idx < 450 { 2 }   // ir–rh
     else              { 3 }   // ri–zz
