@@ -359,6 +359,8 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                         "copy", &format!("{}/objects", local_repo), &format!("{}/objects", opts.remote),
                         "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
                         "--fast-list", "--size-only",
+                        "--retries", "20",
+                        "--retries-sleep", "30s",
                     ])
                     .status();
 
