@@ -132,6 +132,9 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         .args(["--user", "remote-add", "--if-not-exists", "flathub", "https://dl.flathub.org/repo/flathub.flatpakrepo"])
         .status();
 
+    // Tracker for Garbage Collection batching
+    let mut packages_since_gc = 0;
+
     loop {
         // Stop exactly at 5h 20m.
         if start_time.elapsed() > max_duration {
@@ -150,8 +153,14 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         let _ = fs::remove_dir_all(local_repo);
 
         if single_pkg.is_none() {
-            println!(">>> Running Nix garbage collection to free up disk space...");
-            let _ = Command::new("nix-store").arg("--gc").status();
+            // Only run GC every 5 packages to save massive amounts of time
+            if packages_since_gc >= 5 {
+                println!(">>> 5 packages built! Running Nix garbage collection to free up disk space...");
+                let _ = Command::new("nix-store").arg("--gc").status();
+                packages_since_gc = 0;
+            } else {
+                packages_since_gc += 1;
+            }
         }
 
         println!(">>> Initializing clean local OSTree repo for this package...");
