@@ -122,7 +122,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
     
     // --- TIME LIMIT: 5 Hours and 20 Minutes ---
-    let max_duration = Duration::from_secs(5 * 3600 + 20 * 60);
+    let max_duration = Duration::from_secs(1 * 3600 + 1 * 60);
 
     println!(">>> Fetching final package metadata from Nix...");
     let meta_status = Command::new("nix")
