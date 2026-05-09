@@ -121,8 +121,8 @@ fn push_state(remote: &str, system: &str, runner_id: u8) {
 pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
     
-    // --- TIME LIMIT: 5 Hours and 20 Minutes ---
-    let max_duration = Duration::from_secs(1 * 3600 + 1 * 60);
+    // --- TIME LIMIT: 5 Hours and 10 Minutes ---
+    let max_duration = Duration::from_secs(5 * 3600 + 10 * 60);
 
     println!(">>> Fetching final package metadata from Nix...");
     let meta_status = Command::new("nix")
