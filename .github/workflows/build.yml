@@ -51,22 +51,23 @@ jobs:
           git add discovered.json
           git commit -m "chore: update discovered.json" && git push || echo "No changes."
 
-  # ── JOB 2: CONVEYOR BELT (PARALLEL SHARDS) ─────────────────────────────────
+  # ── JOB 2: CONVEYOR BELT (PARALLEL) ────────────────────────────────────────
   conveyor-belt:
     needs: [update-list]
     if: ${{ !cancelled() && (needs.update-list.result == 'success' || needs.update-list.result == 'skipped') }}
     strategy:
       fail-fast: false
       matrix:
-        # This setup spawns 14 parallel runners (7 shards * 2 architectures)
-        system:[x86_64-linux, aarch64-linux]
-        shard:[1, 2, 3, 4, 5, 6, 7]
+        # This setup spawns TWO parallel runners
+        system: [x86_64-linux, aarch64-linux]
         exclude:
+          # Handle manual overrides from workflow_dispatch
           - system: >-
               ${{ github.event.inputs.architecture == 'aarch64-linux' && 'x86_64-linux' || '' }}
           - system: >-
               ${{ github.event.inputs.architecture == 'x86_64-linux' && 'aarch64-linux' || '' }}
 
+    # Use native ARM for ARM, standard for x86
     runs-on: ${{ matrix.system == 'aarch64-linux' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
 
     permissions:
@@ -75,7 +76,6 @@ jobs:
       NIXPKGS_ALLOW_UNFREE: 1
       NIXPKGS_ALLOW_BROKEN: 1
       NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM: 1
-      CI_SHARD_ID: ${{ matrix.shard }}
 
     steps:
       - name: Checkout repository
@@ -113,43 +113,8 @@ jobs:
         if: ${{ github.event.inputs.test_package != '' }}
         run: echo "TARGET_PACKAGE=${{ github.event.inputs.test_package }}" >> $GITHUB_ENV
 
-      - name: Run Conveyor Belt (${{ matrix.system }} | Shard ${{ matrix.shard }})
+      - name: Run Conveyor Belt (${{ matrix.system }})
         run: |
           ./result-scanner/bin/scanner build-ci \
             --system ${{ matrix.system }} \
             --remote "OneDriveISCTE:nixpkgs2flatpak"
-
-  # ── JOB 3: AGGREGATE LOGS ──────────────────────────────────────────────────
-  aggregate-logs:
-    needs: [conveyor-belt]
-    # Run only after conveyor-belt finishes (gracefully or forcefully)
-    if: always() && needs.conveyor-belt.result != 'skipped'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Rclone Config
-        env:
-          RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
-        run: |
-          mkdir -p ~/.config/rclone
-          printf '%s\n' "$RCLONE_CONF" > ~/.config/rclone/rclone.conf
-          
-      - name: Install Rclone
-        run: sudo -v ; curl https://rclone.org/install.sh | sudo bash
-        
-      - name: Aggregate Shard Logs
-        run: |
-          for arch in x86_64-linux aarch64-linux; do
-            echo "Aggregating $arch..."
-            mkdir -p "failed_apps/$arch"
-            
-            # Download all individual shard txt files from the architecture folder
-            rclone copy "OneDriveISCTE:nixpkgs2flatpak/failed_apps/$arch" "failed_apps/$arch" --include "failed_shard_*.txt" || true
-            
-            # Concatenate them, sort them, and remove duplicates to create the master file
-            cat failed_apps/$arch/failed_shard_*.txt 2>/dev/null | sort | uniq > "failed_apps_$arch.txt" || true
-            
-            # Upload the combined master file back to the root of the repo
-            if[ -s "failed_apps_$arch.txt" ]; then
-              rclone copyto "failed_apps_$arch.txt" "OneDriveISCTE:nixpkgs2flatpak/failed_apps_$arch.txt"
-            fi
-          done
