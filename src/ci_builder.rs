@@ -204,39 +204,64 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                         .args(["--user", "install", "--noninteractive", "-y", "test_repo", app_id])
                         .status();
 
-                    // Run the app with a 5-second timeout on a fake X11 display
-                    let test_status = Command::new("xvfb-run")
+                    // RUN THE TEST AND CAPTURE THE OUTPUT (stdout & stderr)
+                    let test_output = Command::new("xvfb-run")
                         .args([
                             "-a", 
                             "-s", "-screen 0 1024x768x24 +extension GLX", 
-                            "timeout", "5", 
+                            "timeout", "10", 
                             "flatpak", "run", 
                             "--env=LIBGL_ALWAYS_SOFTWARE=1", 
                             "--env=GALLIUM_DRIVER=llvmpipe", 
                             app_id
                         ])
-                        .status();
+                        .output();
 
                     let _ = Command::new("flatpak")
                         .args(["--user", "uninstall", "--noninteractive", "-y", app_id])
                         .status();
 
-                    let passed = match test_status {
-                        Ok(s) => {
-                            let code = s.code().unwrap_or(0);
-                            code == 0 || code == 124 || code == 137 || code == 143
+                    // Evaluate test results
+                    let (passed, output_text) = match test_output {
+                        Ok(out) => {
+                            let code = out.status.code().unwrap_or(0);
+                            // 0 = Clean exit, 124 = Time ran out, 137/143 = Terminated
+                            let p = code == 0 || code == 124 || code == 137 || code == 143;
+                            
+                            let mut text = String::from_utf8_lossy(&out.stdout).to_string();
+                            text.push_str("\n--- STDERR ---\n");
+                            text.push_str(&String::from_utf8_lossy(&out.stderr));
+                            (p, text)
                         },
-                        Err(_) => false,
+                        Err(e) => (false, format!("Failed to execute xvfb-run: {}", e)),
                     };
 
                     if !passed {
                         println!("!!! TEST FAILED: {} crashed upon launch. Skipping upload.", app_id);
-                        if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open("failed_apps.log") {
-                            let _ = writeln!(f, "{} ({})", pkg, app_id);
+                        
+                        // 1. Download existing failed_apps.txt from OneDrive
+                        let _ = Command::new("rclone")
+                            .args(["copyto", &format!("{}/failed_apps.txt", opts.remote), "failed_apps.txt"])
+                            .status();
+
+                        // 2. Append to local list
+                        if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open("failed_apps.txt") {
+                            let _ = writeln!(f, "[{}] {} ({})", opts.system, pkg, app_id);
                         }
                         
+                        // 3. Upload updated list back to OneDrive
                         let _ = Command::new("rclone")
-                            .args(["copyto", "failed_apps.log", &format!("{}/failed_apps.log", opts.remote)])
+                            .args(["copyto", "failed_apps.txt", &format!("{}/failed_apps.txt", opts.remote)])
+                            .status();
+
+                        // 4. Save the detailed crash log locally
+                        let _ = fs::create_dir_all("failed_logs");
+                        let log_filename = format!("failed_logs/{}_{}.log", app_id, opts.system);
+                        let _ = fs::write(&log_filename, &output_text);
+
+                        // 5. Upload detailed crash log to the failed_apps folder on OneDrive
+                        let _ = Command::new("rclone")
+                            .args(["copyto", &log_filename, &format!("{}/failed_apps/{}_{}.log", opts.remote, app_id, opts.system)])
                             .status();
 
                         if single_pkg.is_some() {
