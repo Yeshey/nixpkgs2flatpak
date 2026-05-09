@@ -37,9 +37,16 @@ enum Commands {
         #[arg(long)]
         system: String,
         /// rclone remote path, e.g. "OneDriveISCTE:nixpkgs2flatpak".
-        /// State files (state-<system>.json) are read from and written to this remote.
+        /// State files (github_runners_state/state-<system>-runner<N>.json) are
+        /// read from and written to this remote.
         #[arg(long)]
         remote: String,
+        /// Which of the 7 parallel runners this process is (1-7).
+        /// Runners 1-6 each own a slice of the aa-zz two-letter prefix namespace;
+        /// runner 7 handles everything else (_0, a-, z8, single-char names, etc.).
+        /// Defaults to 1 so the command works unchanged in local/one-shot use.
+        #[arg(long, default_value = "1")]
+        runner_id: u8,
     },
 }
 
@@ -53,8 +60,8 @@ fn main() -> anyhow::Result<()> {
             })?
         }
         Commands::Stats { input } => stats(&input)?,
-        Commands::BuildCi { system, remote } => {
-            ci_builder::run(ci_builder::BuildCiOptions { system, remote })?
+        Commands::BuildCi { system, remote, runner_id } => {
+            ci_builder::run(ci_builder::BuildCiOptions { system, remote, runner_id })?
         }
     }
     Ok(())

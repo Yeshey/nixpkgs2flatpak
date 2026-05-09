@@ -24,14 +24,57 @@ struct PkgMeta {
 pub struct BuildCiOptions {
     pub system: String,
     pub remote: String,
+    /// Which of the 7 parallel runners this process is. Runners 1-6 each own a
+    /// contiguous slice of the aa-zz two-letter namespace; runner 7 handles every
+    /// package whose first two characters are not both ASCII lowercase letters
+    /// (prefixes like `_0`, `a-`, `z8`, single-char names, etc.).
+    pub runner_id: u8,
 }
 
-fn state_filename(system: &str) -> String {
-    format!("state-{}.json", system)
+// ── PARTITION HELPERS ────────────────────────────────────────────────────────
+
+/// Returns which runner (1-7) owns a given package name, based on its first
+/// two characters.
+///
+/// The 676 two-letter combos (aa-zz) are split into 6 equal slices:
+///   runner 1: aa–eh  | runner 2: ei–iq  | runner 3: ir–mz
+///   runner 4: na–rh  | runner 5: ri–vq  | runner 6: vr–zz
+///   runner 7: anything that doesn't start with two lowercase ASCII letters
+fn runner_for_package(name: &str) -> u8 {
+    let mut chars = name.chars();
+    let c0 = match chars.next() {
+        Some(c) if c.is_ascii_lowercase() => c,
+        _ => return 7,
+    };
+    let c1 = match chars.next() {
+        Some(c) if c.is_ascii_lowercase() => c,
+        _ => return 7,
+    };
+    let prefix = [c0, c1];
+    if      prefix <= ['e', 'h'] { 1 }
+    else if prefix <= ['i', 'q'] { 2 }
+    else if prefix <= ['m', 'z'] { 3 }
+    else if prefix <= ['r', 'h'] { 4 }
+    else if prefix <= ['v', 'q'] { 5 }
+    else                         { 6 }
 }
 
-fn pull_state(remote: &str, system: &str) -> State {
-    let filename = state_filename(system);
+/// Maps a `system` string to the short architecture folder name used under
+/// `failed_apps/` on both the local disk and OneDrive.
+fn arch_folder(system: &str) -> &'static str {
+    if system.starts_with("x86") { "x86" } else { "aarch64" }
+}
+
+// ── STATE PERSISTENCE ────────────────────────────────────────────────────────
+
+/// Each runner keeps its own state file so runners never step on one another.
+/// Files live in `github_runners_state/` both locally and on OneDrive.
+fn state_filename(system: &str, runner_id: u8) -> String {
+    format!("github_runners_state/state-{}-runner{}.json", system, runner_id)
+}
+
+fn pull_state(remote: &str, system: &str, runner_id: u8) -> State {
+    let filename = state_filename(system, runner_id);
     let remote_path = format!("{}/{}", remote, filename);
     let status = Command::new("rclone")
         .args(["copyto", &remote_path, &filename, "--retries", "3"])
@@ -57,8 +100,8 @@ fn pull_state(remote: &str, system: &str) -> State {
     }
 }
 
-fn push_state(remote: &str, system: &str) {
-    let filename = state_filename(system);
+fn push_state(remote: &str, system: &str, runner_id: u8) {
+    let filename = state_filename(system, runner_id);
     let remote_path = format!("{}/{}", remote, filename);
     let status = Command::new("rclone")
         .args(["copyto", &filename, &remote_path, "--retries", "3"])
@@ -98,6 +141,12 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
     });
 
+    // ── RUNNER PARTITION ──────────────────────────────────────────────────────
+    // Each runner only processes its own slice of the package namespace so
+    // runners never duplicate work and state bookmarks never conflict.
+    packages.retain(|p| runner_for_package(p) == opts.runner_id);
+    println!(">>> Runner {}: {} packages assigned.", opts.runner_id, packages.len());
+
     // SINGLE PACKAGE OVERRIDE
     let single_pkg = std::env::var("TARGET_PACKAGE").ok();
     if let Some(target) = &single_pkg {
@@ -105,14 +154,14 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
             packages = vec![target.clone()];
             println!(">>> TARGET_PACKAGE set. Only building '{}'.", target);
         } else {
-            println!("!!! Target package '{}' not found in metadata. It might not exist in Nixpkgs.", target);
+            println!("!!! Target package '{}' not found in this runner's partition. It might belong to a different runner, or not exist in Nixpkgs.", target);
             return Ok(());
         }
     }
 
     if packages.is_empty() { return Ok(()); }
 
-    let state = pull_state(&opts.remote, &opts.system);
+    let state = pull_state(&opts.remote, &opts.system, opts.runner_id);
     let mut idx = 0;
     
     // Only resume from state if we are doing the endless loop
@@ -247,22 +296,28 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
                     if !passed {
                         println!("!!! TEST FAILED: {} crashed upon launch. Skipping upload.", app_id);
-                        
-                        let failed_list = format!("failed_apps_{}.txt", opts.system);
 
-                        // 1. Download existing architecture-specific list from OneDrive
+                        // Each runner writes its own shard file so concurrent runners never
+                        // race on the same file.  A dedicated merge job in CI combines all
+                        // shards into the final failed_apps_{system}.txt after the run.
+                        let arch = arch_folder(&opts.system);
+                        let runner_failed_file = format!("failed_apps/{}/runner{}.txt", arch, opts.runner_id);
+                        let remote_failed_file = format!("{}/failed_apps/{}/runner{}.txt", opts.remote, arch, opts.runner_id);
+
+                        // 1. Download this runner's existing shard from OneDrive (accumulates across days)
                         let _ = Command::new("rclone")
-                            .args(["copyto", &format!("{}/{}", opts.remote, failed_list), &failed_list])
+                            .args(["copyto", &remote_failed_file, &runner_failed_file, "--retries", "3"])
                             .status();
 
-                        // 2. Append to local list
-                        if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(&failed_list) {
+                        // 2. Append to local shard
+                        let _ = fs::create_dir_all(format!("failed_apps/{}", arch));
+                        if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(&runner_failed_file) {
                             let _ = writeln!(f, "{} ({})", pkg, app_id);
                         }
                         
-                        // 3. Upload updated list back to OneDrive
+                        // 3. Upload updated shard back to OneDrive
                         let _ = Command::new("rclone")
-                            .args(["copyto", &failed_list, &format!("{}/{}", opts.remote, failed_list)])
+                            .args(["copyto", &runner_failed_file, &remote_failed_file, "--retries", "3"])
                             .status();
 
                         // 4. Save the detailed crash log locally
@@ -281,14 +336,15 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                         }
 
                         let new_state = State { last_package: Some(pkg.clone()) };
-                        let filename = state_filename(&opts.system);
+                        let filename = state_filename(&opts.system, opts.runner_id);
                         let tmp_filename = format!("{}.tmp", filename);
+                        let _ = fs::create_dir_all("github_runners_state");
                         if let Ok(json) = serde_json::to_string_pretty(&new_state) {
                             if fs::write(&tmp_filename, &json).is_ok() {
                                 let _ = fs::rename(&tmp_filename, &filename);
                             }
                         }
-                        push_state(&opts.remote, &opts.system);
+                        push_state(&opts.remote, &opts.system, opts.runner_id);
                         
                         idx = (idx + 1) % packages.len();
                         continue;
@@ -329,14 +385,15 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
 
         let new_state = State { last_package: Some(pkg.clone()) };
-        let filename = state_filename(&opts.system);
+        let filename = state_filename(&opts.system, opts.runner_id);
         let tmp_filename = format!("{}.tmp", filename);
+        let _ = fs::create_dir_all("github_runners_state");
         if let Ok(json) = serde_json::to_string_pretty(&new_state) {
             if fs::write(&tmp_filename, &json).is_ok() {
                 let _ = fs::rename(&tmp_filename, &filename);
             }
         }
-        push_state(&opts.remote, &opts.system);
+        push_state(&opts.remote, &opts.system, opts.runner_id);
 
         idx = (idx + 1) % packages.len();
     }
