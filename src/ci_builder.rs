@@ -24,8 +24,8 @@ struct PkgMeta {
 pub struct BuildCiOptions {
     pub system: String,
     pub remote: String,
-    /// Which of the 7 parallel runners this process is. Runners 1-6 each own a
-    /// contiguous slice of the aa-zz two-letter namespace; runner 7 handles every
+    /// Which of the 4 parallel runners this process is. Runners 1-3 each own a
+    /// contiguous slice of the aa-zz two-letter namespace; runner 4 handles every
     /// package whose first two characters are not both ASCII lowercase letters
     /// (prefixes like `_0`, `a-`, `z8`, single-char names, etc.).
     pub runner_id: u8,
@@ -33,30 +33,37 @@ pub struct BuildCiOptions {
 
 // ── PARTITION HELPERS ────────────────────────────────────────────────────────
 
-/// Returns which runner (1-7) owns a given package name, based on its first
+/// Returns which runner (1-4) owns a given package name, based on its first
 /// two characters.
 ///
-/// The 676 two-letter combos (aa-zz) are split into 6 equal slices:
-///   runner 1: aa–eh  | runner 2: ei–iq  | runner 3: ir–mz
-///   runner 4: na–rh  | runner 5: ri–vq  | runner 6: vr–zz
-///   runner 7: anything that doesn't start with two lowercase ASCII letters
+/// The 676 two-letter combos (aa-zz) are split into 3 equal slices
+/// (225 + 225 + 226 = 676) distributed across runners 1-3:
+///   runner 1: aa–iq  (indices   0-224)
+///   runner 2: ir–rh  (indices 225-449)
+///   runner 3: ri–zz  (indices 450-675)
+///   runner 4: anything that doesn't start with two lowercase ASCII letters
+///             (_0, a-, z8, single-char names, etc.)
+///
+/// Boundary derivation (index = (c0-'a')*26 + (c1-'a')):
+///   676 / 3 = 225 r 1  →  cutoffs at 225 and 450
+///   index 224 → (224/26=8→'i', 224%26=16→'q') = "iq"
+///   index 225 → (225/26=8→'i', 225%26=17→'r') = "ir"
+///   index 449 → (449/26=17→'r', 449%26=7→'h') = "rh"
+///   index 450 → (450/26=17→'r', 450%26=8→'i') = "ri"
 fn runner_for_package(name: &str) -> u8 {
     let mut chars = name.chars();
     let c0 = match chars.next() {
         Some(c) if c.is_ascii_lowercase() => c,
-        _ => return 7,
+        _ => return 4,
     };
     let c1 = match chars.next() {
         Some(c) if c.is_ascii_lowercase() => c,
-        _ => return 7,
+        _ => return 4,
     };
-    let prefix = [c0, c1];
-    if      prefix <= ['e', 'h'] { 1 }
-    else if prefix <= ['i', 'q'] { 2 }
-    else if prefix <= ['m', 'z'] { 3 }
-    else if prefix <= ['r', 'h'] { 4 }
-    else if prefix <= ['v', 'q'] { 5 }
-    else                         { 6 }
+    let idx = (c0 as u8 - b'a') as usize * 26 + (c1 as u8 - b'a') as usize;
+    if      idx < 225 { 1 }   // aa–iq
+    else if idx < 450 { 2 }   // ir–rh
+    else              { 3 }   // ri–zz
 }
 
 /// Maps a `system` string to the short architecture folder name used under

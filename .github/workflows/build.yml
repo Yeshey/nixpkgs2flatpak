@@ -52,12 +52,13 @@ jobs:
           git commit -m "chore: update discovered.json" && git push || echo "No changes."
 
   # ── JOB 2: CONVEYOR BELT (PARALLEL) ────────────────────────────────────────
-  # 7 runners per architecture = 14 runners total (within the 20-runner free limit).
+  # 4 runners per architecture = 8 runners total (well within the 20-runner free limit).
   #
-  # Partition of the aa-zz namespace across 6 runners (676 combos / 6 ≈ 112-113 each):
-  #   runner 1: aa–eh  | runner 2: ei–iq  | runner 3: ir–mz
-  #   runner 4: na–rh  | runner 5: ri–vq  | runner 6: vr–zz
-  #   runner 7: everything else (_0, a-, z8, single-char names, etc.)
+  # Partition of the aa-zz namespace (676 combos) across runners 1-3 (225+225+226):
+  #   runner 1: aa–iq  (indices   0-224)
+  #   runner 2: ir–rh  (indices 225-449)
+  #   runner 3: ri–zz  (indices 450-675)
+  #   runner 4: everything else (_0, a-, z8, single-char names, etc.)
   #
   # Each runner maintains its own state bookmark (github_runners_state/) and its
   # own failed-apps shard (failed_apps/{arch}/runner{N}.txt) on OneDrive, so
@@ -71,7 +72,7 @@ jobs:
       matrix:
         # This setup spawns TWO parallel runners
         system: [x86_64-linux, aarch64-linux]
-        runner_id: [1, 2, 3, 4, 5, 6, 7]
+        runner_id: [1, 2, 3, 4]
         exclude:
           # Handle manual overrides from workflow_dispatch.
           # Excluding by system alone drops all runner_id combinations for that arch.

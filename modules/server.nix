@@ -94,6 +94,21 @@
             WORK="$CACHE_DIR/work"
             MERGED="$CACHE_DIR/merged"
 
+            # Warm the rclone VFS directory cache before mounting the OverlayFS.
+            #
+            # Root cause of "Stale file handle" errors:
+            #   rclone's default --dir-cache-time is 5 minutes. flatpak build-update-repo
+            #   takes 10+ minutes to walk all refs. Halfway through, rclone silently
+            #   invalidates and rebuilds its directory cache — but OverlayFS is still
+            #   holding the old inode handles into the FUSE lowerdir → ESTALE.
+            #
+            # The rclone mount now uses --dir-cache-time 2h (see rclone-mount-onedrive.nix)
+            # so invalidation can't happen mid-run. This find forces rclone to eagerly
+            # populate fresh directory entries right before the overlay mounts, so the
+            # 2-hour clock starts from a known-good state.
+            echo "Warming rclone VFS directory cache for refs/..."
+            find "$REPO/refs" -follow -type f >/dev/null 2>&1 || true
+
             echo "Preparing OverlayFS Trapdoor..."
             umount -q "$MERGED" 2>/dev/null || true
             rm -rf "$CACHE_DIR"
@@ -182,7 +197,7 @@
           description = "Periodically regenerate nixpkgs2flatpak Flatpak repo summary";
           wantedBy    = [ "timers.target" ];
           timerConfig = {
-            OnCalendar         = "*-*-* *:00/3:00";
+            OnCalendar         = "*-*-* *:00/5:00";
             Persistent         = true;
             RandomizedDelaySec = "5min";
           };
@@ -213,6 +228,11 @@
             UPPER="$CACHE_DIR/upper"
             WORK="$CACHE_DIR/work"
             MERGED="$CACHE_DIR/merged"
+
+            # Same VFS warm-up as the summary service — delta generation takes even
+            # longer, so a fresh directory cache is essential.
+            echo "Warming rclone VFS directory cache for refs/..."
+            find "$REPO/refs" -follow -type f >/dev/null 2>&1 || true
 
             echo "Preparing OverlayFS Trapdoor..."
             umount -q "$MERGED" 2>/dev/null || true

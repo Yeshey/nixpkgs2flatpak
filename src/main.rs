@@ -41,9 +41,9 @@ enum Commands {
         /// read from and written to this remote.
         #[arg(long)]
         remote: String,
-        /// Which of the 7 parallel runners this process is (1-7).
-        /// Runners 1-6 each own a slice of the aa-zz two-letter prefix namespace;
-        /// runner 7 handles everything else (_0, a-, z8, single-char names, etc.).
+        /// Which of the 4 parallel runners this process is (1-4).
+        /// Runners 1-3 each own a slice of the aa-zz two-letter prefix namespace;
+        /// runner 4 handles everything else (_0, a-, z8, single-char names, etc.).
         /// Defaults to 1 so the command works unchanged in local/one-shot use.
         #[arg(long, default_value = "1")]
         runner_id: u8,
