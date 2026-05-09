@@ -19,6 +19,11 @@ on:
         description: 'Skip updating discovered.json list'
         type: boolean
         default: false
+      max_minutes:
+        description: 'How many minutes each runner should build before stopping gracefully (default: 320 = 5h20m)'
+        required: false
+        default: '320'
+        type: string
 
 concurrency:
   group: flatpak-conveyor-${{ github.event.inputs.test_package || github.ref }}
@@ -52,13 +57,11 @@ jobs:
           git commit -m "chore: update discovered.json" && git push || echo "No changes."
 
   # ── JOB 2: CONVEYOR BELT (PARALLEL) ────────────────────────────────────────
-  # 4 runners per architecture = 8 runners total (well within the 20-runner free limit).
+  # 2 runners per architecture = 4 runners total.
   #
-  # Partition of the aa-zz namespace (676 combos) across runners 1-3 (225+225+226):
-  #   runner 1: aa–iq  (indices   0-224)
-  #   runner 2: ir–rh  (indices 225-449)
-  #   runner 3: ri–zz  (indices 450-675)
-  #   runner 4: everything else (_0, a-, z8, single-char names, etc.)
+  # Runner 1 works forward from the start of the alphabetically-sorted list (a…).
+  # Runner 2 works backward from the end (…z). They converge in the middle,
+  # so partial runs still achieve good coverage from both ends.
   #
   # Each runner maintains its own state bookmark (github_runners_state/) and its
   # own failed-apps shard (failed_apps/{arch}/runner{N}.txt) on OneDrive, so
@@ -70,9 +73,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # This setup spawns TWO parallel runners
         system: [x86_64-linux, aarch64-linux]
-        runner_id: [1, 2, 3, 4]
+        runner_id: [1, 2]
         exclude:
           # Handle manual overrides from workflow_dispatch.
           # Excluding by system alone drops all runner_id combinations for that arch.
@@ -132,7 +134,8 @@ jobs:
           ./result-scanner/bin/scanner build-ci \
             --system ${{ matrix.system }} \
             --remote "OneDriveISCTE:nixpkgs2flatpak" \
-            --runner-id ${{ matrix.runner_id }}
+            --runner-id ${{ matrix.runner_id }} \
+            --max-minutes ${{ github.event.inputs.max_minutes || '320' }}
 
   # ── JOB 3: MERGE FAILED-APPS SHARDS ───────────────────────────────────────
   # After all conveyor-belt runners finish (or time out), collect the per-runner

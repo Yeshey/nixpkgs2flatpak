@@ -41,12 +41,17 @@ enum Commands {
         /// read from and written to this remote.
         #[arg(long)]
         remote: String,
-        /// Which of the 4 parallel runners this process is (1-4).
-        /// Runners 1-3 each own a slice of the aa-zz two-letter prefix namespace;
-        /// runner 4 handles everything else (_0, a-, z8, single-char names, etc.).
+        /// Which of the 2 parallel runners this process is (1 or 2).
+        /// Runner 1 works forward from the start of the sorted list (a…);
+        /// runner 2 works backward from the end (…z).
         /// Defaults to 1 so the command works unchanged in local/one-shot use.
         #[arg(long, default_value = "1")]
         runner_id: u8,
+        /// How many minutes each runner should build before stopping gracefully.
+        /// Default is 320 (5h 20m) to safely fit within GitHub's 6h job limit.
+        /// Use a smaller value (e.g. 60) for quick test runs.
+        #[arg(long, default_value = "320")]
+        max_minutes: f64,
     },
 }
 
@@ -60,8 +65,8 @@ fn main() -> anyhow::Result<()> {
             })?
         }
         Commands::Stats { input } => stats(&input)?,
-        Commands::BuildCi { system, remote, runner_id } => {
-            ci_builder::run(ci_builder::BuildCiOptions { system, remote, runner_id })?
+        Commands::BuildCi { system, remote, runner_id, max_minutes } => {
+            ci_builder::run(ci_builder::BuildCiOptions { system, remote, runner_id, max_minutes })?
         }
     }
     Ok(())

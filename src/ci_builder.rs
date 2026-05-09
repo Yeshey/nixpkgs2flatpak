@@ -24,47 +24,15 @@ struct PkgMeta {
 pub struct BuildCiOptions {
     pub system: String,
     pub remote: String,
-    /// Which of the 4 parallel runners this process is. Runners 1-3 each own a
-    /// contiguous slice of the aa-zz two-letter namespace; runner 4 handles every
-    /// package whose first two characters are not both ASCII lowercase letters
-    /// (prefixes like `_0`, `a-`, `z8`, single-char names, etc.).
+    /// Which of the 2 parallel runners this process is (1 or 2).
+    /// Runner 1 works forward from the start of the sorted list (a…);
+    /// runner 2 works backward from the end (…z). They converge in the middle.
     pub runner_id: u8,
+    /// How many minutes to run before stopping gracefully. Defaults to 320 (5h 20m).
+    pub max_minutes: f64,
 }
 
 // ── PARTITION HELPERS ────────────────────────────────────────────────────────
-
-/// Returns which runner (1-4) owns a given package name, based on its first
-/// two characters.
-///
-/// The 676 two-letter combos (aa-zz) are split into 3 equal slices
-/// (225 + 225 + 226 = 676) distributed across runners 1-3:
-///   runner 1: aa–iq  (indices   0-224)
-///   runner 2: ir–rh  (indices 225-449)
-///   runner 3: ri–zz  (indices 450-675)
-///   runner 4: anything that doesn't start with two lowercase ASCII letters
-///             (_0, a-, z8, single-char names, etc.)
-///
-/// Boundary derivation (index = (c0-'a')*26 + (c1-'a')):
-///   676 / 3 = 225 r 1  →  cutoffs at 225 and 450
-///   index 224 → (224/26=8→'i', 224%26=16→'q') = "iq"
-///   index 225 → (225/26=8→'i', 225%26=17→'r') = "ir"
-///   index 449 → (449/26=17→'r', 449%26=7→'h') = "rh"
-///   index 450 → (450/26=17→'r', 450%26=8→'i') = "ri"
-fn runner_for_package(name: &str) -> u8 {
-    let b = name.as_bytes();
-    let b0 = match b.first() {
-        Some(&c) if c.is_ascii_lowercase() => c,
-        _ => return 4,
-    };
-    let b1 = match b.get(1) {
-        Some(&c) if c.is_ascii_lowercase() => c,
-        _ => return 4,
-    };
-    let idx = (b0 - b'a') as usize * 26 + (b1 - b'a') as usize;
-    if      idx < 225 { 1 }   // aa–iq
-    else if idx < 450 { 2 }   // ir–rh
-    else              { 3 }   // ri–zz
-}
 
 /// Maps a `system` string to the short architecture folder name used under
 /// `failed_apps/` on both the local disk and OneDrive.
@@ -121,8 +89,8 @@ fn push_state(remote: &str, system: &str, runner_id: u8) {
 pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
     
-    // --- TIME LIMIT: 5 Hours and 10 Minutes ---
-    let max_duration = Duration::from_secs(5 * 3600 + 10 * 60);
+    let max_duration = Duration::from_secs_f64(opts.max_minutes * 60.0); // ← hardcoded default: 320 minutes (5h 20m), set via --max-minutes
+    println!(">>> Time limit: {:.0} minutes.", opts.max_minutes);
 
     println!(">>> Fetching final package metadata from Nix...");
     let meta_status = Command::new("nix")
@@ -149,9 +117,16 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     });
 
     // ── RUNNER PARTITION ──────────────────────────────────────────────────────
-    // Each runner only processes its own slice of the package namespace so
-    // runners never duplicate work and state bookmarks never conflict.
-    packages.retain(|p| runner_for_package(p) == opts.runner_id);
+    // Split the sorted list in half by position.
+    // Runner 1 works forward from the start (a...).
+    // Runner 2 works backward from the end (...z), so they converge in the middle
+    // and both halves get covered even if a runner is cancelled early.
+    let mid = (packages.len() + 1) / 2; // runner 1 gets the ceiling half
+    match opts.runner_id {
+        1 => packages.truncate(mid),
+        2 => { packages.drain(..mid); packages.reverse(); }
+        _ => { eprintln!("!!! Unknown runner_id {}. Valid values: 1, 2.", opts.runner_id); return Ok(()); }
+    }
     println!(">>> Runner {}: {} packages assigned.", opts.runner_id, packages.len());
 
     // SINGLE PACKAGE OVERRIDE
@@ -192,9 +167,9 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let mut packages_since_gc = 0;
 
     loop {
-        // Stop exactly at 5h 20m.
+        // Stop when the time limit is reached.
         if start_time.elapsed() > max_duration {
-            println!(">>> Time limit (5h 20m) reached. Stopping gracefully to avoid GitHub Force Kill.");
+            println!(">>> Time limit ({:.0} min) reached. Stopping gracefully.", opts.max_minutes);
             break;
         }
 
