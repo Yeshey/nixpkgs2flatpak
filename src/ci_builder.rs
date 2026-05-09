@@ -26,12 +26,42 @@ pub struct BuildCiOptions {
     pub remote: String,
 }
 
-fn state_filename(system: &str) -> String {
-    format!("state-{}.json", system)
+// ── SHARD ROUTING LOGIC ──────────────────────────────────────────────────────
+fn get_shard(pkg: &str) -> u8 {
+    let s = pkg.to_lowercase();
+    let mut chars = s.chars();
+    let c1 = chars.next().unwrap_or(' ');
+    let c2 = chars.next().unwrap_or(' ');
+
+    // If the package starts with a symbol, number, or is a single character
+    if !c1.is_ascii_lowercase() || !c2.is_ascii_lowercase() {
+        return 7;
+    }
+
+    let mut prefix = String::new();
+    prefix.push(c1);
+    prefix.push(c2);
+
+    let p: &str = &prefix;
+    match p {
+        p if p >= "aa" && p <= "eh" => 1,
+        p if p >= "ei" && p <= "iq" => 2,
+        p if p >= "ir" && p <= "mz" => 3,
+        p if p >= "na" && p <= "rh" => 4,
+        p if p >= "ri" && p <= "vq" => 5,
+        p if p >= "vr" && p <= "zz" => 6,
+        _ => 7,
+    }
 }
 
-fn pull_state(remote: &str, system: &str) -> State {
-    let filename = state_filename(system);
+// ── STATE MANAGEMENT ─────────────────────────────────────────────────────────
+fn state_filename(system: &str, shard: u8) -> String {
+    format!("github_runners_state/state-{}-shard{}.json", system, shard)
+}
+
+fn pull_state(remote: &str, system: &str, shard: u8) -> State {
+    let _ = fs::create_dir_all("github_runners_state");
+    let filename = state_filename(system, shard);
     let remote_path = format!("{}/{}", remote, filename);
     let status = Command::new("rclone")
         .args(["copyto", &remote_path, &filename, "--retries", "3"])
@@ -57,8 +87,9 @@ fn pull_state(remote: &str, system: &str) -> State {
     }
 }
 
-fn push_state(remote: &str, system: &str) {
-    let filename = state_filename(system);
+fn push_state(remote: &str, system: &str, shard: u8) {
+    let _ = fs::create_dir_all("github_runners_state");
+    let filename = state_filename(system, shard);
     let remote_path = format!("{}/{}", remote, filename);
     let status = Command::new("rclone")
         .args(["copyto", &filename, &remote_path, "--retries", "3"])
@@ -70,9 +101,13 @@ fn push_state(remote: &str, system: &str) {
 
 pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
-    
-    // --- TIME LIMIT: 5 Hours and 20 Minutes ---
     let max_duration = Duration::from_secs(5 * 3600 + 20 * 60);
+
+    // Identify which Shard this runner is executing
+    let shard_id: u8 = std::env::var("CI_SHARD_ID")
+        .unwrap_or_else(|_| "0".to_string())
+        .parse()
+        .unwrap_or(0);
 
     println!(">>> Fetching final package metadata from Nix...");
     let meta_status = Command::new("nix")
@@ -88,7 +123,11 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     
     let mut packages: Vec<String> = metadata.keys().cloned().collect();
 
-    // Sort: Curated apps FIRST, then alphabetically
+    // ── ISOLATE THIS RUNNER'S SHARD ──
+    if shard_id > 0 && shard_id <= 7 {
+        packages.retain(|pkg| get_shard(pkg) == shard_id);
+    }
+
     packages.sort_by(|a, b| {
         let meta_a = &metadata[a];
         let meta_b = &metadata[b];
@@ -98,9 +137,12 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
     });
 
-    // SINGLE PACKAGE OVERRIDE
     let single_pkg = std::env::var("TARGET_PACKAGE").ok();
     if let Some(target) = &single_pkg {
+        if shard_id > 0 && get_shard(target) != shard_id {
+            println!(">>> TARGET_PACKAGE '{}' belongs to Shard {}. Shard {} is gracefully exiting.", target, get_shard(target), shard_id);
+            return Ok(());
+        }
         if packages.contains(target) {
             packages = vec![target.clone()];
             println!(">>> TARGET_PACKAGE set. Only building '{}'.", target);
@@ -112,10 +154,9 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
     if packages.is_empty() { return Ok(()); }
 
-    let state = pull_state(&opts.remote, &opts.system);
+    let state = pull_state(&opts.remote, &opts.system, shard_id);
     let mut idx = 0;
     
-    // Only resume from state if we are doing the endless loop
     if single_pkg.is_none() {
         if let Some(last) = &state.last_package {
             if let Some(pos) = packages.iter().position(|p| p == last) {
@@ -132,11 +173,9 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         .args(["--user", "remote-add", "--if-not-exists", "flathub", "https://dl.flathub.org/repo/flathub.flatpakrepo"])
         .status();
 
-    // Tracker for Garbage Collection batching
     let mut packages_since_gc = 0;
 
     loop {
-        // Stop exactly at 5h 20m.
         if start_time.elapsed() > max_duration {
             println!(">>> Time limit (5h 20m) reached. Stopping gracefully to avoid GitHub Force Kill.");
             break;
@@ -145,15 +184,13 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         let pkg = packages[idx].clone();
         let is_curated = metadata[&pkg].is_curated;
         let tag = if is_curated { "[CURATED]" } else { "[AUTO]" };
-        println!("\n>>> [ {}/{} ] {} Building: {}", idx + 1, packages.len(), tag, pkg);
+        println!("\n>>> [ Shard {} - {}/{} ] {} Building: {}", shard_id, idx + 1, packages.len(), tag, pkg);
 
-        // ─── DISK SPACE MANAGEMENT ───
         let local_repo = "local_repo";
         let _ = fs::remove_dir_all("result");
         let _ = fs::remove_dir_all(local_repo);
 
         if single_pkg.is_none() {
-            // Only run GC every 5 packages to save massive amounts of time
             if packages_since_gc >= 5 {
                 println!(">>> 5 packages built! Running Nix garbage collection to free up disk space...");
                 let _ = Command::new("nix-store").arg("--gc").status();
@@ -200,7 +237,6 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
                     .status();
                     
-                // ── TESTING PHASE ──
                 if !app_id.is_empty() {
                     println!(">>> Testing application launch on virtual display for {}...", app_id);
 
@@ -208,12 +244,10 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                         .args(["--user", "remote-add", "--no-gpg-verify", "--if-not-exists", "test_repo", local_repo])
                         .status();
 
-                    // --noninteractive forces Flatpak to auto-download required runtimes from Flathub
                     let _ = Command::new("flatpak")
                         .args(["--user", "install", "--noninteractive", "-y", "test_repo", app_id])
                         .status();
 
-                    // RUN THE TEST AND CAPTURE THE OUTPUT (stdout & stderr)
                     let test_output = Command::new("xvfb-run")
                         .args([
                             "-a", 
@@ -230,11 +264,9 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                         .args(["--user", "uninstall", "--noninteractive", "-y", app_id])
                         .status();
 
-                    // Evaluate test results
                     let (passed, output_text) = match test_output {
                         Ok(out) => {
                             let code = out.status.code().unwrap_or(0);
-                            // 0 = Clean exit, 124 = Time ran out, 137/143 = Terminated
                             let p = code == 0 || code == 124 || code == 137 || code == 143;
                             
                             let mut text = String::from_utf8_lossy(&out.stdout).to_string();
@@ -248,31 +280,34 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     if !passed {
                         println!("!!! TEST FAILED: {} crashed upon launch. Skipping upload.", app_id);
                         
-                        let failed_list = format!("failed_apps_{}.txt", opts.system);
+                        let failed_dir = format!("failed_apps/{}", opts.system);
+                        let remote_failed_list = format!("{}/failed_shard_{}.txt", failed_dir, shard_id);
+                        let local_failed_list = format!("failed_shard_{}.txt", shard_id);
 
-                        // 1. Download existing architecture-specific list from OneDrive
+                        // 1. Download existing Shard-specific list
                         let _ = Command::new("rclone")
-                            .args(["copyto", &format!("{}/{}", opts.remote, failed_list), &failed_list])
+                            .args(["copyto", &format!("{}/{}", opts.remote, remote_failed_list), &local_failed_list])
                             .status();
 
-                        // 2. Append to local list
-                        if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(&failed_list) {
+                        // 2. Append to Shard list
+                        if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(&local_failed_list) {
                             let _ = writeln!(f, "{} ({})", pkg, app_id);
                         }
                         
-                        // 3. Upload updated list back to OneDrive
+                        // 3. Upload Shard list back
                         let _ = Command::new("rclone")
-                            .args(["copyto", &failed_list, &format!("{}/{}", opts.remote, failed_list)])
+                            .args(["copyto", &local_failed_list, &format!("{}/{}", opts.remote, remote_failed_list)])
                             .status();
 
-                        // 4. Save the detailed crash log locally
+                        // 4. Save and Upload log
                         let _ = fs::create_dir_all("failed_logs");
-                        let log_filename = format!("failed_logs/{}_{}.log", app_id, opts.system);
-                        let _ = fs::write(&log_filename, &output_text);
+                        let log_filename = format!("{}_{}.log", app_id, opts.system);
+                        let local_log_path = format!("failed_logs/{}", log_filename);
+                        let _ = fs::write(&local_log_path, &output_text);
 
-                        // 5. Upload detailed crash log to the failed_apps folder on OneDrive
+                        let remote_log_path = format!("{}/{}/logs/{}", opts.remote, failed_dir, log_filename);
                         let _ = Command::new("rclone")
-                            .args(["copyto", &log_filename, &format!("{}/failed_apps/{}_{}.log", opts.remote, app_id, opts.system)])
+                            .args(["copyto", &local_log_path, &remote_log_path])
                             .status();
 
                         if single_pkg.is_some() {
@@ -281,14 +316,14 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                         }
 
                         let new_state = State { last_package: Some(pkg.clone()) };
-                        let filename = state_filename(&opts.system);
+                        let filename = state_filename(&opts.system, shard_id);
                         let tmp_filename = format!("{}.tmp", filename);
                         if let Ok(json) = serde_json::to_string_pretty(&new_state) {
                             if fs::write(&tmp_filename, &json).is_ok() {
                                 let _ = fs::rename(&tmp_filename, &filename);
                             }
                         }
-                        push_state(&opts.remote, &opts.system);
+                        push_state(&opts.remote, &opts.system, shard_id);
                         
                         idx = (idx + 1) % packages.len();
                         continue;
@@ -303,6 +338,10 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                         "copy", &format!("{}/objects", local_repo), &format!("{}/objects", opts.remote),
                         "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
                         "--fast-list", "--size-only",
+                        "--onedrive-upload-cutoff", "4M",
+                        "--streaming-upload-cutoff", "4M",
+                        "--retries", "5", 
+                        "--low-level-retries", "10"
                     ])
                     .status();
 
@@ -315,6 +354,10 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                             "--exclude", "/objects/**",
                             "--exclude", "summary",
                             "--exclude", "summary.sig",
+                            "--onedrive-upload-cutoff", "4M",
+                            "--streaming-upload-cutoff", "4M",
+                            "--retries", "5", 
+                            "--low-level-retries", "10"
                         ])
                         .status();
                 } else {
@@ -329,14 +372,14 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         }
 
         let new_state = State { last_package: Some(pkg.clone()) };
-        let filename = state_filename(&opts.system);
+        let filename = state_filename(&opts.system, shard_id);
         let tmp_filename = format!("{}.tmp", filename);
         if let Ok(json) = serde_json::to_string_pretty(&new_state) {
             if fs::write(&tmp_filename, &json).is_ok() {
                 let _ = fs::rename(&tmp_filename, &filename);
             }
         }
-        push_state(&opts.remote, &opts.system);
+        push_state(&opts.remote, &opts.system, shard_id);
 
         idx = (idx + 1) % packages.len();
     }
