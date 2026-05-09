@@ -239,19 +239,21 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     if !passed {
                         println!("!!! TEST FAILED: {} crashed upon launch. Skipping upload.", app_id);
                         
-                        // 1. Download existing failed_apps.txt from OneDrive
+                        let failed_list = format!("failed_apps_{}.txt", opts.system);
+
+                        // 1. Download existing architecture-specific list from OneDrive
                         let _ = Command::new("rclone")
-                            .args(["copyto", &format!("{}/failed_apps.txt", opts.remote), "failed_apps.txt"])
+                            .args(["copyto", &format!("{}/{}", opts.remote, failed_list), &failed_list])
                             .status();
 
                         // 2. Append to local list
-                        if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open("failed_apps.txt") {
-                            let _ = writeln!(f, "[{}] {} ({})", opts.system, pkg, app_id);
+                        if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(&failed_list) {
+                            let _ = writeln!(f, "{} ({})", pkg, app_id);
                         }
                         
                         // 3. Upload updated list back to OneDrive
                         let _ = Command::new("rclone")
-                            .args(["copyto", "failed_apps.txt", &format!("{}/failed_apps.txt", opts.remote)])
+                            .args(["copyto", &failed_list, &format!("{}/{}", opts.remote, failed_list)])
                             .status();
 
                         // 4. Save the detailed crash log locally
