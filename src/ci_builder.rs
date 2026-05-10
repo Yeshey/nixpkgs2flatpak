@@ -249,13 +249,12 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                     // RUN THE TEST AND CAPTURE THE OUTPUT (stdout & stderr)
                     let test_output = Command::new("xvfb-run")
                         .args([
-                            "-a", 
-                            "-s", "-screen 0 1024x768x24 +extension GLX", 
-                            "timeout", "10", 
+                            "-a",
+                            "-s", "-screen 0 1024x768x24 +extension GLX",
+                            "timeout", "10",
                             "flatpak", "run",
-                            "--allow=userns",
-                            "--env=LIBGL_ALWAYS_SOFTWARE=1", 
-                            "--env=GALLIUM_DRIVER=llvmpipe", 
+                            "--env=LIBGL_ALWAYS_SOFTWARE=1",
+                            "--env=GALLIUM_DRIVER=llvmpipe",
                             app_id
                         ])
                         .output();
