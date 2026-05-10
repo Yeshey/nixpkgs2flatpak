@@ -24,6 +24,10 @@ on:
         required: false
         default: '320'
         type: string
+      skip_unfree:
+        description: 'Skip discovering and building unfree packages'
+        type: boolean
+        default: false
 
 concurrency:
   group: flatpak-conveyor-${{ github.event.inputs.test_package || github.ref }}
@@ -50,6 +54,7 @@ jobs:
       - name: Run Discover
         run: ./result-scanner/bin/scanner discover
       - name: Run Discover Unfree
+        if: ${{ inputs.skip_unfree != true }}
         run: ./result-scanner/bin/scanner discover-unfree
       - name: Commit discovered.json
         run: |
