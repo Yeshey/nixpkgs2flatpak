@@ -7,6 +7,7 @@ mod discover;
 mod runtime_detector;
 mod types;
 mod ci_builder;
+mod discover_unfree;
 
 #[derive(Parser)]
 #[command(name = "scanner")]
@@ -26,6 +27,10 @@ enum Commands {
         /// Use this to point at a database that includes unfree packages.
         #[arg(long)]
         database: Option<String>,
+    },
+    DiscoverUnfree {
+        #[arg(short, long, default_value = "discovered.json")]
+        output: String,
     },
     /// Print a summary of discovered.json
     Stats {
@@ -62,6 +67,11 @@ fn main() -> anyhow::Result<()> {
             discover::run(discover::DiscoverOptions {
                 output_path: output,
                 database,
+            })?
+        }
+        Commands::DiscoverUnfree { output } => {
+            discover_unfree::run(discover_unfree::DiscoverUnfreeOptions {
+                output_path: output,
             })?
         }
         Commands::Stats { input } => stats(&input)?,

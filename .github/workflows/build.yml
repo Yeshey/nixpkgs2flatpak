@@ -49,6 +49,8 @@ jobs:
         run: nix build .#scanner -o result-scanner
       - name: Run Discover
         run: ./result-scanner/bin/scanner discover
+      - name: Run Discover Unfree
+        run: ./result-scanner/bin/scanner discover-unfree
       - name: Commit discovered.json
         run: |
           git config user.email "ci@github.com"

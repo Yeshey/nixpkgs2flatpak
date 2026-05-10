@@ -6,7 +6,7 @@ pub fn detect(attr_path: &str, desktop_filename: &str) -> &'static str {
         signals.iter().any(|s| attr.contains(s) || fname.contains(s))
     };
 
-    if any_contains(&["kde", "plasma", "qt", "kf5", "kf6"]) || attr.starts_with("kdepackages") {
+    if any_contains(&["kde", "plasma", "qt", "kf5", "kf6"][..]) || attr.starts_with("kdepackages") {
         return "org.kde.Platform/6.10";
     }
 
