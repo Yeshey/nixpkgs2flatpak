@@ -1,4 +1,25 @@
 {
+  "_010editor": {
+    "attrPath": "_010editor",
+    "pname": "_010editor",
+    "appId": "a010editor.desktop",
+    "desktopFile": "010editor.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "_1password-gui": {
+    "attrPath": "_1password-gui",
+    "pname": "_1password-gui",
+    "appId": "org.nixpkgs.a1passwordgui",
+    "desktopFile": "_1password-gui.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "_2ship2harkinian": {
+    "attrPath": "_2ship2harkinian",
+    "pname": "_2ship2harkinian",
+    "appId": "a2s2h.desktop",
+    "desktopFile": "2s2h.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "_64gram": {
     "attrPath": "_64gram",
     "pname": "_64gram",
@@ -60,6 +81,13 @@
     "pname": "abracadabra",
     "appId": "org.nixpkgs.abracadabra",
     "desktopFile": "AbracaDABra.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "abuse": {
+    "attrPath": "abuse",
+    "pname": "abuse",
+    "appId": "abuse.desktop",
+    "desktopFile": "abuse.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "accerciser": {
@@ -216,6 +244,13 @@
     "desktopFile": "net.veloren.airshipper.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "airtame": {
+    "attrPath": "airtame",
+    "pname": "airtame",
+    "appId": "org.nixpkgs.airtame",
+    "desktopFile": "airtame.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "airwin2rack": {
     "attrPath": "airwin2rack",
     "pname": "airwin2rack",
@@ -228,6 +263,13 @@
     "pname": "aisleriot",
     "appId": "org.nixpkgs.aisleriot",
     "desktopFile": "sol.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "aja-desktop-software": {
+    "attrPath": "aja-desktop-software",
+    "pname": "aja-desktop-software",
+    "appId": "org.nixpkgs.ajadesktopsoftware",
+    "desktopFile": "aja-desktop-software.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "akira-unstable": {
@@ -307,6 +349,20 @@
     "desktopFile": "ALCOM.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "alephone": {
+    "attrPath": "alephone",
+    "pname": "alephone",
+    "appId": "org.nixpkgs.alephone",
+    "desktopFile": "alephone.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "alfaview": {
+    "attrPath": "alfaview",
+    "pname": "alfaview",
+    "appId": "org.nixpkgs.alfaview",
+    "desktopFile": "alfaview.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "alisthelper": {
     "attrPath": "alisthelper",
     "pname": "alisthelper",
@@ -320,6 +376,13 @@
     "appId": "org.kde.onlinequoteseditor6",
     "desktopFile": "org.kde.onlinequoteseditor6.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "alliance": {
+    "attrPath": "alliance",
+    "pname": "alliance",
+    "appId": "org.nixpkgs.alliance",
+    "desktopFile": "alliance.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "alligator": {
     "attrPath": "kdePackages.alligator",
@@ -405,6 +468,13 @@
     "desktopFile": "alvr.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "am2rlauncher": {
+    "attrPath": "am2rlauncher",
+    "pname": "am2rlauncher",
+    "appId": "org.nixpkgs.am2rlauncher",
+    "desktopFile": "am2rlauncher.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "amarok": {
     "attrPath": "amarok",
     "pname": "amarok",
@@ -451,6 +521,13 @@
     "attrPath": "amnezia-vpn",
     "pname": "amnezia-vpn",
     "appId": "org.nixpkgs.amneziavpn",
+    "desktopFile": "AmneziaVPN.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "amnezia-vpn-bin": {
+    "attrPath": "amnezia-vpn-bin",
+    "pname": "amnezia-vpn-bin",
+    "appId": "org.nixpkgs.amneziavpnbin",
     "desktopFile": "AmneziaVPN.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
@@ -524,6 +601,20 @@
     "desktopFile": "animatch.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "animeko": {
+    "attrPath": "animeko",
+    "pname": "animeko",
+    "appId": "org.nixpkgs.animeko",
+    "desktopFile": "animeko.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ankama-launcher": {
+    "attrPath": "ankama-launcher",
+    "pname": "ankama-launcher",
+    "appId": "org.nixpkgs.ankamalauncher",
+    "desktopFile": "ankama-launcher.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "anki": {
     "attrPath": "anki",
     "pname": "anki",
@@ -566,6 +657,13 @@
     "desktopFile": "ibus-setup-anthy.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "antigravity": {
+    "attrPath": "antigravity",
+    "pname": "antigravity",
+    "appId": "antigravity.desktop",
+    "desktopFile": "antigravity.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "antimatter-dimensions": {
     "attrPath": "antimatter-dimensions",
     "pname": "antimatter-dimensions",
@@ -594,11 +692,32 @@
     "desktopFile": "anvil.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "anydesk": {
+    "attrPath": "anydesk",
+    "pname": "anydesk",
+    "appId": "AnyDesk.desktop",
+    "desktopFile": "AnyDesk.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "anyk": {
+    "attrPath": "anyk",
+    "pname": "anyk",
+    "appId": "anyk.desktop",
+    "desktopFile": "anyk.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "anytone-emu": {
     "attrPath": "anytone-emu",
     "pname": "anytone-emu",
     "appId": "org.nixpkgs.anytoneemu",
     "desktopFile": "anytone-emu-gui.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "anytype": {
+    "attrPath": "anytype",
+    "pname": "anytype",
+    "appId": "anytype.desktop",
+    "desktopFile": "anytype.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "aonsoku": {
@@ -671,6 +790,13 @@
     "desktopFile": "sweethome3d.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "apvlv": {
+    "attrPath": "apvlv",
+    "pname": "apvlv",
+    "appId": "org.nixpkgs.apvlv",
+    "desktopFile": "apvlv.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "apx-gui": {
     "attrPath": "apx-gui",
     "pname": "apx-gui",
@@ -697,6 +823,13 @@
     "pname": "aravis",
     "appId": "org.aravis.viewer-0.a8",
     "desktopFile": "org.aravis.viewer-0.8.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "arcdps-log-manager": {
+    "attrPath": "arcdps-log-manager",
+    "pname": "arcdps-log-manager",
+    "appId": "arcdps-Log-Manager.desktop",
+    "desktopFile": "arcdps-Log-Manager.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "archipelago": {
@@ -818,6 +951,13 @@
     "desktopFile": "org.artisan_scope.artisan.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "artix-games-launcher": {
+    "attrPath": "artix-games-launcher",
+    "pname": "artix-games-launcher",
+    "appId": "org.nixpkgs.artixgameslauncher",
+    "desktopFile": "artix-games-launcher.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "arx-libertatis": {
     "attrPath": "arx-libertatis",
     "pname": "arx-libertatis",
@@ -844,6 +984,13 @@
     "pname": "ashpd-demo",
     "appId": "com.belmoussaoui.ashpd.demo",
     "desktopFile": "com.belmoussaoui.ashpd.demo.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "assaultcube": {
+    "attrPath": "assaultcube",
+    "pname": "assaultcube",
+    "appId": "assaultcube.desktop",
+    "desktopFile": "assaultcube.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "astroid": {
@@ -951,13 +1098,6 @@
     "desktopFile": "kcm_audiocd.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
-  "audiotube": {
-    "attrPath": "kdePackages.audiotube",
-    "pname": "audiotube",
-    "appId": "org.kde.audiotube",
-    "desktopFile": "org.kde.audiotube.desktop",
-    "runtimeHint": "org.kde.Platform/6.10"
-  },
   "augustus": {
     "attrPath": "augustus",
     "pname": "augustus",
@@ -977,6 +1117,13 @@
     "pname": "ausweisapp",
     "appId": "com.governikus.ausweisapp2",
     "desktopFile": "com.governikus.ausweisapp2.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ausweiskopie": {
+    "attrPath": "ausweiskopie",
+    "pname": "ausweiskopie",
+    "appId": "Meine-Ausweiskopie.desktop",
+    "desktopFile": "Meine-Ausweiskopie.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "autenticacao-gov-pt-bin": {
@@ -1035,6 +1182,13 @@
     "desktopFile": "org.avidemux.Avidemux.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "avocode": {
+    "attrPath": "avocode",
+    "pname": "avocode",
+    "appId": "org.nixpkgs.avocode",
+    "desktopFile": "avocode.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "avogadro2": {
     "attrPath": "avogadro2",
     "pname": "avogadro2",
@@ -1091,6 +1245,13 @@
     "desktopFile": "azpainter.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "azuredatastudio": {
+    "attrPath": "azuredatastudio",
+    "pname": "azuredatastudio",
+    "appId": "azuredatastudio.desktop",
+    "desktopFile": "azuredatastudio.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "backintime": {
     "attrPath": "backintime",
     "pname": "backintime",
@@ -1098,11 +1259,32 @@
     "desktopFile": "backintime-qt-root.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "backintime-qt": {
+    "attrPath": "backintime-qt",
+    "pname": "backintime-qt",
+    "appId": "org.nixpkgs.backintimeqt",
+    "desktopFile": "backintime-qt.desktop",
+    "runtimeHint": "org.kde.Platform/6.10"
+  },
   "bada-bib": {
     "attrPath": "bada-bib",
     "pname": "bada-bib",
     "appId": "com.github.rogercrocker.badabib",
     "desktopFile": "com.github.rogercrocker.badabib.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "badlion-client": {
+    "attrPath": "badlion-client",
+    "pname": "badlion-client",
+    "appId": "org.nixpkgs.badlionclient",
+    "desktopFile": "badlion-client.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "balatro": {
+    "attrPath": "balatro",
+    "pname": "balatro",
+    "appId": "balatro.desktop",
+    "desktopFile": "balatro.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "ballerburg": {
@@ -1147,6 +1329,20 @@
     "desktopFile": "BambuStudio.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "banana-accounting": {
+    "attrPath": "banana-accounting",
+    "pname": "banana-accounting",
+    "appId": "org.nixpkgs.bananaaccounting",
+    "desktopFile": "banana-accounting.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "banjorecomp": {
+    "attrPath": "banjorecomp",
+    "pname": "banjorecomp",
+    "appId": "BanjoRecompiled.desktop",
+    "desktopFile": "BanjoRecompiled.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "baobab": {
     "attrPath": "baobab",
     "pname": "baobab",
@@ -1169,7 +1365,7 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "base": {
-    "attrPath": "wine64Packages.base",
+    "attrPath": "wineWow64Packages.base",
     "pname": "base",
     "appId": "org.nixpkgs.base",
     "desktopFile": "wine.desktop",
@@ -1229,6 +1425,13 @@
     "pname": "beekeeper-studio",
     "appId": "org.nixpkgs.beekeeperstudio",
     "desktopFile": "beekeeper-studio.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "beeper": {
+    "attrPath": "beeper",
+    "pname": "beeper",
+    "appId": "org.nixpkgs.beeper",
+    "desktopFile": "beeper.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "bella": {
@@ -1294,6 +1497,13 @@
     "desktopFile": "beyond-all-reason.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "beyond-identity": {
+    "attrPath": "beyond-identity",
+    "pname": "beyond-identity",
+    "appId": "org.nixpkgs.beyondidentity",
+    "desktopFile": "beyond-identity.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "bibletime": {
     "attrPath": "bibletime",
     "pname": "bibletime",
@@ -1315,6 +1525,13 @@
     "desktopFile": "biglybt.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "bilibili": {
+    "attrPath": "bilibili",
+    "pname": "bilibili",
+    "appId": "org.nixpkgs.bilibili",
+    "desktopFile": "bilibili.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "bin": {
     "attrPath": "mupdf.bin",
     "pname": "bin",
@@ -1327,6 +1544,13 @@
     "pname": "binary",
     "appId": "io.github.fizzyizzy05.binary",
     "desktopFile": "io.github.fizzyizzy05.binary.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "binaryninja-free": {
+    "attrPath": "binaryninja-free",
+    "pname": "binaryninja-free",
+    "appId": "com.vector35.binaryninja.desktop",
+    "desktopFile": "com.vector35.binaryninja.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "bino3d": {
@@ -1378,6 +1602,13 @@
     "desktopFile": "bitcoin-qt.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "bitcomet": {
+    "attrPath": "bitcomet",
+    "pname": "bitcomet",
+    "appId": "org.nixpkgs.bitcomet",
+    "desktopFile": "bitcomet.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "bite": {
     "attrPath": "bite",
     "pname": "bite",
@@ -1404,6 +1635,13 @@
     "pname": "blackbox-terminal",
     "appId": "com.raggesilver.BlackBox",
     "desktopFile": "com.raggesilver.BlackBox.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "blackvoxel": {
+    "attrPath": "blackvoxel",
+    "pname": "blackvoxel",
+    "appId": "blackvoxel.desktop",
+    "desktopFile": "blackvoxel.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "blanket": {
@@ -1483,6 +1721,13 @@
     "desktopFile": "bloomrpc.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "bluebubbles": {
+    "attrPath": "bluebubbles",
+    "pname": "bluebubbles",
+    "appId": "org.nixpkgs.bluebubbles",
+    "desktopFile": "bluebubbles.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "bluedevil": {
     "attrPath": "kdePackages.bluedevil",
     "pname": "bluedevil",
@@ -1509,6 +1754,13 @@
     "pname": "bluejay",
     "appId": "io.github.ebonjaeger.bluejay",
     "desktopFile": "io.github.ebonjaeger.bluejay.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "bluemail": {
+    "attrPath": "bluemail",
+    "pname": "bluemail",
+    "appId": "bluemail.desktop",
+    "desktopFile": "bluemail.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "blueman": {
@@ -1553,6 +1805,13 @@
     "desktopFile": "org.kde.bomber.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "bombsquad": {
+    "attrPath": "bombsquad",
+    "pname": "bombsquad",
+    "appId": "bombsquad.desktop",
+    "desktopFile": "bombsquad.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "bonzomatic": {
     "attrPath": "bonzomatic",
     "pname": "bonzomatic",
@@ -1565,6 +1824,20 @@
     "pname": "bookup",
     "appId": "org.gnome.gitlab.ilhooq.Bookup",
     "desktopFile": "org.gnome.gitlab.ilhooq.Bookup.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "bootstrap-studio": {
+    "attrPath": "bootstrap-studio",
+    "pname": "bootstrap-studio",
+    "appId": "org.nixpkgs.bootstrapstudio",
+    "desktopFile": "bootstrap-studio.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "bottles": {
+    "attrPath": "bottles",
+    "pname": "bottles",
+    "appId": "org.nixpkgs.bottles",
+    "desktopFile": "bottles.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "bottles-unwrapped": {
@@ -1637,6 +1910,13 @@
     "desktopFile": "breezestyleconfig.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "breitbandmessung": {
+    "attrPath": "breitbandmessung",
+    "pname": "breitbandmessung",
+    "appId": "org.nixpkgs.breitbandmessung",
+    "desktopFile": "breitbandmessung.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "brewtarget": {
     "attrPath": "brewtarget",
     "pname": "brewtarget",
@@ -1665,6 +1945,13 @@
     "desktopFile": "brmodelo.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "brogue": {
+    "attrPath": "brogue",
+    "pname": "brogue",
+    "appId": "brogue-ce.desktop",
+    "desktopFile": "brogue-ce.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "brogue-ce": {
     "attrPath": "brogue-ce",
     "pname": "brogue-ce",
@@ -1677,6 +1964,13 @@
     "pname": "broken-sword-25",
     "appId": "broken-sword-2.a5",
     "desktopFile": "broken-sword-2.5.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "brotato": {
+    "attrPath": "brotato",
+    "pname": "brotato",
+    "appId": "brotato.desktop",
+    "desktopFile": "brotato.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "browsers": {
@@ -1742,6 +2036,13 @@
     "desktopFile": "bubblemail.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "buckets": {
+    "attrPath": "buckets",
+    "pname": "buckets",
+    "appId": "org.nixpkgs.buckets",
+    "desktopFile": "buckets.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "bucklespring": {
     "attrPath": "bucklespring",
     "pname": "bucklespring",
@@ -1803,6 +2104,13 @@
     "pname": "bulky",
     "appId": "org.nixpkgs.bulky",
     "desktopFile": "bulky.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "burpsuite": {
+    "attrPath": "burpsuite",
+    "pname": "burpsuite",
+    "appId": "org.nixpkgs.burpsuite",
+    "desktopFile": "burpsuite.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "bustle": {
@@ -1903,6 +2211,13 @@
     "desktopFile": "caffeine.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "caido-desktop": {
+    "attrPath": "caido-desktop",
+    "pname": "caido-desktop",
+    "appId": "org.nixpkgs.caidodesktop",
+    "desktopFile": "caido-desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "caja": {
     "attrPath": "caja",
     "pname": "caja",
@@ -1994,6 +2309,13 @@
     "desktopFile": "ar.xjuan.Cambalache.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "cameractrls": {
+    "attrPath": "cameractrls",
+    "pname": "cameractrls",
+    "appId": "org.nixpkgs.cameractrls",
+    "desktopFile": "cameractrls.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "cameractrls-gtk3": {
     "attrPath": "cameractrls-gtk3",
     "pname": "cameractrls-gtk3",
@@ -2049,6 +2371,13 @@
     "appId": "org.kde.cantor",
     "desktopFile": "org.kde.cantor.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "capacities": {
+    "attrPath": "capacities",
+    "pname": "capacities",
+    "appId": "org.nixpkgs.capacities",
+    "desktopFile": "capacities.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "caprice32": {
     "attrPath": "caprice32",
@@ -2169,6 +2498,13 @@
     "desktopFile": "io.github.TheWisker.Cavasik.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "cbconvert": {
+    "attrPath": "cbconvert",
+    "pname": "cbconvert",
+    "appId": "org.nixpkgs.cbconvert",
+    "desktopFile": "cbconvert.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "ccemux": {
     "attrPath": "ccemux",
     "pname": "ccemux",
@@ -2202,6 +2538,13 @@
     "pname": "celeste",
     "appId": "com.hunterwittenborn.Celeste",
     "desktopFile": "com.hunterwittenborn.Celeste.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "celeste64": {
+    "attrPath": "celeste64",
+    "pname": "celeste64",
+    "appId": "Celeste64.desktop",
+    "desktopFile": "Celeste64.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "celestia": {
@@ -2239,6 +2582,13 @@
     "desktopFile": "dev.zelikos.rollit.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "chatbox": {
+    "attrPath": "chatbox",
+    "pname": "chatbox",
+    "appId": "org.nixpkgs.chatbox",
+    "desktopFile": "chatbox.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "chatterino2": {
     "attrPath": "chatterino2",
     "pname": "chatterino2",
@@ -2251,6 +2601,13 @@
     "pname": "chatterino7",
     "appId": "com.chatterino.chatterino",
     "desktopFile": "com.chatterino.chatterino.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "chatzone-desktop": {
+    "attrPath": "chatzone-desktop",
+    "pname": "chatzone-desktop",
+    "appId": "chatzone.desktop",
+    "desktopFile": "chatzone.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "cheating-daddy": {
@@ -2365,6 +2722,20 @@
     "desktopFile": "com.github.robertsanseries.ciano.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "cider": {
+    "attrPath": "cider",
+    "pname": "cider",
+    "appId": "org.nixpkgs.cider",
+    "desktopFile": "cider.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "cider-2": {
+    "attrPath": "cider-2",
+    "pname": "cider-2",
+    "appId": "org.nixpkgs.cider2",
+    "desktopFile": "cider-2.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "cie-middleware-linux": {
     "attrPath": "cie-middleware-linux",
     "pname": "cie-middleware-linux",
@@ -2419,6 +2790,27 @@
     "pname": "cipher",
     "appId": "com.github.arshubham.cipher",
     "desktopFile": "com.github.arshubham.cipher.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "cisco-packet-tracer_8": {
+    "attrPath": "cisco-packet-tracer_8",
+    "pname": "cisco-packet-tracer_8",
+    "appId": "cisco-pt8.desktop.desktop",
+    "desktopFile": "cisco-pt8.desktop.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "cisco-packet-tracer_9": {
+    "attrPath": "cisco-packet-tracer_9",
+    "pname": "cisco-packet-tracer_9",
+    "appId": "org.nixpkgs.ciscopackettracer9",
+    "desktopFile": "cisco-packet-tracer_9.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ciscoPacketTracer8": {
+    "attrPath": "ciscoPacketTracer8",
+    "pname": "ciscoPacketTracer8",
+    "appId": "cisco-pt8.desktop.desktop",
+    "desktopFile": "cisco-pt8.desktop.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "citations": {
@@ -2512,6 +2904,13 @@
     "desktopFile": "org.clementine_player.Clementine.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "clickup": {
+    "attrPath": "clickup",
+    "pname": "clickup",
+    "appId": "org.nixpkgs.clickup",
+    "desktopFile": "clickup.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "clifm": {
     "attrPath": "clifm",
     "pname": "clifm",
@@ -2533,11 +2932,32 @@
     "desktopFile": "ClipQR.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "clockify": {
+    "attrPath": "clockify",
+    "pname": "clockify",
+    "appId": "org.nixpkgs.clockify",
+    "desktopFile": "clockify.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "clonehero": {
+    "attrPath": "clonehero",
+    "pname": "clonehero",
+    "appId": "org.nixpkgs.clonehero",
+    "desktopFile": "clonehero.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "cloudcompare": {
     "attrPath": "cloudcompare",
     "pname": "cloudcompare",
     "appId": "org.nixpkgs.cloudcompare",
     "desktopFile": "CloudCompare.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "cloudflare-warp": {
+    "attrPath": "cloudflare-warp",
+    "pname": "cloudflare-warp",
+    "appId": "com.cloudflare.WarpCli.desktop",
+    "desktopFile": "com.cloudflare.WarpCli.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "cmakeWithGui": {
@@ -2568,6 +2988,13 @@
     "desktopFile": "cockatrice.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "code-cursor": {
+    "attrPath": "code-cursor",
+    "pname": "code-cursor",
+    "appId": "cursor.desktop",
+    "desktopFile": "cursor.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "codeblocks": {
     "attrPath": "codeblocks",
     "pname": "codeblocks",
@@ -2580,6 +3007,13 @@
     "pname": "codeblocksFull",
     "appId": "org.nixpkgs.codeblocksFull",
     "desktopFile": "codeblocks.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "codux": {
+    "attrPath": "codux",
+    "pname": "codux",
+    "appId": "org.nixpkgs.codux",
+    "desktopFile": "codux.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "collabora-desktop": {
@@ -2657,6 +3091,13 @@
     "pname": "concessio",
     "appId": "io.github.ronniedroid.concessio",
     "desktopFile": "io.github.ronniedroid.concessio.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "conduktor": {
+    "attrPath": "conduktor",
+    "pname": "conduktor",
+    "appId": "conduktor.desktop",
+    "desktopFile": "conduktor.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "confy": {
@@ -3156,6 +3597,13 @@
     "desktopFile": "cpeditor.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "cplex": {
+    "attrPath": "cplex",
+    "pname": "cplex",
+    "appId": "oplide.desktop",
+    "desktopFile": "oplide.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "cpu-x": {
     "attrPath": "cpu-x",
     "pname": "cpu-x",
@@ -3303,6 +3751,13 @@
     "desktopFile": "graphics.ctx.terminal.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "cubelify": {
+    "attrPath": "cubelify",
+    "pname": "cubelify",
+    "appId": "org.nixpkgs.cubelify",
+    "desktopFile": "cubelify.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "cubicsdr": {
     "attrPath": "cubicsdr",
     "pname": "cubicsdr",
@@ -3336,6 +3791,13 @@
     "pname": "cups",
     "appId": "org.nixpkgs.cups",
     "desktopFile": "cups.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "cups-kyodialog": {
+    "attrPath": "cups-kyodialog",
+    "pname": "cups-kyodialog",
+    "appId": "org.nixpkgs.cupskyodialog",
+    "desktopFile": "cups-kyodialog.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "cura-appimage": {
@@ -3457,6 +3919,13 @@
     "desktopFile": "daggerfall-unity.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "daggerfall-unity-unfree": {
+    "attrPath": "daggerfall-unity-unfree",
+    "pname": "daggerfall-unity-unfree",
+    "appId": "daggerfall-unity.desktop",
+    "desktopFile": "daggerfall-unity.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "daikhan": {
     "attrPath": "daikhan",
     "pname": "daikhan",
@@ -3506,6 +3975,13 @@
     "desktopFile": "datovka.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "davinci-resolve": {
+    "attrPath": "davinci-resolve",
+    "pname": "davinci-resolve",
+    "appId": "org.nixpkgs.davinciresolve",
+    "desktopFile": "davinci-resolve.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "dayon": {
     "attrPath": "dayon",
     "pname": "dayon",
@@ -3525,6 +4001,13 @@
     "pname": "dbgate",
     "appId": "org.nixpkgs.dbgate",
     "desktopFile": "dbgate.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "dbvisualizer": {
+    "attrPath": "dbvisualizer",
+    "pname": "dbvisualizer",
+    "appId": "dbvisualizer.desktop",
+    "desktopFile": "dbvisualizer.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "dconf-editor": {
@@ -3555,6 +4038,13 @@
     "desktopFile": "ddd.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "ddm": {
+    "attrPath": "ddm",
+    "pname": "ddm",
+    "appId": "ddm.desktop",
+    "desktopFile": "ddm.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "ddnet": {
     "attrPath": "ddnet",
     "pname": "ddnet",
@@ -3583,6 +4073,13 @@
     "desktopFile": "deadbeef.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "deadlock-mod-manager": {
+    "attrPath": "deadlock-mod-manager",
+    "pname": "deadlock-mod-manager",
+    "appId": "Deadlock-Mod-Manager.desktop",
+    "desktopFile": "Deadlock-Mod-Manager.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "deadpixi-sam-unstable": {
     "attrPath": "deadpixi-sam-unstable",
     "pname": "deadpixi-sam-unstable",
@@ -3595,6 +4092,27 @@
     "pname": "decibels",
     "appId": "org.gnome.Decibels",
     "desktopFile": "org.gnome.Decibels.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "deconz": {
+    "attrPath": "deconz",
+    "pname": "deconz",
+    "appId": "org.nixpkgs.deconz",
+    "desktopFile": "deconz.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "deepgit": {
+    "attrPath": "deepgit",
+    "pname": "deepgit",
+    "appId": "deepgit.desktop",
+    "desktopFile": "deepgit.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "deezer-desktop": {
+    "attrPath": "deezer-desktop",
+    "pname": "deezer-desktop",
+    "appId": "org.nixpkgs.deezerdesktop",
+    "desktopFile": "deezer-desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "deezer-enhanced": {
@@ -3679,6 +4197,13 @@
     "pname": "deskflow",
     "appId": "org.deskflow.deskflow",
     "desktopFile": "org.deskflow.deskflow.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "desktop-postflop": {
+    "attrPath": "desktop-postflop",
+    "pname": "desktop-postflop",
+    "appId": "desktop-postflop.desktop",
+    "desktopFile": "desktop-postflop.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "desmume": {
@@ -4094,6 +4619,13 @@
     "desktopFile": "com.github.maoschanz.drawing.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "drawio": {
+    "attrPath": "drawio",
+    "pname": "drawio",
+    "appId": "drawio.desktop",
+    "desktopFile": "drawio.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "drawpile": {
     "attrPath": "drawpile",
     "pname": "drawpile",
@@ -4151,7 +4683,7 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "drumstick": {
-    "attrPath": "kdePackages.drumstick",
+    "attrPath": "libsForQt5.drumstick",
     "pname": "drumstick",
     "appId": "net.sourceforge.drumstick-drumgrid",
     "desktopFile": "net.sourceforge.drumstick-drumgrid.desktop",
@@ -4192,6 +4724,13 @@
     "desktopFile": "dte.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "duckmarines": {
+    "attrPath": "duckmarines",
+    "pname": "duckmarines",
+    "appId": "org.nixpkgs.duckmarines",
+    "desktopFile": "duckmarines.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "dune3d": {
     "attrPath": "dune3d",
     "pname": "dune3d",
@@ -4225,6 +4764,13 @@
     "pname": "dwarfs",
     "appId": "org.nixpkgs.dwarfs",
     "desktopFile": "dwarfs-mount-handler.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "dyalog": {
+    "attrPath": "dyalog",
+    "pname": "dyalog",
+    "appId": "org.nixpkgs.dyalog",
+    "desktopFile": "dyalog.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "dynamic-wallpaper": {
@@ -4430,6 +4976,13 @@
     "desktopFile": "companion211.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "edhm-ui": {
+    "attrPath": "edhm-ui",
+    "pname": "edhm-ui",
+    "appId": "edhm-ui.desktop",
+    "desktopFile": "edhm-ui.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "edmarketconnector": {
     "attrPath": "edmarketconnector",
     "pname": "edmarketconnector",
@@ -4485,6 +5038,13 @@
     "appId": "org.nixpkgs.eigenwallet",
     "desktopFile": "eigenwallet.desktop",
     "runtimeHint": "org.gnome.Platform/49"
+  },
+  "eiskaltdcpp": {
+    "attrPath": "eiskaltdcpp",
+    "pname": "eiskaltdcpp",
+    "appId": "org.nixpkgs.eiskaltdcpp",
+    "desktopFile": "eiskaltdcpp-qt.desktop",
+    "runtimeHint": "org.kde.Platform/6.10"
   },
   "elastic": {
     "attrPath": "elastic",
@@ -4766,6 +5326,13 @@
     "desktopFile": "io.github.daid.EmptyEpsilon.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "emuflight-configurator": {
+    "attrPath": "emuflight-configurator",
+    "pname": "emuflight-configurator",
+    "appId": "emuflight-configurator.desktop",
+    "desktopFile": "emuflight-configurator.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "emulsion-palette": {
     "attrPath": "emulsion-palette",
     "pname": "emulsion-palette",
@@ -4820,6 +5387,13 @@
     "pname": "enlightenment",
     "appId": "org.nixpkgs.enlightenment",
     "desktopFile": "emixer.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "enpass": {
+    "attrPath": "enpass",
+    "pname": "enpass",
+    "appId": "org.nixpkgs.enpass",
+    "desktopFile": "enpass.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "ensemble-chorus": {
@@ -4900,7 +5474,7 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "epiphany": {
-    "attrPath": "epiphany",
+    "attrPath": "pantheon.epiphany",
     "pname": "epiphany",
     "appId": "org.gnome.Epiphany",
     "desktopFile": "org.gnome.Epiphany.desktop",
@@ -4969,6 +5543,13 @@
     "desktopFile": "etterna.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "eudic": {
+    "attrPath": "eudic",
+    "pname": "eudic",
+    "appId": "org.nixpkgs.eudic",
+    "desktopFile": "eudic.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "euphonica": {
     "attrPath": "euphonica",
     "pname": "euphonica",
@@ -4988,6 +5569,20 @@
     "pname": "eureka-editor",
     "appId": "org.nixpkgs.eurekaeditor",
     "desktopFile": "eureka.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "everdo": {
+    "attrPath": "everdo",
+    "pname": "everdo",
+    "appId": "org.nixpkgs.everdo",
+    "desktopFile": "everdo.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "everspace": {
+    "attrPath": "everspace",
+    "pname": "everspace",
+    "appId": "everspace-gog.desktop",
+    "desktopFile": "everspace-gog.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "evil-helix": {
@@ -5075,11 +5670,11 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "examples": {
-    "attrPath": "lomiri-qt6.lomiri-content-hub.examples",
+    "attrPath": "lomiri.lomiri-content-hub.examples",
     "pname": "examples",
     "appId": "org.nixpkgs.examples",
     "desktopFile": "lomiri-content-hub-test-exporter.desktop",
-    "runtimeHint": "org.kde.Platform/6.10"
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "exercise-timer": {
     "attrPath": "exercise-timer",
@@ -5093,6 +5688,13 @@
     "pname": "exhibit",
     "appId": "io.github.nokse22.Exhibit",
     "desktopFile": "io.github.nokse22.Exhibit.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "exodus": {
+    "attrPath": "exodus",
+    "pname": "exodus",
+    "appId": "org.nixpkgs.exodus",
+    "desktopFile": "exodus.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "experienced-pixel-dungeon": {
@@ -5131,7 +5733,7 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "f3d": {
-    "attrPath": "python313Packages.f3d",
+    "attrPath": "python314Packages.f3d",
     "pname": "f3d",
     "appId": "org.nixpkgs.f3d",
     "desktopFile": "f3d-plugin-assimp.desktop",
@@ -5149,6 +5751,13 @@
     "pname": "factor-lang-0_100",
     "appId": "org.nixpkgs.factorlang0100",
     "desktopFile": "Factor.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "factor-lang-0_101": {
+    "attrPath": "factor-lang-0_101",
+    "pname": "factor-lang-0_101",
+    "appId": "Factor.desktop",
+    "desktopFile": "Factor.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "factor-lang-0_99": {
@@ -5173,10 +5782,24 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "factor-no-gui": {
-    "attrPath": "factorPackages.factor-no-gui",
+    "attrPath": "factorPackages-0_99.factor-no-gui",
     "pname": "factor-no-gui",
     "appId": "org.nixpkgs.factornogui",
     "desktopFile": "Factor.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "factorio": {
+    "attrPath": "factorio",
+    "pname": "factorio",
+    "appId": "org.nixpkgs.factorio",
+    "desktopFile": "factorio.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "fahclient": {
+    "attrPath": "fahclient",
+    "pname": "fahclient",
+    "appId": "org.nixpkgs.fahclient",
+    "desktopFile": "fahclient.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "falkon": {
@@ -5186,18 +5809,25 @@
     "desktopFile": "org.kde.falkon.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
-  "fancontrol-gui": {
-    "attrPath": "fancontrol-gui",
-    "pname": "fancontrol-gui",
-    "appId": "org.kde.fancontrol.gui",
-    "desktopFile": "org.kde.fancontrol.gui.desktop",
-    "runtimeHint": "org.kde.Platform/6.10"
+  "falkor": {
+    "attrPath": "falkor",
+    "pname": "falkor",
+    "appId": "org.nixpkgs.falkor",
+    "desktopFile": "falkor.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "far2l": {
     "attrPath": "far2l",
     "pname": "far2l",
     "appId": "org.nixpkgs.far2l",
     "desktopFile": "far2l-tty.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "fastmail-desktop": {
+    "attrPath": "fastmail-desktop",
+    "pname": "fastmail-desktop",
+    "appId": "org.nixpkgs.fastmaildesktop",
+    "desktopFile": "fastmail-desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "fastqc": {
@@ -5264,10 +5894,10 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "fcitx5-qt": {
-    "attrPath": "libsForQt5.fcitx5-qt",
+    "attrPath": "kdePackages.fcitx5-qt",
     "pname": "fcitx5-qt",
-    "appId": "org.fcitx.fcitx5-qt5-gui-wrapper",
-    "desktopFile": "org.fcitx.fcitx5-qt5-gui-wrapper.desktop",
+    "appId": "org.fcitx.fcitx5-qt6-gui-wrapper",
+    "desktopFile": "org.fcitx.fcitx5-qt6-gui-wrapper.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
   "fcitx5-with-addons": {
@@ -5326,6 +5956,13 @@
     "desktopFile": "feishin.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "feishu": {
+    "attrPath": "feishu",
+    "pname": "feishu",
+    "appId": "org.nixpkgs.feishu",
+    "desktopFile": "feishu.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "fend": {
     "attrPath": "fend",
     "pname": "fend",
@@ -5347,11 +5984,25 @@
     "desktopFile": "org.ffado.FfadoMixer.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "fflogs": {
+    "attrPath": "fflogs",
+    "pname": "fflogs",
+    "appId": "org.nixpkgs.fflogs",
+    "desktopFile": "fflogs.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "fheroes2": {
     "attrPath": "fheroes2",
     "pname": "fheroes2",
     "appId": "org.nixpkgs.fheroes2",
     "desktopFile": "fheroes2.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "fiddler-everywhere": {
+    "attrPath": "fiddler-everywhere",
+    "pname": "fiddler-everywhere",
+    "appId": "org.nixpkgs.fiddlereverywhere",
+    "desktopFile": "fiddler-everywhere.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "fido2-manage": {
@@ -5452,20 +6103,6 @@
     "desktopFile": "firefox.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
-  "firefox-beta": {
-    "attrPath": "firefox-beta",
-    "pname": "firefox-beta",
-    "appId": "org.nixpkgs.firefoxbeta",
-    "desktopFile": "firefox-beta.desktop",
-    "runtimeHint": "org.gnome.Platform/49"
-  },
-  "firefox-devedition": {
-    "attrPath": "firefox-devedition",
-    "pname": "firefox-devedition",
-    "appId": "org.nixpkgs.firefoxdevedition",
-    "desktopFile": "firefox-devedition.desktop",
-    "runtimeHint": "org.gnome.Platform/49"
-  },
   "firefox-esr": {
     "attrPath": "firefox-esr",
     "pname": "firefox-esr",
@@ -5536,6 +6173,13 @@
     "desktopFile": "flacon.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "fladder": {
+    "attrPath": "fladder",
+    "pname": "fladder",
+    "appId": "fladder.desktop",
+    "desktopFile": "fladder.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "flamerobin": {
     "attrPath": "flamerobin",
     "pname": "flamerobin",
@@ -5571,6 +6215,13 @@
     "desktopFile": "flashgbx.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "flashprint": {
+    "attrPath": "flashprint",
+    "pname": "flashprint",
+    "appId": "org.nixpkgs.flashprint",
+    "desktopFile": "flashprint.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "flatpak-kcm": {
     "attrPath": "kdePackages.flatpak-kcm",
     "pname": "flatpak-kcm",
@@ -5604,6 +6255,13 @@
     "pname": "flex-launcher",
     "appId": "org.nixpkgs.flexlauncher",
     "desktopFile": "flex-launcher.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "flexoptix-app": {
+    "attrPath": "flexoptix-app",
+    "pname": "flexoptix-app",
+    "appId": "org.nixpkgs.flexoptixapp",
+    "desktopFile": "flexoptix-app.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "flight-of-the-amazon-queen": {
@@ -5802,6 +6460,13 @@
     "desktopFile": "io.gitlab.adhami3310.Footage.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "fopnu": {
+    "attrPath": "fopnu",
+    "pname": "fopnu",
+    "appId": "org.nixpkgs.fopnu",
+    "desktopFile": "fopnu.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "forecast": {
     "attrPath": "forecast",
     "pname": "forecast",
@@ -5849,6 +6514,13 @@
     "pname": "four-in-a-row",
     "appId": "org.gnome.Four-in-a-row",
     "desktopFile": "org.gnome.Four-in-a-row.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "foxglove-studio": {
+    "attrPath": "foxglove-studio",
+    "pname": "foxglove-studio",
+    "appId": "foxglove-studio.desktop",
+    "desktopFile": "foxglove-studio.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "foxtrotgps": {
@@ -5991,6 +6663,13 @@
     "desktopFile": "freenukum.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "freeoffice": {
+    "attrPath": "freeoffice",
+    "pname": "freeoffice",
+    "appId": "freeoffice-planmaker.desktop",
+    "desktopFile": "freeoffice-planmaker.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "freeorion": {
     "attrPath": "freeorion",
     "pname": "freeorion",
@@ -6068,6 +6747,20 @@
     "desktopFile": "Frodo.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "frogatto": {
+    "attrPath": "frogatto",
+    "pname": "frogatto",
+    "appId": "org.nixpkgs.frogatto",
+    "desktopFile": "frogatto.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "frozen-bubble": {
+    "attrPath": "frozen-bubble",
+    "pname": "frozen-bubble",
+    "appId": "frozen-bubble.desktop",
+    "desktopFile": "frozen-bubble.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "fsearch": {
     "attrPath": "fsearch",
     "pname": "fsearch",
@@ -6115,6 +6808,13 @@
     "pname": "full",
     "appId": "org.nixpkgs.full",
     "desktopFile": "wine.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "furmark": {
+    "attrPath": "furmark",
+    "pname": "furmark",
+    "appId": "FurMark.desktop",
+    "desktopFile": "FurMark.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "furnace": {
@@ -6199,6 +6899,13 @@
     "pname": "gamepad-mirror",
     "appId": "page.codeberg.vendillah.GamepadMirror",
     "desktopFile": "page.codeberg.vendillah.GamepadMirror.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "gamepad-tool": {
+    "attrPath": "gamepad-tool",
+    "pname": "gamepad-tool",
+    "appId": "org.nixpkgs.gamepadtool",
+    "desktopFile": "gamepad-tool.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "gammaray": {
@@ -6306,6 +7013,13 @@
     "desktopFile": "gdevelop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "gdlauncher-carbon": {
+    "attrPath": "gdlauncher-carbon",
+    "pname": "gdlauncher-carbon",
+    "appId": "GDLauncher.desktop",
+    "desktopFile": "GDLauncher.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "gdm-settings": {
     "attrPath": "gdm-settings",
     "pname": "gdm-settings",
@@ -6411,6 +7125,13 @@
     "desktopFile": "genxword-gtk.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "genymotion": {
+    "attrPath": "genymotion",
+    "pname": "genymotion",
+    "appId": "org.nixpkgs.genymotion",
+    "desktopFile": "genymotion.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "geoclue2": {
     "attrPath": "geoclue2",
     "pname": "geoclue2",
@@ -6423,6 +7144,20 @@
     "pname": "geoclue2-with-demo-agent",
     "appId": "org.nixpkgs.geoclue2withdemoagent",
     "desktopFile": "geoclue-demo-agent.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "geogebra": {
+    "attrPath": "geogebra",
+    "pname": "geogebra",
+    "appId": "org.nixpkgs.geogebra",
+    "desktopFile": "geogebra.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "geogebra6": {
+    "attrPath": "geogebra6",
+    "pname": "geogebra6",
+    "appId": "org.nixpkgs.geogebra6",
+    "desktopFile": "geogebra6.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "geonkick": {
@@ -6586,6 +7321,13 @@
     "desktopFile": "git-cola-folder-handler.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "gitbutler": {
+    "attrPath": "gitbutler",
+    "pname": "gitbutler",
+    "appId": "org.nixpkgs.gitbutler",
+    "desktopFile": "gitbutler.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "gitg": {
     "attrPath": "gitg",
     "pname": "gitg",
@@ -6605,6 +7347,13 @@
     "pname": "gitify",
     "appId": "org.nixpkgs.gitify",
     "desktopFile": "gitify.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "gitkraken": {
+    "attrPath": "gitkraken",
+    "pname": "gitkraken",
+    "appId": "gitkraken.desktop",
+    "desktopFile": "gitkraken.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "gitnuro": {
@@ -6663,6 +7412,13 @@
     "desktopFile": "org.kde.glaxnimate.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "glib": {
+    "attrPath": "glib",
+    "pname": "glib",
+    "appId": "org.nixpkgs.glib",
+    "desktopFile": "glib.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "glide-media-player": {
     "attrPath": "glide-media-player",
     "pname": "glide-media-player",
@@ -6706,7 +7462,7 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "gmsh": {
-    "attrPath": "python313Packages.gmsh",
+    "attrPath": "python314Packages.gmsh",
     "pname": "gmsh",
     "appId": "org.nixpkgs.gmsh",
     "desktopFile": "gmsh.desktop",
@@ -7245,7 +8001,7 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "gnucash": {
-    "attrPath": "gnucash",
+    "attrPath": "python314Packages.gnucash",
     "pname": "gnucash",
     "appId": "org.nixpkgs.gnucash",
     "desktopFile": "gnucash.desktop",
@@ -7286,6 +8042,13 @@
     "desktopFile": "gnvim.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "go-hass-agent": {
+    "attrPath": "go-hass-agent",
+    "pname": "go-hass-agent",
+    "appId": "org.nixpkgs.gohassagent",
+    "desktopFile": "start-go-hass-agent.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "goattracker": {
     "attrPath": "goattracker",
     "pname": "goattracker",
@@ -7308,10 +8071,10 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "godot": {
-    "attrPath": "godotPackages_4_4.godot",
+    "attrPath": "godot",
     "pname": "godot",
-    "appId": "org.godotengine.Godot4.a4",
-    "desktopFile": "org.godotengine.Godot4.4.desktop",
+    "appId": "org.godotengine.Godot4.a6",
+    "desktopFile": "org.godotengine.Godot4.6.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "godot-mono": {
@@ -7363,6 +8126,13 @@
     "desktopFile": "io.github.xiaoyifang.goldendict_ng.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "gomuks": {
+    "attrPath": "gomuks",
+    "pname": "gomuks",
+    "appId": "org.nixpkgs.gomuks",
+    "desktopFile": "gomuks.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "goodvibes": {
     "attrPath": "goodvibes",
     "pname": "goodvibes",
@@ -7384,6 +8154,13 @@
     "desktopFile": "google-chat-linux.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "google-chrome": {
+    "attrPath": "google-chrome",
+    "pname": "google-chrome",
+    "appId": "org.nixpkgs.googlechrome",
+    "desktopFile": "google-chrome.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "gopeed": {
     "attrPath": "gopeed",
     "pname": "gopeed",
@@ -7396,6 +8173,13 @@
     "pname": "gosmore",
     "appId": "org.nixpkgs.gosmore",
     "desktopFile": "gosmore.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "gossip": {
+    "attrPath": "gossip",
+    "pname": "gossip",
+    "appId": "Gossip.desktop",
+    "desktopFile": "Gossip.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "gotraceui": {
@@ -7489,11 +8273,32 @@
     "desktopFile": "gpredict.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "gprojector": {
+    "attrPath": "gprojector",
+    "pname": "gprojector",
+    "appId": "gprojector.desktop",
+    "desktopFile": "gprojector.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "gpscorrelate": {
     "attrPath": "gpscorrelate",
     "pname": "gpscorrelate",
     "appId": "org.nixpkgs.gpscorrelate",
     "desktopFile": "gpscorrelate.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "gpsprune": {
+    "attrPath": "gpsprune",
+    "pname": "gpsprune",
+    "appId": "gpsprune.desktop",
+    "desktopFile": "gpsprune.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "gpt4all": {
+    "attrPath": "gpt4all",
+    "pname": "gpt4all",
+    "appId": "org.nixpkgs.gpt4all",
+    "desktopFile": "gpt4all.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "gpu-screen-recorder-gtk": {
@@ -7622,11 +8427,25 @@
     "desktopFile": "graphest.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "graphite": {
+    "attrPath": "graphite",
+    "pname": "graphite",
+    "appId": "org.nixpkgs.graphite",
+    "desktopFile": "graphite.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "graphwar": {
     "attrPath": "graphwar",
     "pname": "graphwar",
     "appId": "org.nixpkgs.graphwar",
     "desktopFile": "graphwar.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "grayjay": {
+    "attrPath": "grayjay",
+    "pname": "grayjay",
+    "appId": "Grayjay.desktop",
+    "desktopFile": "Grayjay.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "greenfoot": {
@@ -7804,6 +8623,13 @@
     "desktopFile": "org.gtkhash.gtkhash.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "gtkradiant": {
+    "attrPath": "gtkradiant",
+    "pname": "gtkradiant",
+    "appId": "gtkradiant.desktop",
+    "desktopFile": "gtkradiant.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "gtkterm": {
     "attrPath": "gtkterm",
     "pname": "gtkterm",
@@ -7839,11 +8665,32 @@
     "desktopFile": "gucharmap.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "gui-for-clash": {
+    "attrPath": "gui-for-clash",
+    "pname": "gui-for-clash",
+    "appId": "gui-for-clash.desktop",
+    "desktopFile": "gui-for-clash.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "gui-for-singbox": {
+    "attrPath": "gui-for-singbox",
+    "pname": "gui-for-singbox",
+    "appId": "gui-for-singbox.desktop",
+    "desktopFile": "gui-for-singbox.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "guitarix": {
     "attrPath": "guitarix",
     "pname": "guitarix",
     "appId": "org.nixpkgs.guitarix",
     "desktopFile": "guitarix.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "gummi": {
+    "attrPath": "gummi",
+    "pname": "gummi",
+    "appId": "org.nixpkgs.gummi",
+    "desktopFile": "gummi.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "guvcview": {
@@ -7888,6 +8735,13 @@
     "desktopFile": "gxkb.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "gyroflow": {
+    "attrPath": "gyroflow",
+    "pname": "gyroflow",
+    "appId": "gyroflow.desktop",
+    "desktopFile": "gyroflow.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "gzdoom": {
     "attrPath": "gzdoom",
     "pname": "gzdoom",
@@ -7928,6 +8782,20 @@
     "pname": "halloy",
     "appId": "org.squidowl.halloy",
     "desktopFile": "org.squidowl.halloy.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "hamrs": {
+    "attrPath": "hamrs",
+    "pname": "hamrs",
+    "appId": "org.nixpkgs.hamrs",
+    "desktopFile": "hamrs.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "hamrs-pro": {
+    "attrPath": "hamrs-pro",
+    "pname": "hamrs-pro",
+    "appId": "org.nixpkgs.hamrspro",
+    "desktopFile": "hamrs-pro.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "hamsket": {
@@ -8012,6 +8880,20 @@
     "pname": "hawkthorne-journey",
     "appId": "org.nixpkgs.hawkthornejourney",
     "desktopFile": "hawkthorne.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "hdfview": {
+    "attrPath": "hdfview",
+    "pname": "hdfview",
+    "appId": "org.nixpkgs.hdfview",
+    "desktopFile": "hdfview.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "hdos": {
+    "attrPath": "hdos",
+    "pname": "hdos",
+    "appId": "HDOS.desktop",
+    "desktopFile": "HDOS.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "hdrmerge": {
@@ -8105,6 +8987,20 @@
     "desktopFile": "helm.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "heptabase": {
+    "attrPath": "heptabase",
+    "pname": "heptabase",
+    "appId": "org.nixpkgs.heptabase",
+    "desktopFile": "heptabase.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "heroic": {
+    "attrPath": "heroic",
+    "pname": "heroic",
+    "appId": "org.nixpkgs.heroic",
+    "desktopFile": "heroic.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "heroic-unwrapped": {
     "attrPath": "heroic-unwrapped",
     "pname": "heroic-unwrapped",
@@ -8126,6 +9022,20 @@
     "desktopFile": "io.github.Hexchat.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "hey-mail": {
+    "attrPath": "hey-mail",
+    "pname": "hey-mail",
+    "appId": "org.nixpkgs.heymail",
+    "desktopFile": "hey-mail.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "heynote": {
+    "attrPath": "heynote",
+    "pname": "heynote",
+    "appId": "org.nixpkgs.heynote",
+    "desktopFile": "heynote.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "hidviz": {
     "attrPath": "hidviz",
     "pname": "hidviz",
@@ -8138,6 +9048,13 @@
     "pname": "hieroglyphic",
     "appId": "io.github.finefindus.Hieroglyphic",
     "desktopFile": "io.github.finefindus.Hieroglyphic.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "hifile": {
+    "attrPath": "hifile",
+    "pname": "hifile",
+    "appId": "org.nixpkgs.hifile",
+    "desktopFile": "hifile.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "higan": {
@@ -8210,6 +9127,13 @@
     "desktopFile": "homebank.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "honey-home": {
+    "attrPath": "honey-home",
+    "pname": "honey-home",
+    "appId": "Honey-Home.desktop",
+    "desktopFile": "Honey-Home.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "hoppscotch": {
     "attrPath": "hoppscotch",
     "pname": "hoppscotch",
@@ -8259,6 +9183,20 @@
     "desktopFile": "hp-uiscan.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "hqplayer-desktop": {
+    "attrPath": "hqplayer-desktop",
+    "pname": "hqplayer-desktop",
+    "appId": "org.nixpkgs.hqplayerdesktop",
+    "desktopFile": "hqplayer-desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "hterm": {
+    "attrPath": "hterm",
+    "pname": "hterm",
+    "appId": "org.nixpkgs.hterm",
+    "desktopFile": "hterm.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "htmldoc": {
     "attrPath": "htmldoc",
     "pname": "htmldoc",
@@ -8278,6 +9216,13 @@
     "pname": "htop-vim",
     "appId": "org.nixpkgs.htopvim",
     "desktopFile": "htop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "httpie-desktop": {
+    "attrPath": "httpie-desktop",
+    "pname": "httpie-desktop",
+    "appId": "org.nixpkgs.httpiedesktop",
+    "desktopFile": "httpie-desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "httptoolkit": {
@@ -8300,6 +9245,13 @@
     "appId": "org.nixpkgs.httraqt",
     "desktopFile": "httraqt.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "hubstaff": {
+    "attrPath": "hubstaff",
+    "pname": "hubstaff",
+    "appId": "netsoft-com.netsoft.hubstaff.desktop",
+    "desktopFile": "netsoft-com.netsoft.hubstaff.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "huggle": {
     "attrPath": "huggle",
@@ -8355,6 +9307,13 @@
     "pname": "hydrus",
     "appId": "org.nixpkgs.hydrus",
     "desktopFile": "hydrus-client.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "hyper": {
+    "attrPath": "hyper",
+    "pname": "hyper",
+    "appId": "org.nixpkgs.hyper",
+    "desktopFile": "hyper.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "hyperrogue": {
@@ -8481,6 +9440,20 @@
     "pname": "iconic",
     "appId": "nl.emphisia.icon",
     "desktopFile": "nl.emphisia.icon.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ida-free": {
+    "attrPath": "ida-free",
+    "pname": "ida-free",
+    "appId": "org.nixpkgs.idafree",
+    "desktopFile": "ida-free.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ideamaker": {
+    "attrPath": "ideamaker",
+    "pname": "ideamaker",
+    "appId": "ideamaker.desktop",
+    "desktopFile": "ideamaker.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "identity": {
@@ -8693,6 +9666,13 @@
     "desktopFile": "nvtop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "interlude": {
+    "attrPath": "interlude",
+    "pname": "interlude",
+    "appId": "Interlude.desktop",
+    "desktopFile": "Interlude.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "interstellar": {
     "attrPath": "interstellar",
     "pname": "interstellar",
@@ -8705,6 +9685,20 @@
     "pname": "intiface-central",
     "appId": "org.nixpkgs.intifacecentral",
     "desktopFile": "intiface-central.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "intune-portal": {
+    "attrPath": "intune-portal",
+    "pname": "intune-portal",
+    "appId": "org.nixpkgs.intuneportal",
+    "desktopFile": "intune-portal.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ioq3-scion": {
+    "attrPath": "ioq3-scion",
+    "pname": "ioq3-scion",
+    "appId": "IOQuake3.desktop",
+    "desktopFile": "IOQuake3.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "ioquake3": {
@@ -8742,6 +9736,13 @@
     "desktopFile": "io.github.bytezz.IPLookup.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "ipscan": {
+    "attrPath": "ipscan",
+    "pname": "ipscan",
+    "appId": "org.nixpkgs.ipscan",
+    "desktopFile": "ipscan.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "irccloud": {
     "attrPath": "irccloud",
     "pname": "irccloud",
@@ -8754,6 +9755,13 @@
     "pname": "ironwail",
     "appId": "org.nixpkgs.ironwail",
     "desktopFile": "ironwail.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "irpf": {
+    "attrPath": "irpf",
+    "pname": "irpf",
+    "appId": "irpf.desktop",
+    "desktopFile": "irpf.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "isabelle": {
@@ -8776,6 +9784,13 @@
     "appId": "org.kde.isoimagewriter",
     "desktopFile": "org.kde.isoimagewriter.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "itch": {
+    "attrPath": "itch",
+    "pname": "itch",
+    "appId": "itch.desktop",
+    "desktopFile": "itch.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "itgmania": {
     "attrPath": "itgmania",
@@ -8931,6 +9946,20 @@
     "desktopFile": "jbrowse-desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "jchempaint": {
+    "attrPath": "jchempaint",
+    "pname": "jchempaint",
+    "appId": "jchempaint.desktop",
+    "desktopFile": "jchempaint.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "jdiskreport": {
+    "attrPath": "jdiskreport",
+    "pname": "jdiskreport",
+    "appId": "jdiskreport.desktop",
+    "desktopFile": "jdiskreport.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "jedit": {
     "attrPath": "jedit",
     "pname": "jedit",
@@ -8966,11 +9995,25 @@
     "desktopFile": "jellyflix.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "jetbrains-toolbox": {
+    "attrPath": "jetbrains-toolbox",
+    "pname": "jetbrains-toolbox",
+    "appId": "org.nixpkgs.jetbrainstoolbox",
+    "desktopFile": "jetbrains-toolbox.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "jetuml": {
     "attrPath": "jetuml",
     "pname": "jetuml",
     "appId": "org.nixpkgs.jetuml",
     "desktopFile": "jetuml.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "jflap": {
+    "attrPath": "jflap",
+    "pname": "jflap",
+    "appId": "jflap.desktop",
+    "desktopFile": "jflap.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "jgmenu": {
@@ -9036,11 +10079,25 @@
     "desktopFile": "ffdec.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "jprofiler": {
+    "attrPath": "jprofiler",
+    "pname": "jprofiler",
+    "appId": "jprofiler.desktop",
+    "desktopFile": "jprofiler.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "jpsxdec": {
     "attrPath": "jpsxdec",
     "pname": "jpsxdec",
     "appId": "org.nixpkgs.jpsxdec",
     "desktopFile": "jpsxdec.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "jquake": {
+    "attrPath": "jquake",
+    "pname": "jquake",
+    "appId": "JQuake.desktop",
+    "desktopFile": "JQuake.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "js8call": {
@@ -9183,13 +10240,6 @@
     "desktopFile": "org.kde.k3b.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
-  "k4dirstat": {
-    "attrPath": "k4dirstat",
-    "pname": "k4dirstat",
-    "appId": "org.nixpkgs.k4dirstat",
-    "desktopFile": "k4dirstat.desktop",
-    "runtimeHint": "org.gnome.Platform/49"
-  },
   "kabeljau": {
     "attrPath": "kabeljau",
     "pname": "kabeljau",
@@ -9209,13 +10259,6 @@
     "pname": "kaddressbook",
     "appId": "org.nixpkgs.kaddressbook",
     "desktopFile": "kaddressbook-importer.desktop",
-    "runtimeHint": "org.kde.Platform/6.10"
-  },
-  "kaffeine": {
-    "attrPath": "kaffeine",
-    "pname": "kaffeine",
-    "appId": "org.kde.kaffeine",
-    "desktopFile": "org.kde.kaffeine.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
   "kaidan": {
@@ -9365,6 +10408,13 @@
     "desktopFile": "org.kde.kasts.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "katawa-shoujo-re-engineered": {
+    "attrPath": "katawa-shoujo-re-engineered",
+    "pname": "katawa-shoujo-re-engineered",
+    "appId": "katawa-shoujo-re-engineered.desktop",
+    "desktopFile": "katawa-shoujo-re-engineered.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "kate": {
     "attrPath": "kdePackages.kate",
     "pname": "kate",
@@ -9470,6 +10520,20 @@
     "desktopFile": "org.kde.kcharselect.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "kchat": {
+    "attrPath": "kchat",
+    "pname": "kchat",
+    "appId": "org.nixpkgs.kchat",
+    "desktopFile": "kchat.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "kchmviewer": {
+    "attrPath": "kchmviewer",
+    "pname": "kchmviewer",
+    "appId": "org.nixpkgs.kchmviewer",
+    "desktopFile": "kchmviewer.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "kclock": {
     "attrPath": "kdePackages.kclock",
     "pname": "kclock",
@@ -9534,10 +10598,10 @@
     "runtimeHint": "org.kde.Platform/6.10"
   },
   "kded": {
-    "attrPath": "libsForQt5.kded",
+    "attrPath": "kdePackages.kded",
     "pname": "kded",
-    "appId": "org.kde.kded5",
-    "desktopFile": "org.kde.kded5.desktop",
+    "appId": "org.kde.kded6",
+    "desktopFile": "org.kde.kded6.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
   "kdenlive": {
@@ -9552,13 +10616,6 @@
     "pname": "kdepim-runtime",
     "appId": "org.kde.akonadi_contacts_resource",
     "desktopFile": "org.kde.akonadi_contacts_resource.desktop",
-    "runtimeHint": "org.kde.Platform/6.10"
-  },
-  "kdesvn": {
-    "attrPath": "kdesvn",
-    "pname": "kdesvn",
-    "appId": "org.kde.kdesvn",
-    "desktopFile": "org.kde.kdesvn.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
   "kdevelop": {
@@ -9631,6 +10688,13 @@
     "desktopFile": "org.keepassxc.KeePassXC.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "keet": {
+    "attrPath": "keet",
+    "pname": "keet",
+    "appId": "org.nixpkgs.keet",
+    "desktopFile": "keet.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "keeweb": {
     "attrPath": "keeweb",
     "pname": "keeweb",
@@ -9678,6 +10742,20 @@
     "pname": "keybase-gui",
     "appId": "org.nixpkgs.keybasegui",
     "desktopFile": "keybase.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "keyguard": {
+    "attrPath": "keyguard",
+    "pname": "keyguard",
+    "appId": "keyguard.desktop",
+    "desktopFile": "keyguard.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "keymapp": {
+    "attrPath": "keymapp",
+    "pname": "keymapp",
+    "appId": "keymapp.desktop",
+    "desktopFile": "keymapp.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "keypunch": {
@@ -9758,7 +10836,7 @@
     "runtimeHint": "org.kde.Platform/6.10"
   },
   "kgraphviewer": {
-    "attrPath": "kgraphviewer",
+    "attrPath": "kdePackages.kgraphviewer",
     "pname": "kgraphviewer",
     "appId": "org.kde.kgraphviewer",
     "desktopFile": "org.kde.kgraphviewer.desktop",
@@ -9807,7 +10885,7 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "kicad": {
-    "attrPath": "python314Packages.kicad",
+    "attrPath": "python313Packages.kicad",
     "pname": "kicad",
     "appId": "org.kicad.bitmap2component",
     "desktopFile": "org.kicad.bitmap2component.desktop",
@@ -9877,10 +10955,10 @@
     "runtimeHint": "org.kde.Platform/6.10"
   },
   "kio": {
-    "attrPath": "libsForQt5.kio",
+    "attrPath": "kdePackages.kio",
     "pname": "kio",
     "appId": "org.nixpkgs.kio",
-    "desktopFile": "kcm_trash.desktop",
+    "desktopFile": "ktelnetservice6.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
   "kio-extras": {
@@ -9909,6 +10987,13 @@
     "pname": "kirimoto",
     "appId": "org.nixpkgs.kirimoto",
     "desktopFile": "grid-apps.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "kiro": {
+    "attrPath": "kiro",
+    "pname": "kiro",
+    "appId": "kiro.desktop",
+    "desktopFile": "kiro.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "kiten": {
@@ -10050,6 +11135,13 @@
     "appId": "org.kde.accountwizard",
     "desktopFile": "org.kde.accountwizard.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "kmeet": {
+    "attrPath": "kmeet",
+    "pname": "kmeet",
+    "appId": "org.nixpkgs.kmeet",
+    "desktopFile": "kmeet.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "kmenuedit": {
     "attrPath": "kdePackages.kmenuedit",
@@ -10359,13 +11451,6 @@
     "desktopFile": "org.kde.kpat.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
-  "kphotoalbum": {
-    "attrPath": "kphotoalbum",
-    "pname": "kphotoalbum",
-    "appId": "org.kde.kphotoalbum-import",
-    "desktopFile": "org.kde.kphotoalbum-import.desktop",
-    "runtimeHint": "org.kde.Platform/6.10"
-  },
   "krdc": {
     "attrPath": "kdePackages.krdc",
     "pname": "krdc",
@@ -10443,6 +11528,13 @@
     "desktopFile": "org.kde.kruler.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "krunker": {
+    "attrPath": "krunker",
+    "pname": "krunker",
+    "appId": "org.nixpkgs.krunker",
+    "desktopFile": "krunker.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "krusader": {
     "attrPath": "krusader",
     "pname": "krusader",
@@ -10484,13 +11576,6 @@
     "appId": "org.kde.ksirk",
     "desktopFile": "org.kde.ksirk.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
-  },
-  "ksmoothdock": {
-    "attrPath": "ksmoothdock",
-    "pname": "ksmoothdock",
-    "appId": "ksd.ksmoothdock",
-    "desktopFile": "ksd.ksmoothdock.desktop",
-    "runtimeHint": "org.gnome.Platform/49"
   },
   "ksnakeduel": {
     "attrPath": "kdePackages.ksnakeduel",
@@ -10626,11 +11711,11 @@
     "runtimeHint": "org.kde.Platform/6.10"
   },
   "kup": {
-    "attrPath": "kup",
+    "attrPath": "kdePackages.kup",
     "pname": "kup",
     "appId": "org.nixpkgs.kup",
     "desktopFile": "kcm_kup.desktop",
-    "runtimeHint": "org.gnome.Platform/49"
+    "runtimeHint": "org.kde.Platform/6.10"
   },
   "kupfer": {
     "attrPath": "kupfer",
@@ -10709,11 +11794,18 @@
     "desktopFile": "org.kde.kxstitch.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "labelle": {
+    "attrPath": "labelle",
+    "pname": "labelle",
+    "appId": "labelle-GUI.desktop",
+    "desktopFile": "labelle-GUI.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "labplot": {
     "attrPath": "labplot",
     "pname": "labplot",
-    "appId": "org.kde.labplot2",
-    "desktopFile": "org.kde.labplot2.desktop",
+    "appId": "org.kde.labplot",
+    "desktopFile": "org.kde.labplot.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
   "labwc-tweaks": {
@@ -10728,6 +11820,13 @@
     "pname": "labwc-tweaks-gtk",
     "appId": "org.nixpkgs.labwctweaksgtk",
     "desktopFile": "labwc-tweaks-gtk.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "labymod-launcher": {
+    "attrPath": "labymod-launcher",
+    "pname": "labymod-launcher",
+    "appId": "org.nixpkgs.labymodlauncher",
+    "desktopFile": "labymod-launcher.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "lact": {
@@ -10849,6 +11948,13 @@
     "desktopFile": "legcord.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "legends-of-equestria": {
+    "attrPath": "legends-of-equestria",
+    "pname": "legends-of-equestria",
+    "appId": "legends-of-equestria.desktop",
+    "desktopFile": "legends-of-equestria.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "lenmus": {
     "attrPath": "lenmus",
     "pname": "lenmus",
@@ -10861,6 +11967,13 @@
     "pname": "lenovo-legion",
     "appId": "org.nixpkgs.lenovolegion",
     "desktopFile": "legion_gui.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "lens": {
+    "attrPath": "lens",
+    "pname": "lens",
+    "appId": "org.nixpkgs.lens",
+    "desktopFile": "lens.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "lenspect": {
@@ -11059,13 +12172,6 @@
     "desktopFile": "org.proninyaroslav.libretrack.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
-  "librewolf": {
-    "attrPath": "librewolf",
-    "pname": "librewolf",
-    "appId": "org.nixpkgs.librewolf",
-    "desktopFile": "librewolf.desktop",
-    "runtimeHint": "org.gnome.Platform/49"
-  },
   "librum": {
     "attrPath": "librum",
     "pname": "librum",
@@ -11106,6 +12212,13 @@
     "pname": "liferea",
     "appId": "net.sourceforge.liferea",
     "desktopFile": "net.sourceforge.liferea.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "lightburn": {
+    "attrPath": "lightburn",
+    "pname": "lightburn",
+    "appId": "lightburn.desktop",
+    "desktopFile": "lightburn.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "lightsoff": {
@@ -11241,6 +12354,13 @@
     "desktopFile": "llpp.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "lmath": {
+    "attrPath": "lmath",
+    "pname": "lmath",
+    "appId": "org.nixpkgs.lmath",
+    "desktopFile": "lmath.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "lmms": {
     "attrPath": "lmms",
     "pname": "lmms",
@@ -11253,6 +12373,13 @@
     "pname": "lmms-full",
     "appId": "org.nixpkgs.lmmsfull",
     "desktopFile": "lmms.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "lmstudio": {
+    "attrPath": "lmstudio",
+    "pname": "lmstudio",
+    "appId": "org.nixpkgs.lmstudio",
+    "desktopFile": "lmstudio.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "localsend": {
@@ -11354,11 +12481,11 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "lomiri-content-hub": {
-    "attrPath": "lomiri-qt6.lomiri-content-hub",
+    "attrPath": "lomiri.lomiri-content-hub",
     "pname": "lomiri-content-hub",
     "appId": "org.nixpkgs.lomiricontenthub",
     "desktopFile": "lomiri-content-hub-send.desktop",
-    "runtimeHint": "org.kde.Platform/6.10"
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "lomiri-docviewer-app": {
     "attrPath": "lomiri.lomiri-docviewer-app",
@@ -11424,11 +12551,11 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "lomiri-url-dispatcher": {
-    "attrPath": "lomiri-qt6.lomiri-url-dispatcher",
+    "attrPath": "lomiri.lomiri-url-dispatcher",
     "pname": "lomiri-url-dispatcher",
     "appId": "org.nixpkgs.lomiriurldispatcher",
     "desktopFile": "lomiri-url-dispatcher-gui.desktop",
-    "runtimeHint": "org.kde.Platform/6.10"
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "looking-glass-client": {
     "attrPath": "looking-glass-client",
@@ -11500,6 +12627,13 @@
     "desktopFile": "LRCGET.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "lsd2dsl": {
+    "attrPath": "lsd2dsl",
+    "pname": "lsd2dsl",
+    "appId": "lsd2dsl.desktop",
+    "desktopFile": "lsd2dsl.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "lsfg-vk-ui": {
     "attrPath": "lsfg-vk-ui",
     "pname": "lsfg-vk-ui",
@@ -11526,6 +12660,13 @@
     "pname": "ltris",
     "appId": "org.nixpkgs.ltris",
     "desktopFile": "ltris2.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ltspice": {
+    "attrPath": "ltspice",
+    "pname": "ltspice",
+    "appId": "ltspice.desktop",
+    "desktopFile": "ltspice.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "luakit": {
@@ -11626,6 +12767,27 @@
     "desktopFile": "com.sidevesh.Luminance.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "lunacy": {
+    "attrPath": "lunacy",
+    "pname": "lunacy",
+    "appId": "org.nixpkgs.lunacy",
+    "desktopFile": "lunacy.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "lunar-client": {
+    "attrPath": "lunar-client",
+    "pname": "lunar-client",
+    "appId": "org.nixpkgs.lunarclient",
+    "desktopFile": "lunar-client.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "lunatask": {
+    "attrPath": "lunatask",
+    "pname": "lunatask",
+    "appId": "org.nixpkgs.lunatask",
+    "desktopFile": "lunatask.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "luppp": {
     "attrPath": "luppp",
     "pname": "luppp",
@@ -11638,6 +12800,13 @@
     "pname": "lure-of-the-temptress",
     "appId": "org.nixpkgs.lureofthetemptress",
     "desktopFile": "lure-of-the-temptress.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "lutris": {
+    "attrPath": "lutris",
+    "pname": "lutris",
+    "appId": "org.nixpkgs.lutris",
+    "desktopFile": "lutris.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "lutris-unwrapped": {
@@ -11780,6 +12949,13 @@
     "desktopFile": "lxterminal.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "lycheeslicer": {
+    "attrPath": "lycheeslicer",
+    "pname": "lycheeslicer",
+    "appId": "org.nixpkgs.lycheeslicer",
+    "desktopFile": "lycheeslicer.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "lyrebird": {
     "attrPath": "lyrebird",
     "pname": "lyrebird",
@@ -11808,6 +12984,13 @@
     "desktopFile": "m8c.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "maelstrom": {
+    "attrPath": "maelstrom",
+    "pname": "maelstrom",
+    "appId": "maelstrom.desktop",
+    "desktopFile": "maelstrom.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "maestral-gui": {
     "attrPath": "maestral-gui",
     "pname": "maestral-gui",
@@ -11820,6 +13003,13 @@
     "pname": "mailspring",
     "appId": "org.nixpkgs.mailspring",
     "desktopFile": "Mailspring.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "makemkv": {
+    "attrPath": "makemkv",
+    "pname": "makemkv",
+    "appId": "org.nixpkgs.makemkv",
+    "desktopFile": "makemkv.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "malcontent-ui": {
@@ -11836,6 +13026,13 @@
     "desktopFile": "com.github.maliit.keyboard.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "maltego": {
+    "attrPath": "maltego",
+    "pname": "maltego",
+    "appId": "maltego.desktop",
+    "desktopFile": "maltego.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "mamba": {
     "attrPath": "mamba",
     "pname": "mamba",
@@ -11848,6 +13045,13 @@
     "pname": "mame",
     "appId": "org.nixpkgs.mame",
     "desktopFile": "MAME.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "mame-tools": {
+    "attrPath": "mame-tools",
+    "pname": "mame-tools",
+    "appId": "MAME.desktop",
+    "desktopFile": "MAME.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "mandelbulber": {
@@ -11927,6 +13131,13 @@
     "desktopFile": "mari0.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "mariokart64recomp": {
+    "attrPath": "mariokart64recomp",
+    "pname": "mariokart64recomp",
+    "appId": "MarioKart64Recompiled.desktop",
+    "desktopFile": "MarioKart64Recompiled.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "marker": {
     "attrPath": "marker",
     "pname": "marker",
@@ -11941,6 +13152,13 @@
     "desktopFile": "org.kde.marknote.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "marktext": {
+    "attrPath": "marktext",
+    "pname": "marktext",
+    "appId": "org.nixpkgs.marktext",
+    "desktopFile": "marktext.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "mars-mips": {
     "attrPath": "mars-mips",
     "pname": "mars-mips",
@@ -11948,12 +13166,26 @@
     "desktopFile": "mars.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "marvin": {
+    "attrPath": "marvin",
+    "pname": "marvin",
+    "appId": "org.nixpkgs.marvin",
+    "desktopFile": "marvin.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "massif-visualizer": {
-    "attrPath": "massif-visualizer",
+    "attrPath": "kdePackages.massif-visualizer",
     "pname": "massif-visualizer",
     "appId": "org.kde.massif-visualizer",
     "desktopFile": "org.kde.massif-visualizer.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "masterpdfeditor": {
+    "attrPath": "masterpdfeditor",
+    "pname": "masterpdfeditor",
+    "appId": "org.nixpkgs.masterpdfeditor",
+    "desktopFile": "masterpdfeditor.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "mate-calc": {
     "attrPath": "mate-calc",
@@ -12072,6 +13304,13 @@
     "pname": "materialgram",
     "appId": "io.github.kukuruzka165.materialgram",
     "desktopFile": "io.github.kukuruzka165.materialgram.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "mathpix-snipping-tool": {
+    "attrPath": "mathpix-snipping-tool",
+    "pname": "mathpix-snipping-tool",
+    "appId": "org.nixpkgs.mathpixsnippingtool",
+    "desktopFile": "mathpix-snipping-tool.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "mattermost-desktop": {
@@ -12270,6 +13509,13 @@
     "desktopFile": "meshlab.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "meshtasticd": {
+    "attrPath": "meshtasticd",
+    "pname": "meshtasticd",
+    "appId": "org.nixpkgs.meshtasticd",
+    "desktopFile": "meshtasticd.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "metacity": {
     "attrPath": "metacity",
     "pname": "metacity",
@@ -12297,6 +13543,13 @@
     "appId": "org.nixpkgs.metax",
     "desktopFile": "nvtop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
+  },
+  "meteo-qt": {
+    "attrPath": "meteo-qt",
+    "pname": "meteo-qt",
+    "appId": "org.nixpkgs.meteoqt",
+    "desktopFile": "meteo-qt.desktop",
+    "runtimeHint": "org.kde.Platform/6.10"
   },
   "metronome": {
     "attrPath": "metronome",
@@ -12354,6 +13607,13 @@
     "desktopFile": "micro.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "microsoft-edge": {
+    "attrPath": "microsoft-edge",
+    "pname": "microsoft-edge",
+    "appId": "org.nixpkgs.microsoftedge",
+    "desktopFile": "microsoft-edge.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "mictray": {
     "attrPath": "mictray",
     "pname": "mictray",
@@ -12366,6 +13626,13 @@
     "pname": "midisheetmusic",
     "appId": "org.nixpkgs.midisheetmusic",
     "desktopFile": "midisheetmusic.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "mighty-mike": {
+    "attrPath": "mighty-mike",
+    "pname": "mighty-mike",
+    "appId": "org.nixpkgs.mightymike",
+    "desktopFile": "mighty-mike.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "miktex": {
@@ -12425,17 +13692,17 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "minimal": {
-    "attrPath": "wine64Packages.minimal",
+    "attrPath": "wineWow64Packages.minimal",
     "pname": "minimal",
     "appId": "org.nixpkgs.minimal",
     "desktopFile": "wine.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
-  "minitube": {
-    "attrPath": "minitube",
-    "pname": "minitube",
-    "appId": "org.nixpkgs.minitube",
-    "desktopFile": "minitube.desktop",
+  "minion": {
+    "attrPath": "minion",
+    "pname": "minion",
+    "appId": "minion.desktop",
+    "desktopFile": "minion.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "minizinc-ide": {
@@ -12443,6 +13710,13 @@
     "pname": "minizinc-ide",
     "appId": "org.nixpkgs.minizincide",
     "desktopFile": "MiniZincIDE.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "minizincide": {
+    "attrPath": "minizincide",
+    "pname": "minizincide",
+    "appId": "MiniZincIDE.desktop",
+    "desktopFile": "MiniZincIDE.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "minuet": {
@@ -12550,6 +13824,13 @@
     "desktopFile": "mobilecoin-wallet.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "mochi": {
+    "attrPath": "mochi",
+    "pname": "mochi",
+    "appId": "org.nixpkgs.mochi",
+    "desktopFile": "mochi.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "mockoon": {
     "attrPath": "mockoon",
     "pname": "mockoon",
@@ -12562,6 +13843,20 @@
     "pname": "modem-manager-gui",
     "appId": "org.nixpkgs.modemmanagergui",
     "desktopFile": "modem-manager-gui.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "modrinth-app-unwrapped": {
+    "attrPath": "modrinth-app-unwrapped",
+    "pname": "modrinth-app-unwrapped",
+    "appId": "org.nixpkgs.modrinthappunwrapped",
+    "desktopFile": "modrinth-app-unwrapped.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "molotov": {
+    "attrPath": "molotov",
+    "pname": "molotov",
+    "appId": "org.nixpkgs.molotov",
+    "desktopFile": "molotov.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "molsketch": {
@@ -12611,6 +13906,13 @@
     "pname": "mopidy-argos",
     "appId": "io.github.orontee.Argos",
     "desktopFile": "io.github.orontee.Argos.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "morgen": {
+    "attrPath": "morgen",
+    "pname": "morgen",
+    "appId": "org.nixpkgs.morgen",
+    "desktopFile": "morgen.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "morph-browser": {
@@ -12684,10 +13986,17 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "mozc-ut": {
-    "attrPath": "ibus-engines.mozc-ut",
+    "attrPath": "mozc-ut",
     "pname": "mozc-ut",
     "appId": "org.nixpkgs.mozcut",
     "desktopFile": "ibus-setup-mozc-jp.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "mozillavpn": {
+    "attrPath": "mozillavpn",
+    "pname": "mozillavpn",
+    "appId": "org.mozilla.vpn",
+    "desktopFile": "org.mozilla.vpn.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "mozo": {
@@ -12753,6 +14062,13 @@
     "desktopFile": "mpv.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "mqtt-explorer": {
+    "attrPath": "mqtt-explorer",
+    "pname": "mqtt-explorer",
+    "appId": "mqtt-explorer.desktop",
+    "desktopFile": "mqtt-explorer.desktop.desktop",
+    "runtimeHint": "org.kde.Platform/6.10"
+  },
   "mqttmultimeter": {
     "attrPath": "mqttmultimeter",
     "pname": "mqttmultimeter",
@@ -12766,6 +14082,13 @@
     "appId": "org.nixpkgs.mqttx",
     "desktopFile": "mqttx.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "mricron": {
+    "attrPath": "mricron",
+    "pname": "mricron",
+    "appId": "mricron.desktop",
+    "desktopFile": "mricron.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "mrrescue": {
     "attrPath": "mrrescue",
@@ -12807,6 +14130,13 @@
     "pname": "mtpaint",
     "appId": "org.nixpkgs.mtpaint",
     "desktopFile": "mtpaint.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "mudlet": {
+    "attrPath": "mudlet",
+    "pname": "mudlet",
+    "appId": "org.nixpkgs.mudlet",
+    "desktopFile": "mudlet.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "muffin": {
@@ -12858,6 +14188,13 @@
     "desktopFile": "info.mumble.Mumble.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "mupdf": {
+    "attrPath": "mupdf",
+    "pname": "mupdf",
+    "appId": "mupdf.desktop",
+    "desktopFile": "mupdf.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "mupen64plus": {
     "attrPath": "mupen64plus",
     "pname": "mupen64plus",
@@ -12870,6 +14207,13 @@
     "pname": "muse",
     "appId": "io.github.muse_sequencer.Muse",
     "desktopFile": "io.github.muse_sequencer.Muse.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "muse-sounds-manager": {
+    "attrPath": "muse-sounds-manager",
+    "pname": "muse-sounds-manager",
+    "appId": "org.nixpkgs.musesoundsmanager",
+    "desktopFile": "muse-sounds-manager.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "museeks": {
@@ -13033,6 +14377,13 @@
     "desktopFile": "ncspot.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "nekoray": {
+    "attrPath": "nekoray",
+    "pname": "nekoray",
+    "appId": "throne.desktop",
+    "desktopFile": "throne.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "nemiver": {
     "attrPath": "nemiver",
     "pname": "nemiver",
@@ -13089,6 +14440,13 @@
     "desktopFile": "org.daa.NeovimGtk.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "neovim-qt": {
+    "attrPath": "neovim-qt",
+    "pname": "neovim-qt",
+    "appId": "org.nixpkgs.neovimqt",
+    "desktopFile": "neovim-qt.desktop",
+    "runtimeHint": "org.kde.Platform/6.10"
+  },
   "neovim-qt-unwrapped": {
     "attrPath": "neovim-qt-unwrapped",
     "pname": "neovim-qt-unwrapped",
@@ -13124,6 +14482,13 @@
     "desktopFile": "netbeans.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "netbird": {
+    "attrPath": "netbird",
+    "pname": "netbird",
+    "appId": "org.nixpkgs.netbird",
+    "desktopFile": "netbird.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "netbird-ui": {
     "attrPath": "netbird-ui",
     "pname": "netbird-ui",
@@ -13136,6 +14501,13 @@
     "pname": "netease-cloud-music-gtk",
     "appId": "com.gitee.gmg137.NeteaseCloudMusicGtk4",
     "desktopFile": "com.gitee.gmg137.NeteaseCloudMusicGtk4.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "netgen": {
+    "attrPath": "netgen",
+    "pname": "netgen",
+    "appId": "netgen.desktop",
+    "desktopFile": "netgen.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "nethack": {
@@ -13171,6 +14543,13 @@
     "pname": "netpeek",
     "appId": "io.github.zingytomato.netpeek",
     "desktopFile": "io.github.zingytomato.netpeek.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "netron": {
+    "attrPath": "netron",
+    "pname": "netron",
+    "appId": "Netron.desktop",
+    "desktopFile": "Netron.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "networkd-notify": {
@@ -13250,6 +14629,13 @@
     "desktopFile": "Nexuiz.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "nexusmods-app": {
+    "attrPath": "nexusmods-app",
+    "pname": "nexusmods-app",
+    "appId": "org.nixpkgs.nexusmodsapp",
+    "desktopFile": "nexusmods-app.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "nicotine-plus": {
     "attrPath": "nicotine-plus",
     "pname": "nicotine-plus",
@@ -13269,6 +14655,13 @@
     "pname": "nimdow",
     "appId": "org.nixpkgs.nimdow",
     "desktopFile": "nimdow.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "nip2": {
+    "attrPath": "nip2",
+    "pname": "nip2",
+    "appId": "org.nixpkgs.nip2",
+    "desktopFile": "nip2.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "nitrogen": {
@@ -13292,11 +14685,25 @@
     "desktopFile": "com.nitrokey.nitrokey-app2.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "nix-tour": {
+    "attrPath": "nix-tour",
+    "pname": "nix-tour",
+    "appId": "nix-tour.desktop",
+    "desktopFile": "nix-tour.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "nixbit": {
     "attrPath": "nixbit",
     "pname": "nixbit",
     "appId": "org.nixpkgs.nixbit",
     "desktopFile": "nixbit.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "nmapsi4": {
+    "attrPath": "nmapsi4",
+    "pname": "nmapsi4",
+    "appId": "org.nixpkgs.nmapsi4",
+    "desktopFile": "nmapsi4.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "nmgui": {
@@ -13334,6 +14741,13 @@
     "desktopFile": "noisetorch.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "nomachine-client": {
+    "attrPath": "nomachine-client",
+    "pname": "nomachine-client",
+    "appId": "org.nixpkgs.nomachineclient",
+    "desktopFile": "nomachine-client.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "nomacs": {
     "attrPath": "nomacs",
     "pname": "nomacs",
@@ -13355,6 +14769,20 @@
     "desktopFile": "nootka.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "nordpass": {
+    "attrPath": "nordpass",
+    "pname": "nordpass",
+    "appId": "org.nixpkgs.nordpass",
+    "desktopFile": "nordpass.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "noriskclient-launcher-unwrapped": {
+    "attrPath": "noriskclient-launcher-unwrapped",
+    "pname": "noriskclient-launcher-unwrapped",
+    "appId": "org.nixpkgs.noriskclientlauncherunwrapped",
+    "desktopFile": "noriskclient-launcher-unwrapped.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "normcap": {
     "attrPath": "normcap",
     "pname": "normcap",
@@ -13367,6 +14795,27 @@
     "pname": "noson",
     "appId": "io.github.janbar.noson",
     "desktopFile": "io.github.janbar.noson.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "nosql-booster": {
+    "attrPath": "nosql-booster",
+    "pname": "nosql-booster",
+    "appId": "org.nixpkgs.nosqlbooster",
+    "desktopFile": "nosql-booster.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "nosql-workbench": {
+    "attrPath": "nosql-workbench",
+    "pname": "nosql-workbench",
+    "appId": "org.nixpkgs.nosqlworkbench",
+    "desktopFile": "nosql-workbench.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "notable": {
+    "attrPath": "notable",
+    "pname": "notable",
+    "appId": "org.nixpkgs.notable",
+    "desktopFile": "notable.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "notebook": {
@@ -13411,11 +14860,32 @@
     "desktopFile": "com.ranfdev.Notify.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "notion-app-enhanced": {
+    "attrPath": "notion-app-enhanced",
+    "pname": "notion-app-enhanced",
+    "appId": "org.nixpkgs.notionappenhanced",
+    "desktopFile": "notion-app-enhanced.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "novelwriter": {
     "attrPath": "novelwriter",
     "pname": "novelwriter",
     "appId": "org.nixpkgs.novelwriter",
     "desktopFile": "novelwriter.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "nrfconnect": {
+    "attrPath": "nrfconnect",
+    "pname": "nrfconnect",
+    "appId": "org.nixpkgs.nrfconnect",
+    "desktopFile": "nrfconnect.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "nrfconnect-bluetooth-low-energy": {
+    "attrPath": "nrfconnect-bluetooth-low-energy",
+    "pname": "nrfconnect-bluetooth-low-energy",
+    "appId": "org.nixpkgs.nrfconnectbluetoothlowenergy",
+    "desktopFile": "nrfconnect-bluetooth-low-energy.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "ns-usbloader": {
@@ -13479,6 +14949,13 @@
     "pname": "numberstation",
     "appId": "org.postmarketos.Numberstation",
     "desktopFile": "org.postmarketos.Numberstation.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "numworks-epsilon": {
+    "attrPath": "numworks-epsilon",
+    "pname": "numworks-epsilon",
+    "appId": "epsilon.desktop",
+    "desktopFile": "epsilon.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "nvidia-system-monitor-qt": {
@@ -13551,6 +15028,13 @@
     "desktopFile": "obconf-qt.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "obdautodoctor": {
+    "attrPath": "obdautodoctor",
+    "pname": "obdautodoctor",
+    "appId": "obdautodoctor.desktop",
+    "desktopFile": "obdautodoctor.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "oboete": {
     "attrPath": "oboete",
     "pname": "oboete",
@@ -13565,11 +15049,25 @@
     "desktopFile": "com.obsproject.Studio.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "obsidian": {
+    "attrPath": "obsidian",
+    "pname": "obsidian",
+    "appId": "org.nixpkgs.obsidian",
+    "desktopFile": "obsidian.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "ocelot-desktop": {
     "attrPath": "ocelot-desktop",
     "pname": "ocelot-desktop",
     "appId": "org.nixpkgs.ocelotdesktop",
     "desktopFile": "ocelot-desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ocenaudio": {
+    "attrPath": "ocenaudio",
+    "pname": "ocenaudio",
+    "appId": "org.nixpkgs.ocenaudio",
+    "desktopFile": "ocenaudio.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "ocrfeeder": {
@@ -13605,6 +15103,13 @@
     "pname": "oculante",
     "appId": "org.nixpkgs.oculante",
     "desktopFile": "oculante.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "odafileconverter": {
+    "attrPath": "odafileconverter",
+    "pname": "odafileconverter",
+    "appId": "org.nixpkgs.odafileconverter",
+    "desktopFile": "odafileconverter.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "odamex": {
@@ -13656,6 +15161,13 @@
     "desktopFile": "olympus.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "omnissa-horizon-client": {
+    "attrPath": "omnissa-horizon-client",
+    "pname": "omnissa-horizon-client",
+    "appId": "horizon-client.desktop",
+    "desktopFile": "horizon-client.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "onboard": {
     "attrPath": "onboard",
     "pname": "onboard",
@@ -13705,11 +15217,25 @@
     "desktopFile": "org.onionshare.OnionShare.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "onlykey": {
+    "attrPath": "onlykey",
+    "pname": "onlykey",
+    "appId": "org.nixpkgs.onlykey",
+    "desktopFile": "onlykey.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "onlyoffice-desktopeditors": {
     "attrPath": "onlyoffice-desktopeditors",
     "pname": "onlyoffice-desktopeditors",
     "appId": "org.nixpkgs.onlyofficedesktopeditors",
     "desktopFile": "onlyoffice-desktopeditors.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "onyx": {
+    "attrPath": "onyx",
+    "pname": "onyx",
+    "appId": "onyx.desktop",
+    "desktopFile": "onyx.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "oo7-portal": {
@@ -13752,6 +15278,13 @@
     "pname": "open-scq30",
     "appId": "com.oppzippy.OpenSCQ30",
     "desktopFile": "com.oppzippy.OpenSCQ30.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "open-stage-control": {
+    "attrPath": "open-stage-control",
+    "pname": "open-stage-control",
+    "appId": "open-stage-control.desktop",
+    "desktopFile": "open-stage-control.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "openambit": {
@@ -13864,6 +15397,13 @@
     "pname": "openja",
     "appId": "org.nixpkgs.openja",
     "desktopFile": "jamp.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "openjk": {
+    "attrPath": "openjk",
+    "pname": "openjk",
+    "appId": "org.nixpkgs.openjk",
+    "desktopFile": "openjk.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "openjo": {
@@ -14167,11 +15707,25 @@
     "desktopFile": "osdlyrics.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "osmium": {
+    "attrPath": "osmium",
+    "pname": "osmium",
+    "appId": "org.nixpkgs.osmium",
+    "desktopFile": "osmium.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "osmo": {
     "attrPath": "osmo",
     "pname": "osmo",
     "appId": "org.nixpkgs.osmo",
     "desktopFile": "osmo.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "osmscout-server": {
+    "attrPath": "osmscout-server",
+    "pname": "osmscout-server",
+    "appId": "org.nixpkgs.osmscoutserver",
+    "desktopFile": "osmscout-server-gui.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "ossia-score": {
@@ -14188,6 +15742,20 @@
     "desktopFile": "ostinato.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "osu-lazer": {
+    "attrPath": "osu-lazer",
+    "pname": "osu-lazer",
+    "appId": "osu.desktop",
+    "desktopFile": "osu.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "osu-lazer-bin": {
+    "attrPath": "osu-lazer-bin",
+    "pname": "osu-lazer-bin",
+    "appId": "org.nixpkgs.osulazerbin",
+    "desktopFile": "osu-lazer-bin.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "otpclient": {
     "attrPath": "otpclient",
     "pname": "otpclient",
@@ -14200,6 +15768,20 @@
     "pname": "otto-matic",
     "appId": "io.jor.ottomatic",
     "desktopFile": "io.jor.ottomatic.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "outfly": {
+    "attrPath": "outfly",
+    "pname": "outfly",
+    "appId": "outfly.desktop",
+    "desktopFile": "outfly.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "outfox": {
+    "attrPath": "outfox",
+    "pname": "outfox",
+    "appId": "org.nixpkgs.outfox",
+    "desktopFile": "outfox.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "overlayed": {
@@ -14299,6 +15881,20 @@
     "appId": "org.kde.palapeli",
     "desktopFile": "org.kde.palapeli.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "palemoon-bin": {
+    "attrPath": "palemoon-bin",
+    "pname": "palemoon-bin",
+    "appId": "palemoon-bin.desktop",
+    "desktopFile": "palemoon-bin.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "palemoon-gtk2-bin": {
+    "attrPath": "palemoon-gtk2-bin",
+    "pname": "palemoon-gtk2-bin",
+    "appId": "palemoon-bin.desktop",
+    "desktopFile": "palemoon-bin.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "paleta": {
     "attrPath": "paleta",
@@ -14447,6 +16043,13 @@
     "desktopFile": "org.xfce.Parole.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "parsify": {
+    "attrPath": "parsify",
+    "pname": "parsify",
+    "appId": "org.nixpkgs.parsify",
+    "desktopFile": "parsify.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "partitionmanager": {
     "attrPath": "kdePackages.partitionmanager",
     "pname": "partitionmanager",
@@ -14496,6 +16099,13 @@
     "desktopFile": "patchmatrix.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "path-of-building": {
+    "attrPath": "path-of-building",
+    "pname": "path-of-building",
+    "appId": "rusty-path-of-building-1.desktop",
+    "desktopFile": "rusty-path-of-building-1.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "pattypan": {
     "attrPath": "pattypan",
     "pname": "pattypan",
@@ -14517,11 +16127,25 @@
     "desktopFile": "pavucontrol-qt.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "pax-britannica": {
+    "attrPath": "pax-britannica",
+    "pname": "pax-britannica",
+    "appId": "org.nixpkgs.paxbritannica",
+    "desktopFile": "pax-britannica.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "pcb": {
     "attrPath": "pcb",
     "pname": "pcb",
     "appId": "org.nixpkgs.pcb",
     "desktopFile": "pcb.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "pcloud": {
+    "attrPath": "pcloud",
+    "pname": "pcloud",
+    "appId": "org.nixpkgs.pcloud",
+    "desktopFile": "pcloud.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "pcmanfm": {
@@ -14578,6 +16202,13 @@
     "pname": "pdfmixtool",
     "appId": "eu.scarpetta.PDFMixTool",
     "desktopFile": "eu.scarpetta.PDFMixTool.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "pdfsam-basic": {
+    "attrPath": "pdfsam-basic",
+    "pname": "pdfsam-basic",
+    "appId": "PDFsam-Basic.desktop",
+    "desktopFile": "PDFsam-Basic.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "pdftag": {
@@ -14655,6 +16286,13 @@
     "pname": "penpot-desktop",
     "appId": "org.nixpkgs.penpotdesktop",
     "desktopFile": "Penpot.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "perfect_dark": {
+    "attrPath": "perfect_dark",
+    "pname": "perfect_dark",
+    "appId": "org.nixpkgs.perfectdark",
+    "desktopFile": "perfect_dark.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "performous": {
@@ -14958,13 +16596,6 @@
     "desktopFile": "pioneers-editor.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
-  "pipecontrol": {
-    "attrPath": "pipecontrol",
-    "pname": "pipecontrol",
-    "appId": "org.nixpkgs.pipecontrol",
-    "desktopFile": "PipeControl.desktop",
-    "runtimeHint": "org.gnome.Platform/49"
-  },
   "pipeline": {
     "attrPath": "pipeline",
     "pname": "pipeline",
@@ -15014,11 +16645,25 @@
     "desktopFile": "com.orama_interactive.Pixelorama.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "pixeluvo": {
+    "attrPath": "pixeluvo",
+    "pname": "pixeluvo",
+    "appId": "org.nixpkgs.pixeluvo",
+    "desktopFile": "pixeluvo.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "pixieditor": {
     "attrPath": "pixieditor",
     "pname": "pixieditor",
     "appId": "org.nixpkgs.pixieditor",
     "desktopFile": "pixieditor.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "pixinsight": {
+    "attrPath": "pixinsight",
+    "pname": "pixinsight",
+    "appId": "org.nixpkgs.pixinsight",
+    "desktopFile": "pixinsight.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "pizarra": {
@@ -15189,6 +16834,20 @@
     "desktopFile": "org.kde.plasmatube.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "plasticscm-client-gui": {
+    "attrPath": "plasticscm-client-gui",
+    "pname": "plasticscm-client-gui",
+    "appId": "org.nixpkgs.plasticscmclientgui",
+    "desktopFile": "plasticscm-client-gui.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "plater": {
+    "attrPath": "plater",
+    "pname": "plater",
+    "appId": "plater.desktop",
+    "desktopFile": "plater.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "plattenalbum": {
     "attrPath": "plattenalbum",
     "pname": "plattenalbum",
@@ -15196,11 +16855,39 @@
     "desktopFile": "de.wagnermartin.Plattenalbum.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "playonlinux": {
+    "attrPath": "playonlinux",
+    "pname": "playonlinux",
+    "appId": "org.nixpkgs.playonlinux",
+    "desktopFile": "playonlinux.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "playtest": {
     "attrPath": "openraPackages_2019.engines.playtest",
     "pname": "playtest",
     "appId": "org.nixpkgs.playtest",
     "desktopFile": "openra-cnc.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "plex-desktop": {
+    "attrPath": "plex-desktop",
+    "pname": "plex-desktop",
+    "appId": "org.nixpkgs.plexdesktop",
+    "desktopFile": "plex-desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "plex-htpc": {
+    "attrPath": "plex-htpc",
+    "pname": "plex-htpc",
+    "appId": "org.nixpkgs.plexhtpc",
+    "desktopFile": "plex-htpc.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "plexamp": {
+    "attrPath": "plexamp",
+    "pname": "plexamp",
+    "appId": "org.nixpkgs.plexamp",
+    "desktopFile": "plexamp.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "plezy": {
@@ -15399,6 +17086,20 @@
     "desktopFile": "dev.tchx84.Portfolio.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "positron-bin": {
+    "attrPath": "positron-bin",
+    "pname": "positron-bin",
+    "appId": "org.nixpkgs.positronbin",
+    "desktopFile": "positron-bin.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "postman": {
+    "attrPath": "postman",
+    "pname": "postman",
+    "appId": "postman.desktop",
+    "desktopFile": "postman.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "pothos": {
     "attrPath": "pothos",
     "pname": "pothos",
@@ -15440,6 +17141,13 @@
     "appId": "org.nixpkgs.ppssppqt",
     "desktopFile": "ppsspp.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "ppsspp-sdl": {
+    "attrPath": "ppsspp-sdl",
+    "pname": "ppsspp-sdl",
+    "appId": "ppsspp.desktop",
+    "desktopFile": "ppsspp.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "ppsspp-sdl-wayland": {
     "attrPath": "ppsspp-sdl-wayland",
@@ -15523,6 +17231,13 @@
     "pname": "prismlauncher-unwrapped",
     "appId": "org.prismlauncher.PrismLauncher",
     "desktopFile": "org.prismlauncher.PrismLauncher.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "pritunl-client": {
+    "attrPath": "pritunl-client",
+    "pname": "pritunl-client",
+    "appId": "org.nixpkgs.pritunlclient",
+    "desktopFile": "pritunl-client.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "pro-office-calculator": {
@@ -15644,6 +17359,13 @@
     "desktopFile": "protonup-qt.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "proxyman": {
+    "attrPath": "proxyman",
+    "pname": "proxyman",
+    "appId": "org.nixpkgs.proxyman",
+    "desktopFile": "proxyman.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "proxypin": {
     "attrPath": "proxypin",
     "pname": "proxypin",
@@ -15714,6 +17436,13 @@
     "desktopFile": "puddletag.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "pulsar": {
+    "attrPath": "pulsar",
+    "pname": "pulsar",
+    "appId": "Pulsar.desktop",
+    "desktopFile": "Pulsar.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "pulse-visualizer": {
     "attrPath": "pulse-visualizer",
     "pname": "pulse-visualizer",
@@ -15763,11 +17492,25 @@
     "desktopFile": "org.puredata.pd-gui.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "putty": {
+    "attrPath": "putty",
+    "pname": "putty",
+    "appId": "PuTTY-SSH-Client.desktop",
+    "desktopFile": "PuTTY-SSH-Client.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "pvz-portable-unwrapped": {
     "attrPath": "pvz-portable-unwrapped",
     "pname": "pvz-portable-unwrapped",
     "appId": "io.github.wszqkzqk.pvz-portable",
     "desktopFile": "io.github.wszqkzqk.pvz-portable.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "pvzge": {
+    "attrPath": "pvzge",
+    "pname": "pvzge",
+    "appId": "pvzge.desktop",
+    "desktopFile": "pvzge.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "pw3270": {
@@ -15952,11 +17695,11 @@
     "desktopFile": "qdmr.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
-  "qelectrotech": {
-    "attrPath": "qelectrotech",
-    "pname": "qelectrotech",
-    "appId": "org.nixpkgs.qelectrotech",
-    "desktopFile": "qelectrotech.desktop",
+  "qemu": {
+    "attrPath": "qemu",
+    "pname": "qemu",
+    "appId": "org.nixpkgs.qemu",
+    "desktopFile": "qemu.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "qgis": {
@@ -16162,13 +17905,6 @@
     "desktopFile": "qosmic.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
-  "qownnotes": {
-    "attrPath": "qownnotes",
-    "pname": "qownnotes",
-    "appId": "PBE.QOwnNotes",
-    "desktopFile": "PBE.QOwnNotes.desktop",
-    "runtimeHint": "org.gnome.Platform/49"
-  },
   "qpaeq": {
     "attrPath": "qpaeq",
     "pname": "qpaeq",
@@ -16195,6 +17931,20 @@
     "pname": "qpwgraph",
     "appId": "org.rncbc.qpwgraph",
     "desktopFile": "org.rncbc.qpwgraph.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "qq": {
+    "attrPath": "qq",
+    "pname": "qq",
+    "appId": "org.nixpkgs.qq",
+    "desktopFile": "qq.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "qqmusic": {
+    "attrPath": "qqmusic",
+    "pname": "qqmusic",
+    "appId": "qqmusic.desktop",
+    "desktopFile": "qqmusic.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "qradiolink": {
@@ -16421,6 +18171,13 @@
     "desktopFile": "quark-goldleaf.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "quartus-prime-lite": {
+    "attrPath": "quartus-prime-lite",
+    "pname": "quartus-prime-lite",
+    "appId": "org.nixpkgs.quartusprimelite",
+    "desktopFile": "quartus-prime-lite.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "quassel": {
     "attrPath": "quassel",
     "pname": "quassel",
@@ -16433,6 +18190,13 @@
     "pname": "quasselClient",
     "appId": "org.nixpkgs.quasselClient",
     "desktopFile": "quasselclient.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "quaternion": {
+    "attrPath": "quaternion",
+    "pname": "quaternion",
+    "appId": "org.nixpkgs.quaternion",
+    "desktopFile": "quaternion.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "quba": {
@@ -16596,11 +18360,25 @@
     "desktopFile": "radicle-desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "radiotray-ng": {
+    "attrPath": "radiotray-ng",
+    "pname": "radiotray-ng",
+    "appId": "org.nixpkgs.radiotrayng",
+    "desktopFile": "radiotray-ng.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "rage": {
     "attrPath": "enlightenment.rage",
     "pname": "rage",
     "appId": "org.nixpkgs.rage",
     "desktopFile": "rage.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ragnarwm": {
+    "attrPath": "ragnarwm",
+    "pname": "ragnarwm",
+    "appId": "org.nixpkgs.ragnarwm",
+    "desktopFile": "ragnarwm.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "raider": {
@@ -16615,6 +18393,13 @@
     "pname": "rakarrack",
     "appId": "org.nixpkgs.rakarrack",
     "desktopFile": "rakarrack.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "rambox": {
+    "attrPath": "rambox",
+    "pname": "rambox",
+    "appId": "org.nixpkgs.rambox",
+    "desktopFile": "rambox.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "ranger": {
@@ -16687,6 +18472,13 @@
     "desktopFile": "rclone-browser.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "rcu": {
+    "attrPath": "rcu",
+    "pname": "rcu",
+    "appId": "rcu.desktop",
+    "desktopFile": "rcu.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "react-native-debugger": {
     "attrPath": "react-native-debugger",
     "pname": "react-native-debugger",
@@ -16708,6 +18500,20 @@
     "desktopFile": "readest.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "realvnc-vnc-viewer": {
+    "attrPath": "realvnc-vnc-viewer",
+    "pname": "realvnc-vnc-viewer",
+    "appId": "org.nixpkgs.realvncvncviewer",
+    "desktopFile": "realvnc-vnc-viewer.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "reaper": {
+    "attrPath": "reaper",
+    "pname": "reaper",
+    "appId": "org.nixpkgs.reaper",
+    "desktopFile": "reaper.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "recapp": {
     "attrPath": "recapp",
     "pname": "recapp",
@@ -16723,10 +18529,24 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "recoll": {
-    "attrPath": "python314Packages.recoll",
+    "attrPath": "recoll",
     "pname": "recoll",
     "appId": "org.nixpkgs.recoll",
     "desktopFile": "recoll-searchgui.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "redact": {
+    "attrPath": "redact",
+    "pname": "redact",
+    "appId": "org.nixpkgs.redact",
+    "desktopFile": "redact.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "redisinsight": {
+    "attrPath": "redisinsight",
+    "pname": "redisinsight",
+    "appId": "redisinsight.desktop",
+    "desktopFile": "redisinsight.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "rednotebook": {
@@ -16785,6 +18605,13 @@
     "desktopFile": "org.remmina.Remmina-file.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "remnote": {
+    "attrPath": "remnote",
+    "pname": "remnote",
+    "appId": "org.nixpkgs.remnote",
+    "desktopFile": "remnote.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "remontoire": {
     "attrPath": "remontoire",
     "pname": "remontoire",
@@ -16799,11 +18626,32 @@
     "desktopFile": "renderdoc.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "renoise": {
+    "attrPath": "renoise",
+    "pname": "renoise",
+    "appId": "org.nixpkgs.renoise",
+    "desktopFile": "renoise.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "renpy": {
     "attrPath": "renpy",
     "pname": "renpy",
     "appId": "org.nixpkgs.renpy",
     "desktopFile": "renpy.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "repath-studio": {
+    "attrPath": "repath-studio",
+    "pname": "repath-studio",
+    "appId": "Repath-Studio.desktop",
+    "desktopFile": "Repath-Studio.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "reqable": {
+    "attrPath": "reqable",
+    "pname": "reqable",
+    "appId": "org.nixpkgs.reqable",
+    "desktopFile": "reqable.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "requestly": {
@@ -16932,6 +18780,13 @@
     "desktopFile": "rigelengine.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "rimsort": {
+    "attrPath": "rimsort",
+    "pname": "rimsort",
+    "appId": "RimSort.desktop",
+    "desktopFile": "RimSort.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "ringboard": {
     "attrPath": "ringboard",
     "pname": "ringboard",
@@ -17023,6 +18878,13 @@
     "desktopFile": "com.github.flxzt.rnote.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "roam-research": {
+    "attrPath": "roam-research",
+    "pname": "roam-research",
+    "appId": "org.nixpkgs.roamresearch",
+    "desktopFile": "roam-research.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "robo3t": {
     "attrPath": "robo3t",
     "pname": "robo3t",
@@ -17079,11 +18941,46 @@
     "desktopFile": "rofi-theme-selector.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "roomarranger": {
+    "attrPath": "roomarranger",
+    "pname": "roomarranger",
+    "appId": "roomarranger.desktop",
+    "desktopFile": "roomarranger.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "roomeqwizard": {
+    "attrPath": "roomeqwizard",
+    "pname": "roomeqwizard",
+    "appId": "org.nixpkgs.roomeqwizard",
+    "desktopFile": "roomeqwizard.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "rosegarden": {
     "attrPath": "rosegarden",
     "pname": "rosegarden",
     "appId": "com.rosegardenmusic.rosegarden",
     "desktopFile": "com.rosegardenmusic.rosegarden.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "rott": {
+    "attrPath": "rott",
+    "pname": "rott",
+    "appId": "rott.desktop",
+    "desktopFile": "rott.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "rott-shareware": {
+    "attrPath": "rott-shareware",
+    "pname": "rott-shareware",
+    "appId": "rott.desktop",
+    "desktopFile": "rott.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "rovium": {
+    "attrPath": "rovium",
+    "pname": "rovium",
+    "appId": "org.nixpkgs.rovium",
+    "desktopFile": "rovium.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "roxterm": {
@@ -17169,6 +19066,13 @@
     "appId": "org.kde.ruqola",
     "desktopFile": "org.kde.ruqola.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "rustdesk": {
+    "attrPath": "rustdesk",
+    "pname": "rustdesk",
+    "appId": "rustdesk.desktop",
+    "desktopFile": "rustdesk.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "rustdesk-flutter": {
     "attrPath": "rustdesk-flutter",
@@ -17275,6 +19179,20 @@
     "desktopFile": "org.tabos.saldo.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "saleae-logic": {
+    "attrPath": "saleae-logic",
+    "pname": "saleae-logic",
+    "appId": "org.nixpkgs.saleaelogic",
+    "desktopFile": "saleae-logic.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "saleae-logic-2": {
+    "attrPath": "saleae-logic-2",
+    "pname": "saleae-logic-2",
+    "appId": "org.nixpkgs.saleaelogic2",
+    "desktopFile": "saleae-logic-2.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "sameboy": {
     "attrPath": "sameboy",
     "pname": "sameboy",
@@ -17322,6 +19240,13 @@
     "pname": "satty",
     "appId": "org.nixpkgs.satty",
     "desktopFile": "satty.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "sauerbraten": {
+    "attrPath": "sauerbraten",
+    "pname": "sauerbraten",
+    "appId": "sauerbraten.desktop",
+    "desktopFile": "sauerbraten.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "savvycan": {
@@ -17387,6 +19312,13 @@
     "desktopFile": "scenebuilder.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "scenic-view": {
+    "attrPath": "scenic-view",
+    "pname": "scenic-view",
+    "appId": "scenic-view.desktop",
+    "desktopFile": "scenic-view.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "schemes": {
     "attrPath": "schemes",
     "pname": "schemes",
@@ -17406,6 +19338,13 @@
     "pname": "schismtracker",
     "appId": "org.nixpkgs.schismtracker",
     "desktopFile": "schism.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "scid-vs-pc": {
+    "attrPath": "scid-vs-pc",
+    "pname": "scid-vs-pc",
+    "appId": "org.nixpkgs.scidvspc",
+    "desktopFile": "scid-vs-pc.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "scilab-bin": {
@@ -17532,6 +19471,20 @@
     "pname": "seamly2d",
     "appId": "org.nixpkgs.seamly2d",
     "desktopFile": "seamly2d.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "segger-jlink": {
+    "attrPath": "segger-jlink",
+    "pname": "segger-jlink",
+    "appId": "JFlash.desktop",
+    "desktopFile": "JFlash.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "segger-ozone": {
+    "attrPath": "segger-ozone",
+    "pname": "segger-ozone",
+    "appId": "segger-ozone.desktop",
+    "desktopFile": "segger-ozone.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "selectdefaultapplication": {
@@ -17688,6 +19641,13 @@
     "desktopFile": "org.postmarketos.Shipments.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "shipwright": {
+    "attrPath": "shipwright",
+    "pname": "shipwright",
+    "appId": "soh.desktop",
+    "desktopFile": "soh.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "shogihome": {
     "attrPath": "shogihome",
     "pname": "shogihome",
@@ -17779,6 +19739,13 @@
     "desktopFile": "kcm_sierrabreezeenhanceddecoration.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "sieve-editor-gui": {
+    "attrPath": "sieve-editor-gui",
+    "pname": "sieve-editor-gui",
+    "appId": "sieve-editor-gui.desktop",
+    "desktopFile": "sieve-editor-gui.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "sigdigger": {
     "attrPath": "sigdigger",
     "pname": "sigdigger",
@@ -17812,6 +19779,13 @@
     "pname": "sigrok-cli",
     "appId": "org.sigrok.sigrok-cli",
     "desktopFile": "org.sigrok.sigrok-cli.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "silverfort-client": {
+    "attrPath": "silverfort-client",
+    "pname": "silverfort-client",
+    "appId": "silverfort-client.desktop",
+    "desktopFile": "silverfort-client.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "simple-live-app": {
@@ -17961,6 +19935,13 @@
     "desktopFile": "org.skytemple.SkyTemple.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "slack": {
+    "attrPath": "slack",
+    "pname": "slack",
+    "appId": "org.nixpkgs.slack",
+    "desktopFile": "slack.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "slacky": {
     "attrPath": "slacky",
     "pname": "slacky",
@@ -18010,6 +19991,27 @@
     "desktopFile": "sly.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "sm64coopdx": {
+    "attrPath": "sm64coopdx",
+    "pname": "sm64coopdx",
+    "appId": "sm64coopdx.desktop",
+    "desktopFile": "sm64coopdx.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "smartgit": {
+    "attrPath": "smartgit",
+    "pname": "smartgit",
+    "appId": "org.nixpkgs.smartgit",
+    "desktopFile": "smartgit.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "smartsynchronize": {
+    "attrPath": "smartsynchronize",
+    "pname": "smartsynchronize",
+    "appId": "org.nixpkgs.smartsynchronize",
+    "desktopFile": "smartsynchronize.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "smile": {
     "attrPath": "smile",
     "pname": "smile",
@@ -18036,6 +20038,20 @@
     "pname": "smuxi",
     "appId": "org.nixpkgs.smuxi",
     "desktopFile": "smuxi-frontend-gnome.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "snapdragon-profiler": {
+    "attrPath": "snapdragon-profiler",
+    "pname": "snapdragon-profiler",
+    "appId": "snapdragon-profiler.desktop",
+    "desktopFile": "snapdragon-profiler.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "snapmaker-luban": {
+    "attrPath": "snapmaker-luban",
+    "pname": "snapmaker-luban",
+    "appId": "snapmaker-luban.desktop",
+    "desktopFile": "snapmaker-luban.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "snapper-gui": {
@@ -18078,6 +20094,13 @@
     "pname": "sniffnet",
     "appId": "org.nixpkgs.sniffnet",
     "desktopFile": "sniffnet.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "snipaste": {
+    "attrPath": "snipaste",
+    "pname": "snipaste",
+    "appId": "org.nixpkgs.snipaste",
+    "desktopFile": "snipaste.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "snippetpixie": {
@@ -18134,6 +20157,20 @@
     "pname": "socalabs-voc",
     "appId": "org.nixpkgs.socalabsvoc",
     "desktopFile": "socalabs-voc.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "softmaker-office": {
+    "attrPath": "softmaker-office",
+    "pname": "softmaker-office",
+    "appId": "softmaker-office-planmaker.desktop",
+    "desktopFile": "softmaker-office-planmaker.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "softmaker-office-nx": {
+    "attrPath": "softmaker-office-nx",
+    "pname": "softmaker-office-nx",
+    "appId": "softmaker-office-nx-planmaker.desktop",
+    "desktopFile": "softmaker-office-nx-planmaker.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "solaar": {
@@ -18206,6 +20243,13 @@
     "desktopFile": "sonic-lineup.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "sonic-pi": {
+    "attrPath": "sonic-pi",
+    "pname": "sonic-pi",
+    "appId": "sonic-pi.desktop",
+    "desktopFile": "sonic-pi.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "sonic-visualiser": {
     "attrPath": "sonic-visualiser",
     "pname": "sonic-visualiser",
@@ -18255,6 +20299,20 @@
     "desktopFile": "soundconverter.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "soundtracker": {
+    "attrPath": "soundtracker",
+    "pname": "soundtracker",
+    "appId": "org.nixpkgs.soundtracker",
+    "desktopFile": "soundtracker.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "soundwireserver": {
+    "attrPath": "soundwireserver",
+    "pname": "soundwireserver",
+    "appId": "org.nixpkgs.soundwireserver",
+    "desktopFile": "soundwireserver.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "sourcegit": {
     "attrPath": "sourcegit",
     "pname": "sourcegit",
@@ -18295,6 +20353,13 @@
     "pname": "spacedrive",
     "appId": "org.nixpkgs.spacedrive",
     "desktopFile": "Spacedrive.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "spaghettikart": {
+    "attrPath": "spaghettikart",
+    "pname": "spaghettikart",
+    "appId": "spaghettikart.desktop",
+    "desktopFile": "spaghettikart.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "sparkle": {
@@ -18367,6 +20432,13 @@
     "desktopFile": "spek.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "spideroak": {
+    "attrPath": "spideroak",
+    "pname": "spideroak",
+    "appId": "org.nixpkgs.spideroak",
+    "desktopFile": "spideroak.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "splayer": {
     "attrPath": "splayer",
     "pname": "splayer",
@@ -18393,6 +20465,13 @@
     "pname": "spot",
     "appId": "dev.alextren.Spot",
     "desktopFile": "dev.alextren.Spot.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "spotify": {
+    "attrPath": "spotify",
+    "pname": "spotify",
+    "appId": "org.nixpkgs.spotify",
+    "desktopFile": "spotify.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "spotify-qt": {
@@ -18451,6 +20530,20 @@
     "desktopFile": "im.srain.Srain.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "srb2": {
+    "attrPath": "srb2",
+    "pname": "srb2",
+    "appId": "Sonic-Robo-Blast-2.desktop",
+    "desktopFile": "Sonic-Robo-Blast-2.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "srb2kart": {
+    "attrPath": "srb2kart",
+    "pname": "srb2kart",
+    "appId": "Sonic-Robo-Blast-2-Kart.desktop",
+    "desktopFile": "Sonic-Robo-Blast-2-Kart.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "ss": {
     "attrPath": "openraPackages_2019.mods.ss",
     "pname": "ss",
@@ -18480,7 +20573,7 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "stagingFull": {
-    "attrPath": "wineWow64Packages.stagingFull",
+    "attrPath": "wine64Packages.stagingFull",
     "pname": "stagingFull",
     "appId": "org.nixpkgs.stagingFull",
     "desktopFile": "wine.desktop",
@@ -18493,11 +20586,46 @@
     "desktopFile": "standard-notes.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "starc": {
+    "attrPath": "starc",
+    "pname": "starc",
+    "appId": "org.nixpkgs.starc",
+    "desktopFile": "starc.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "starfox64recomp": {
+    "attrPath": "starfox64recomp",
+    "pname": "starfox64recomp",
+    "appId": "Starfox64Recompiled.desktop",
+    "desktopFile": "Starfox64Recompiled.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "starsector": {
+    "attrPath": "starsector",
+    "pname": "starsector",
+    "appId": "starsector.desktop",
+    "desktopFile": "starsector.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "starship-sf64": {
+    "attrPath": "starship-sf64",
+    "pname": "starship-sf64",
+    "appId": "Starship.desktop",
+    "desktopFile": "Starship.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "startup-disk": {
     "attrPath": "startup-disk",
     "pname": "startup-disk",
     "appId": "org.startup_disk.StartupDisk",
     "desktopFile": "org.startup_disk.StartupDisk.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "staruml": {
+    "attrPath": "staruml",
+    "pname": "staruml",
+    "appId": "org.nixpkgs.staruml",
+    "desktopFile": "staruml.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "status-im": {
@@ -18519,6 +20647,20 @@
     "pname": "steam-rom-manager",
     "appId": "org.nixpkgs.steamrommanager",
     "desktopFile": "steam-rom-manager.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "steam-unwrapped": {
+    "attrPath": "steam-unwrapped",
+    "pname": "steam-unwrapped",
+    "appId": "org.nixpkgs.steamunwrapped",
+    "desktopFile": "steam-unwrapped.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "steamos-devkit": {
+    "attrPath": "steamos-devkit",
+    "pname": "steamos-devkit",
+    "appId": "SteamOS-Devkit.desktop",
+    "desktopFile": "SteamOS-Devkit.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "steamtinkerlaunch": {
@@ -18570,6 +20712,13 @@
     "desktopFile": "stepmania.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "stereotool": {
+    "attrPath": "stereotool",
+    "pname": "stereotool",
+    "appId": "stereotool-alsa.desktop",
+    "desktopFile": "stereotool-alsa.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "stevia": {
     "attrPath": "stevia",
     "pname": "stevia",
@@ -18605,6 +20754,20 @@
     "desktopFile": "stlink-gui.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "stm32cubemx": {
+    "attrPath": "stm32cubemx",
+    "pname": "stm32cubemx",
+    "appId": "org.nixpkgs.stm32cubemx",
+    "desktopFile": "stm32cubemx.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "stoat-desktop": {
+    "attrPath": "stoat-desktop",
+    "pname": "stoat-desktop",
+    "appId": "Stoat.desktop",
+    "desktopFile": "Stoat.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "stockpile": {
     "attrPath": "stockpile",
     "pname": "stockpile",
@@ -18617,6 +20780,13 @@
     "pname": "stoken",
     "appId": "org.nixpkgs.stoken",
     "desktopFile": "stoken-gui-small.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "stone-kingdoms": {
+    "attrPath": "stone-kingdoms",
+    "pname": "stone-kingdoms",
+    "appId": "stone-kingdoms.desktop",
+    "desktopFile": "stone-kingdoms.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "stopmotion": {
@@ -18654,6 +20824,13 @@
     "desktopFile": "streamlink-twitch-gui.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "stremio-linux-shell": {
+    "attrPath": "stremio-linux-shell",
+    "pname": "stremio-linux-shell",
+    "appId": "org.nixpkgs.stremiolinuxshell",
+    "desktopFile": "stremio-linux-shell.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "stretchly": {
     "attrPath": "stretchly",
     "pname": "stretchly",
@@ -18687,6 +20864,20 @@
     "pname": "styluslabs-write",
     "appId": "org.nixpkgs.styluslabswrite",
     "desktopFile": "Write.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "styluslabs-write-bin": {
+    "attrPath": "styluslabs-write-bin",
+    "pname": "styluslabs-write-bin",
+    "appId": "org.nixpkgs.styluslabswritebin",
+    "desktopFile": "styluslabs-write-bin.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "sublime": {
+    "attrPath": "sublime",
+    "pname": "sublime",
+    "appId": "org.nixpkgs.sublime",
+    "desktopFile": "sublime.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "subsurface": {
@@ -18724,11 +20915,25 @@
     "desktopFile": "summoning-pixel-dungeon.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "sunsama": {
+    "attrPath": "sunsama",
+    "pname": "sunsama",
+    "appId": "org.nixpkgs.sunsama",
+    "desktopFile": "sunsama.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "sunshine": {
     "attrPath": "sunshine",
     "pname": "sunshine",
     "appId": "dev.lizardbyte.app.Sunshine",
     "desktopFile": "dev.lizardbyte.app.Sunshine.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "sunvox": {
+    "attrPath": "sunvox",
+    "pname": "sunvox",
+    "appId": "sunvox.desktop",
+    "desktopFile": "sunvox.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "super-productivity": {
@@ -18750,6 +20955,13 @@
     "pname": "super-slicer-beta",
     "appId": "org.nixpkgs.superslicerbeta",
     "desktopFile": "SuperSlicer-Gcodeviewer.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "super-slicer-latest": {
+    "attrPath": "super-slicer-latest",
+    "pname": "super-slicer-latest",
+    "appId": "superslicer.desktop",
+    "desktopFile": "superslicer.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "supercell-wx": {
@@ -18843,6 +21055,20 @@
     "desktopFile": "sViewIV.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "svp": {
+    "attrPath": "svp",
+    "pname": "svp",
+    "appId": "svp-manager4.desktop",
+    "desktopFile": "svp-manager4.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "svxlink": {
+    "attrPath": "svxlink",
+    "pname": "svxlink",
+    "appId": "org.nixpkgs.svxlink",
+    "desktopFile": "qtel.desktop",
+    "runtimeHint": "org.kde.Platform/6.10"
+  },
   "swappy": {
     "attrPath": "swappy",
     "pname": "swappy",
@@ -18916,8 +21142,15 @@
   "switchfin": {
     "attrPath": "switchfin",
     "pname": "switchfin",
-    "appId": "org.player.switchfin",
-    "desktopFile": "org.player.switchfin.desktop",
+    "appId": "fun.dragonfly.switchfin",
+    "desktopFile": "fun.dragonfly.switchfin.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "sx": {
+    "attrPath": "sx",
+    "pname": "sx",
+    "appId": "org.nixpkgs.sx",
+    "desktopFile": "sx.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "sxiv": {
@@ -19011,6 +21244,13 @@
     "desktopFile": "org.synfig.SynfigStudio.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "synthesia": {
+    "attrPath": "synthesia",
+    "pname": "synthesia",
+    "appId": "synthesia.desktop",
+    "desktopFile": "synthesia.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "synthv1": {
     "attrPath": "synthv1",
     "pname": "synthv1",
@@ -19079,6 +21319,13 @@
     "pname": "table",
     "appId": "org.nixpkgs.table",
     "desktopFile": "ibus-setup-table.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tableplus": {
+    "attrPath": "tableplus",
+    "pname": "tableplus",
+    "appId": "org.nixpkgs.tableplus",
+    "desktopFile": "tableplus.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "tabularis": {
@@ -19151,6 +21398,13 @@
     "desktopFile": "tamatool.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "tana": {
+    "attrPath": "tana",
+    "pname": "tana",
+    "appId": "org.nixpkgs.tana",
+    "desktopFile": "tana.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "tangara-companion": {
     "attrPath": "tangara-companion",
     "pname": "tangara-companion",
@@ -19221,11 +21475,46 @@
     "desktopFile": "tbe.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "tdarr-node": {
+    "attrPath": "tdarr-node",
+    "pname": "tdarr-node",
+    "appId": "Tdarr-Node-Tray.desktop",
+    "desktopFile": "Tdarr-Node-Tray.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tdarr-server": {
+    "attrPath": "tdarr-server",
+    "pname": "tdarr-server",
+    "appId": "Tdarr-Server-Tray.desktop",
+    "desktopFile": "Tdarr-Server-Tray.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "teams-for-linux": {
     "attrPath": "teams-for-linux",
     "pname": "teams-for-linux",
     "appId": "org.nixpkgs.teamsforlinux",
     "desktopFile": "teams-for-linux.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "teamspeak3": {
+    "attrPath": "teamspeak3",
+    "pname": "teamspeak3",
+    "appId": "teamspeak.desktop",
+    "desktopFile": "teamspeak.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "teamspeak6-client": {
+    "attrPath": "teamspeak6-client",
+    "pname": "teamspeak6-client",
+    "appId": "TeamSpeak.desktop",
+    "desktopFile": "TeamSpeak.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "teamviewer": {
+    "attrPath": "teamviewer",
+    "pname": "teamviewer",
+    "appId": "org.nixpkgs.teamviewer",
+    "desktopFile": "teamviewer.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "techmino": {
@@ -19354,6 +21643,13 @@
     "desktopFile": "termite.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "termius": {
+    "attrPath": "termius",
+    "pname": "termius",
+    "appId": "org.nixpkgs.termius",
+    "desktopFile": "termius.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "terra-station": {
     "attrPath": "terra-station",
     "pname": "terra-station",
@@ -19374,6 +21670,20 @@
     "appId": "org.nixpkgs.testdiskqt",
     "desktopFile": "qphotorec.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "tetrd": {
+    "attrPath": "tetrd",
+    "pname": "tetrd",
+    "appId": "org.nixpkgs.tetrd",
+    "desktopFile": "tetrd.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tetrio-desktop": {
+    "attrPath": "tetrio-desktop",
+    "pname": "tetrio-desktop",
+    "appId": "org.nixpkgs.tetriodesktop",
+    "desktopFile": "tetrio-desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
   },
   "tev": {
     "attrPath": "tev",
@@ -19550,6 +21860,27 @@
     "desktopFile": "me.iepure.Ticketbooth.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "ticktick": {
+    "attrPath": "ticktick",
+    "pname": "ticktick",
+    "appId": "org.nixpkgs.ticktick",
+    "desktopFile": "ticktick.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tidal-hifi": {
+    "attrPath": "tidal-hifi",
+    "pname": "tidal-hifi",
+    "appId": "tidal-hifi.desktop",
+    "desktopFile": "tidal-hifi.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tigerjython": {
+    "attrPath": "tigerjython",
+    "pname": "tigerjython",
+    "appId": "TigerJython.desktop",
+    "desktopFile": "TigerJython.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "tigervnc": {
     "attrPath": "tigervnc",
     "pname": "tigervnc",
@@ -19627,6 +21958,13 @@
     "desktopFile": "timeshift-gtk.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "timeular": {
+    "attrPath": "timeular",
+    "pname": "timeular",
+    "appId": "org.nixpkgs.timeular",
+    "desktopFile": "timeular.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "tint2": {
     "attrPath": "tint2",
     "pname": "tint2",
@@ -19655,6 +21993,20 @@
     "desktopFile": "tcam-capture.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "tixati": {
+    "attrPath": "tixati",
+    "pname": "tixati",
+    "appId": "org.nixpkgs.tixati",
+    "desktopFile": "tixati.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tk-safe": {
+    "attrPath": "tk-safe",
+    "pname": "tk-safe",
+    "appId": "tk-safe.desktop",
+    "desktopFile": "tk-safe.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "tkman": {
     "attrPath": "tkman",
     "pname": "tkman",
@@ -19662,11 +22014,46 @@
     "desktopFile": "tkman.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "tkmm": {
+    "attrPath": "tkmm",
+    "pname": "tkmm",
+    "appId": "Tears-of-the-Kingdom-Mod-Manager.desktop",
+    "desktopFile": "Tears-of-the-Kingdom-Mod-Manager.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "tlaplus-toolbox": {
     "attrPath": "tlaplus-toolbox",
     "pname": "tlaplus-toolbox",
     "appId": "org.nixpkgs.tlaplustoolbox",
     "desktopFile": "TLA+Toolbox.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tlaplusToolbox": {
+    "attrPath": "tlaplusToolbox",
+    "pname": "tlaplusToolbox",
+    "appId": "TLA+Toolbox.desktop",
+    "desktopFile": "TLA+Toolbox.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tlclient": {
+    "attrPath": "tlclient",
+    "pname": "tlclient",
+    "appId": "org.nixpkgs.tlclient",
+    "desktopFile": "tlclient.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "todesk": {
+    "attrPath": "todesk",
+    "pname": "todesk",
+    "appId": "org.nixpkgs.todesk",
+    "desktopFile": "todesk.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "todoist-electron": {
+    "attrPath": "todoist-electron",
+    "pname": "todoist-electron",
+    "appId": "org.nixpkgs.todoistelectron",
+    "desktopFile": "todoist-electron.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "tokodon": {
@@ -19690,6 +22077,13 @@
     "desktopFile": "tomboy-ng.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "tome2": {
+    "attrPath": "tome2",
+    "pname": "tome2",
+    "appId": "org.nixpkgs.tome2",
+    "desktopFile": "tome2.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "tome4": {
     "attrPath": "tome4",
     "pname": "tome4",
@@ -19704,6 +22098,34 @@
     "desktopFile": "dev.dergs.Tonearm.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "tonelib-gfx": {
+    "attrPath": "tonelib-gfx",
+    "pname": "tonelib-gfx",
+    "appId": "org.nixpkgs.tonelibgfx",
+    "desktopFile": "tonelib-gfx.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tonelib-jam": {
+    "attrPath": "tonelib-jam",
+    "pname": "tonelib-jam",
+    "appId": "org.nixpkgs.tonelibjam",
+    "desktopFile": "tonelib-jam.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tonelib-metal": {
+    "attrPath": "tonelib-metal",
+    "pname": "tonelib-metal",
+    "appId": "org.nixpkgs.tonelibmetal",
+    "desktopFile": "tonelib-metal.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tonelib-zoom": {
+    "attrPath": "tonelib-zoom",
+    "pname": "tonelib-zoom",
+    "appId": "org.nixpkgs.tonelibzoom",
+    "desktopFile": "tonelib-zoom.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "tony": {
     "attrPath": "tony",
     "pname": "tony",
@@ -19716,6 +22138,13 @@
     "pname": "tor-browser",
     "appId": "org.nixpkgs.torbrowser",
     "desktopFile": "torbrowser.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "torcs": {
+    "attrPath": "torcs",
+    "pname": "torcs",
+    "appId": "org.nixpkgs.torcs",
+    "desktopFile": "torcs.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "tortoisehg": {
@@ -19809,6 +22238,13 @@
     "desktopFile": "tracy.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "tradingview": {
+    "attrPath": "tradingview",
+    "pname": "tradingview",
+    "appId": "org.nixpkgs.tradingview",
+    "desktopFile": "tradingview.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "transgui": {
     "attrPath": "transgui",
     "pname": "transgui",
@@ -19886,6 +22322,13 @@
     "desktopFile": "org.equeim.Tremotesf.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "trezor-suite": {
+    "attrPath": "trezor-suite",
+    "pname": "trezor-suite",
+    "appId": "org.nixpkgs.trezorsuite",
+    "desktopFile": "trezor-suite.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "trgui-ng": {
     "attrPath": "trgui-ng",
     "pname": "trgui-ng",
@@ -19907,11 +22350,25 @@
     "desktopFile": "Trilium.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "trilium-next-desktop": {
+    "attrPath": "trilium-next-desktop",
+    "pname": "trilium-next-desktop",
+    "appId": "Trilium.desktop",
+    "desktopFile": "Trilium.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "trimage": {
     "attrPath": "trimage",
     "pname": "trimage",
     "appId": "org.nixpkgs.trimage",
     "desktopFile": "trimage.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "trucky": {
+    "attrPath": "trucky",
+    "pname": "trucky",
+    "appId": "org.nixpkgs.trucky",
+    "desktopFile": "trucky.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "tsukimi": {
@@ -19982,6 +22439,13 @@
     "pname": "turtle",
     "appId": "de.philippun1.turtle",
     "desktopFile": "de.philippun1.turtle.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "tusk": {
+    "attrPath": "tusk",
+    "pname": "tusk",
+    "appId": "org.nixpkgs.tusk",
+    "desktopFile": "tusk.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "tutanota-desktop": {
@@ -20068,6 +22532,13 @@
     "desktopFile": "org.gnome.design.Typography.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "typora": {
+    "attrPath": "typora",
+    "pname": "typora",
+    "appId": "org.nixpkgs.typora",
+    "desktopFile": "typora.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "tyrolienne": {
     "attrPath": "tyrolienne",
     "pname": "tyrolienne",
@@ -20124,6 +22595,13 @@
     "desktopFile": "ugs.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "uhk-agent": {
+    "attrPath": "uhk-agent",
+    "pname": "uhk-agent",
+    "appId": "org.nixpkgs.uhkagent",
+    "desktopFile": "uhk-agent.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "uim": {
     "attrPath": "uim",
     "pname": "uim",
@@ -20173,11 +22651,53 @@
     "desktopFile": "unetbootin.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "unigine-heaven": {
+    "attrPath": "unigine-heaven",
+    "pname": "unigine-heaven",
+    "appId": "org.nixpkgs.unigineheaven",
+    "desktopFile": "unigine-heaven.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "unigine-sanctuary": {
+    "attrPath": "unigine-sanctuary",
+    "pname": "unigine-sanctuary",
+    "appId": "Sanctuary.desktop",
+    "desktopFile": "Sanctuary.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "unigine-tropics": {
+    "attrPath": "unigine-tropics",
+    "pname": "unigine-tropics",
+    "appId": "Tropics.desktop",
+    "desktopFile": "Tropics.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "unigine-valley": {
+    "attrPath": "unigine-valley",
+    "pname": "unigine-valley",
+    "appId": "Valley.desktop",
+    "desktopFile": "Valley.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "unison": {
     "attrPath": "unison",
     "pname": "unison",
     "appId": "org.nixpkgs.unison",
     "desktopFile": "unison-gui.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "unityhub": {
+    "attrPath": "unityhub",
+    "pname": "unityhub",
+    "appId": "org.nixpkgs.unityhub",
+    "desktopFile": "unityhub.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "unnamed-sdvx-clone": {
+    "attrPath": "unnamed-sdvx-clone",
+    "pname": "unnamed-sdvx-clone",
+    "appId": "Unnamed-SDVX-Clone.desktop",
+    "desktopFile": "Unnamed-SDVX-Clone.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "unofficial-homestuck-collection": {
@@ -20195,7 +22715,7 @@
     "runtimeHint": "org.gnome.Platform/49"
   },
   "unstableFull": {
-    "attrPath": "wineWow64Packages.unstableFull",
+    "attrPath": "wine64Packages.unstableFull",
     "pname": "unstableFull",
     "appId": "org.nixpkgs.unstableFull",
     "desktopFile": "wine.desktop",
@@ -20215,6 +22735,13 @@
     "desktopFile": "org.upnproutercontrol.UPnPRouterControl.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "uppaal": {
+    "attrPath": "uppaal",
+    "pname": "uppaal",
+    "appId": "uppaal.desktop",
+    "desktopFile": "uppaal.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "upscaler": {
     "attrPath": "upscaler",
     "pname": "upscaler",
@@ -20229,11 +22756,25 @@
     "desktopFile": "upscayl.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "upwork": {
+    "attrPath": "upwork",
+    "pname": "upwork",
+    "appId": "org.nixpkgs.upwork",
+    "desktopFile": "upwork.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "ura": {
     "attrPath": "openraPackages_2019.mods.ura",
     "pname": "ura",
     "appId": "org.nixpkgs.ura",
     "desktopFile": "openra_2019-ura.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "urbanterror": {
+    "attrPath": "urbanterror",
+    "pname": "urbanterror",
+    "appId": "urbanterror.desktop",
+    "desktopFile": "urbanterror.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "urh": {
@@ -20269,6 +22810,13 @@
     "pname": "usbview",
     "appId": "org.nixpkgs.usbview",
     "desktopFile": "usbview.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ut1999": {
+    "attrPath": "ut1999",
+    "pname": "ut1999",
+    "appId": "ut1999.desktop",
+    "desktopFile": "ut1999.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "utox": {
@@ -20397,6 +22945,13 @@
     "desktopFile": "vatprism.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "vault-tasks": {
+    "attrPath": "vault-tasks",
+    "pname": "vault-tasks",
+    "appId": "org.nixpkgs.vaulttasks",
+    "desktopFile": "vault-tasks.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "vaults": {
     "attrPath": "vaults",
     "pname": "vaults",
@@ -20416,6 +22971,13 @@
     "pname": "vcmi",
     "appId": "org.nixpkgs.vcmi",
     "desktopFile": "vcmiclient.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "vcv-rack": {
+    "attrPath": "vcv-rack",
+    "pname": "vcv-rack",
+    "appId": "vcv-rack.desktop",
+    "desktopFile": "vcv-rack.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "vdrift-bin": {
@@ -20453,6 +23015,41 @@
     "desktopFile": "venera.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "ventoy": {
+    "attrPath": "ventoy",
+    "pname": "ventoy",
+    "appId": "Ventoy.desktop",
+    "desktopFile": "Ventoy.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ventoy-full": {
+    "attrPath": "ventoy-full",
+    "pname": "ventoy-full",
+    "appId": "Ventoy.desktop",
+    "desktopFile": "Ventoy.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ventoy-full-gtk": {
+    "attrPath": "ventoy-full-gtk",
+    "pname": "ventoy-full-gtk",
+    "appId": "Ventoy.desktop",
+    "desktopFile": "Ventoy.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "ventoy-full-qt": {
+    "attrPath": "ventoy-full-qt",
+    "pname": "ventoy-full-qt",
+    "appId": "Ventoy.desktop",
+    "desktopFile": "Ventoy.desktop.desktop",
+    "runtimeHint": "org.kde.Platform/6.10"
+  },
+  "veracrypt": {
+    "attrPath": "veracrypt",
+    "pname": "veracrypt",
+    "appId": "org.nixpkgs.veracrypt",
+    "desktopFile": "veracrypt.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "verapdf": {
     "attrPath": "verapdf",
     "pname": "verapdf",
@@ -20474,11 +23071,32 @@
     "desktopFile": "vesktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "vesta-viewer": {
+    "attrPath": "vesta-viewer",
+    "pname": "vesta-viewer",
+    "appId": "vesta.desktop",
+    "desktopFile": "vesta.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "via": {
+    "attrPath": "via",
+    "pname": "via",
+    "appId": "org.nixpkgs.via",
+    "desktopFile": "via.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "vial": {
     "attrPath": "vial",
     "pname": "vial",
     "appId": "org.nixpkgs.vial",
     "desktopFile": "Vial.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "viber": {
+    "attrPath": "viber",
+    "pname": "viber",
+    "appId": "org.nixpkgs.viber",
+    "desktopFile": "viber.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "vibrantlinux": {
@@ -20586,6 +23204,13 @@
     "desktopFile": "org.vinegarhq.Vinegar.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "vintagestory": {
+    "attrPath": "vintagestory",
+    "pname": "vintagestory",
+    "appId": "vintagestory.desktop",
+    "desktopFile": "vintagestory.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "vipsdisp": {
     "attrPath": "vipsdisp",
     "pname": "vipsdisp",
@@ -20642,6 +23267,20 @@
     "desktopFile": "visidata.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "visual-paradigm-ce": {
+    "attrPath": "visual-paradigm-ce",
+    "pname": "visual-paradigm-ce",
+    "appId": "visualparadigm.desktop",
+    "desktopFile": "visualparadigm.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "vital": {
+    "attrPath": "vital",
+    "pname": "vital",
+    "appId": "vital.desktop",
+    "desktopFile": "vital.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "vite": {
     "attrPath": "vite",
     "pname": "vite",
@@ -20654,6 +23293,20 @@
     "pname": "vitetris",
     "appId": "org.nixpkgs.vitetris",
     "desktopFile": "vitetris.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "vivaldi": {
+    "attrPath": "vivaldi",
+    "pname": "vivaldi",
+    "appId": "org.nixpkgs.vivaldi",
+    "desktopFile": "vivaldi.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "vk-messenger": {
+    "attrPath": "vk-messenger",
+    "pname": "vk-messenger",
+    "appId": "org.nixpkgs.vkmessenger",
+    "desktopFile": "vk-messenger.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "vkdt": {
@@ -20691,6 +23344,13 @@
     "desktopFile": "vms-empire.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "vmware-workstation": {
+    "attrPath": "vmware-workstation",
+    "pname": "vmware-workstation",
+    "appId": "org.nixpkgs.vmwareworkstation",
+    "desktopFile": "vmware-workstation.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "vnote": {
     "attrPath": "vnote",
     "pname": "vnote",
@@ -20698,11 +23358,25 @@
     "desktopFile": "vnote.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "voicevox": {
+    "attrPath": "voicevox",
+    "pname": "voicevox",
+    "appId": "voicevox.desktop",
+    "desktopFile": "voicevox.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "vokoscreen-ng": {
     "attrPath": "vokoscreen-ng",
     "pname": "vokoscreen-ng",
     "appId": "org.nixpkgs.vokoscreenng",
     "desktopFile": "vokoscreenNG.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "volanta": {
+    "attrPath": "volanta",
+    "pname": "volanta",
+    "appId": "org.nixpkgs.volanta",
+    "desktopFile": "volanta.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "volctl": {
@@ -20733,11 +23407,25 @@
     "desktopFile": "vpv.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "vrcvideocacher": {
+    "attrPath": "vrcvideocacher",
+    "pname": "vrcvideocacher",
+    "appId": "vrcvideocacher.desktop",
+    "desktopFile": "vrcvideocacher.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "vrcx": {
     "attrPath": "vrcx",
     "pname": "vrcx",
     "appId": "org.nixpkgs.vrcx",
     "desktopFile": "vrcx.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "vscode": {
+    "attrPath": "vscode",
+    "pname": "vscode",
+    "appId": "code.desktop",
+    "desktopFile": "code.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "vscodium": {
@@ -20775,6 +23463,13 @@
     "desktopFile": "vulkanCapsViewer.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "vvvvvv": {
+    "attrPath": "vvvvvv",
+    "pname": "vvvvvv",
+    "appId": "VVVVVV.desktop",
+    "desktopFile": "VVVVVV.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "vym": {
     "attrPath": "vym",
     "pname": "vym",
@@ -20794,6 +23489,13 @@
     "pname": "warehouse",
     "appId": "io.github.flattool.Warehouse",
     "desktopFile": "io.github.flattool.Warehouse.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "wargus": {
+    "attrPath": "wargus",
+    "pname": "wargus",
+    "appId": "org.nixpkgs.wargus",
+    "desktopFile": "wargus.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "warp": {
@@ -20999,6 +23701,13 @@
     "desktopFile": "webeep-sync.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "webex": {
+    "attrPath": "webex",
+    "pname": "webex",
+    "appId": "org.nixpkgs.webex",
+    "desktopFile": "webex.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "webfont-bundler": {
     "attrPath": "webfont-bundler",
     "pname": "webfont-bundler",
@@ -21011,6 +23720,27 @@
     "pname": "webtorrent_desktop",
     "appId": "org.nixpkgs.webtorrentdesktop",
     "desktopFile": "webtorrent-desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "webull-desktop": {
+    "attrPath": "webull-desktop",
+    "pname": "webull-desktop",
+    "appId": "org.nixpkgs.webulldesktop",
+    "desktopFile": "webull-desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "wechat": {
+    "attrPath": "wechat",
+    "pname": "wechat",
+    "appId": "org.nixpkgs.wechat",
+    "desktopFile": "wechat.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "wechat-uos": {
+    "attrPath": "wechat-uos",
+    "pname": "wechat-uos",
+    "appId": "org.nixpkgs.wechatuos",
+    "desktopFile": "wechat-uos.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "weechat-unwrapped": {
@@ -21032,6 +23762,13 @@
     "pname": "welle-io",
     "appId": "io.welle.welle-gui",
     "desktopFile": "io.welle.welle-gui.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "wemeet": {
+    "attrPath": "wemeet",
+    "pname": "wemeet",
+    "appId": "org.nixpkgs.wemeet",
+    "desktopFile": "wemeet.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "wesnoth": {
@@ -21097,6 +23834,13 @@
     "desktopFile": "wheelwizard.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "widelands": {
+    "attrPath": "widelands",
+    "pname": "widelands",
+    "appId": "org.nixpkgs.widelands",
+    "desktopFile": "widelands.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "wifi-qr": {
     "attrPath": "wifi-qr",
     "pname": "wifi-qr",
@@ -21132,6 +23876,27 @@
     "desktopFile": "winboat.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "winbox": {
+    "attrPath": "winbox",
+    "pname": "winbox",
+    "appId": "winbox.desktop",
+    "desktopFile": "winbox.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "winbox3": {
+    "attrPath": "winbox3",
+    "pname": "winbox3",
+    "appId": "winbox.desktop",
+    "desktopFile": "winbox.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "winbox4": {
+    "attrPath": "winbox4",
+    "pname": "winbox4",
+    "appId": "winbox.desktop",
+    "desktopFile": "winbox.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "windowmaker": {
     "attrPath": "windowmaker",
     "pname": "windowmaker",
@@ -21151,6 +23916,20 @@
     "pname": "windsend-rs",
     "appId": "org.nixpkgs.windsendrs",
     "desktopFile": "windsend-rs.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "windsurf": {
+    "attrPath": "windsurf",
+    "pname": "windsurf",
+    "appId": "windsurf.desktop",
+    "desktopFile": "windsurf.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "windterm": {
+    "attrPath": "windterm",
+    "pname": "windterm",
+    "appId": "org.nixpkgs.windterm",
+    "desktopFile": "windterm.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "wine": {
@@ -21200,6 +23979,13 @@
     "pname": "wingpanel-with-indicators",
     "appId": "io.elementary.monitor",
     "desktopFile": "io.elementary.monitor.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "wire-desktop": {
+    "attrPath": "wire-desktop",
+    "pname": "wire-desktop",
+    "appId": "org.nixpkgs.wiredesktop",
+    "desktopFile": "wire-desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "wireshark": {
@@ -21258,11 +24044,25 @@
     "desktopFile": "WoeUSB-ng.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "wonderdraft": {
+    "attrPath": "wonderdraft",
+    "pname": "wonderdraft",
+    "appId": "org.nixpkgs.wonderdraft",
+    "desktopFile": "wonderdraft.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "woof-doom": {
     "attrPath": "woof-doom",
     "pname": "woof-doom",
     "appId": "io.github.fabiangreffrath.woof-setup",
     "desktopFile": "io.github.fabiangreffrath.woof-setup.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "wootility": {
+    "attrPath": "wootility",
+    "pname": "wootility",
+    "appId": "org.nixpkgs.wootility",
+    "desktopFile": "wootility.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "wordbook": {
@@ -21293,11 +24093,25 @@
     "desktopFile": "workrave.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "worldofgoo": {
+    "attrPath": "worldofgoo",
+    "pname": "worldofgoo",
+    "appId": "org.nixpkgs.worldofgoo",
+    "desktopFile": "worldofgoo.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "worldpainter": {
     "attrPath": "worldpainter",
     "pname": "worldpainter",
     "appId": "org.nixpkgs.worldpainter",
     "desktopFile": "worldpainter.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "wowup-cf": {
+    "attrPath": "wowup-cf",
+    "pname": "wowup-cf",
+    "appId": "org.nixpkgs.wowupcf",
+    "desktopFile": "wowup-cf.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "wox": {
@@ -21319,6 +24133,20 @@
     "pname": "wpcleaner",
     "appId": "org.nixpkgs.wpcleaner",
     "desktopFile": "wpcleaner.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "wpsoffice": {
+    "attrPath": "wpsoffice",
+    "pname": "wpsoffice",
+    "appId": "org.nixpkgs.wpsoffice",
+    "desktopFile": "wpsoffice.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "wpsoffice-cn": {
+    "attrPath": "wpsoffice-cn",
+    "pname": "wpsoffice-cn",
+    "appId": "org.nixpkgs.wpsofficecn",
+    "desktopFile": "wpsoffice-cn.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "wsjtx": {
@@ -21382,6 +24210,13 @@
     "pname": "x2goserver",
     "appId": "org.nixpkgs.x2goserver",
     "desktopFile": "x2gofm.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "xaos": {
+    "attrPath": "xaos",
+    "pname": "xaos",
+    "appId": "org.nixpkgs.xaos",
+    "desktopFile": "xaos.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "xarchiver": {
@@ -21727,11 +24562,25 @@
     "desktopFile": "xiphos.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "xivlauncher": {
+    "attrPath": "xivlauncher",
+    "pname": "xivlauncher",
+    "appId": "xivlauncher.desktop",
+    "desktopFile": "xivlauncher.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "xlog": {
     "attrPath": "xlog",
     "pname": "xlog",
     "appId": "org.nixpkgs.xlog",
     "desktopFile": "xlog.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "xmind": {
+    "attrPath": "xmind",
+    "pname": "xmind",
+    "appId": "org.nixpkgs.xmind",
+    "desktopFile": "xmind.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "xmlcopyeditor": {
@@ -21755,11 +24604,46 @@
     "desktopFile": "xmoto.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "xnconvert": {
+    "attrPath": "xnconvert",
+    "pname": "xnconvert",
+    "appId": "org.nixpkgs.xnconvert",
+    "desktopFile": "xnconvert.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "xnec2c": {
     "attrPath": "xnec2c",
     "pname": "xnec2c",
     "appId": "org.nixpkgs.xnec2c",
     "desktopFile": "xnec2c.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "xonotic": {
+    "attrPath": "xonotic",
+    "pname": "xonotic",
+    "appId": "xonotic.desktop",
+    "desktopFile": "xonotic.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "xonotic-dedicated": {
+    "attrPath": "xonotic-dedicated",
+    "pname": "xonotic-dedicated",
+    "appId": "xonotic.desktop",
+    "desktopFile": "xonotic.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "xonotic-glx": {
+    "attrPath": "xonotic-glx",
+    "pname": "xonotic-glx",
+    "appId": "xonotic.desktop",
+    "desktopFile": "xonotic.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "xonotic-sdl": {
+    "attrPath": "xonotic-sdl",
+    "pname": "xonotic-sdl",
+    "appId": "xonotic.desktop",
+    "desktopFile": "xonotic.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "xoscope": {
@@ -21795,6 +24679,13 @@
     "pname": "xpano",
     "appId": "org.nixpkgs.xpano",
     "desktopFile": "xpano.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "xpipe": {
+    "attrPath": "xpipe",
+    "pname": "xpipe",
+    "appId": "org.nixpkgs.xpipe",
+    "desktopFile": "xpipe.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "xplr": {
@@ -21860,6 +24751,13 @@
     "desktopFile": "XTuner.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "xunlei-uos": {
+    "attrPath": "xunlei-uos",
+    "pname": "xunlei-uos",
+    "appId": "org.nixpkgs.xunleiuos",
+    "desktopFile": "xunlei-uos.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "xviewer": {
     "attrPath": "xviewer",
     "pname": "xviewer",
@@ -21872,6 +24770,13 @@
     "pname": "xwayland",
     "appId": "org.freedesktop.Xwayland",
     "desktopFile": "org.freedesktop.Xwayland.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "xxe-pe": {
+    "attrPath": "xxe-pe",
+    "pname": "xxe-pe",
+    "appId": "org.nixpkgs.xxepe",
+    "desktopFile": "xxe-pe.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "xygrib": {
@@ -21937,6 +24842,13 @@
     "desktopFile": "yambar.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "yandex-music": {
+    "attrPath": "yandex-music",
+    "pname": "yandex-music",
+    "appId": "org.nixpkgs.yandexmusic",
+    "desktopFile": "yandex-music.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "yarg": {
     "attrPath": "yarg",
     "pname": "yarg",
@@ -21993,11 +24905,53 @@
     "desktopFile": "yoshimi.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "yourkit-java": {
+    "attrPath": "yourkit-java",
+    "pname": "yourkit-java",
+    "appId": "YourKit-Java-Profiler.desktop",
+    "desktopFile": "YourKit-Java-Profiler.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "youtube-music": {
+    "attrPath": "youtube-music",
+    "pname": "youtube-music",
+    "appId": "com.github.th_ch.youtube_music.desktop",
+    "desktopFile": "com.github.th_ch.youtube_music.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "yquake2": {
     "attrPath": "yquake2",
     "pname": "yquake2",
     "appId": "org.nixpkgs.yquake2",
     "desktopFile": "yquake2.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "yquake2-all-games": {
+    "attrPath": "yquake2-all-games",
+    "pname": "yquake2-all-games",
+    "appId": "ctf.desktop",
+    "desktopFile": "ctf.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "yquake2-ctf": {
+    "attrPath": "yquake2-ctf",
+    "pname": "yquake2-ctf",
+    "appId": "ctf.desktop",
+    "desktopFile": "ctf.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "yquake2-ground-zero": {
+    "attrPath": "yquake2-ground-zero",
+    "pname": "yquake2-ground-zero",
+    "appId": "rogue.desktop",
+    "desktopFile": "rogue.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "yquake2-the-reckoning": {
+    "attrPath": "yquake2-the-reckoning",
+    "pname": "yquake2-the-reckoning",
+    "appId": "xatrix.desktop",
+    "desktopFile": "xatrix.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "yr": {
@@ -22040,6 +24994,20 @@
     "pname": "yuview",
     "appId": "de.rwth_aachen.ient.YUView",
     "desktopFile": "de.rwth_aachen.ient.YUView.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "z-library-desktop": {
+    "attrPath": "z-library-desktop",
+    "pname": "z-library-desktop",
+    "appId": "org.nixpkgs.zlibrarydesktop",
+    "desktopFile": "z-library-desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "zandronum": {
+    "attrPath": "zandronum",
+    "pname": "zandronum",
+    "appId": "zandronum.desktop",
+    "desktopFile": "zandronum.desktop.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "zandronum-server": {
@@ -22161,6 +25129,13 @@
     "desktopFile": "ZeGrapher.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
+  "zelda64recomp": {
+    "attrPath": "zelda64recomp",
+    "pname": "zelda64recomp",
+    "appId": "Zelda64Recompiled.desktop",
+    "desktopFile": "Zelda64Recompiled.desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "zenity": {
     "attrPath": "zenity",
     "pname": "zenity",
@@ -22180,6 +25155,13 @@
     "pname": "zenmonitor",
     "appId": "org.nixpkgs.zenmonitor",
     "desktopFile": "zenmonitor.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "zepp-simulator": {
+    "attrPath": "zepp-simulator",
+    "pname": "zepp-simulator",
+    "appId": "org.nixpkgs.zeppsimulator",
+    "desktopFile": "zepp-simulator.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "zeroad-unwrapped": {
@@ -22210,11 +25192,25 @@
     "desktopFile": "zint-qt.desktop",
     "runtimeHint": "org.kde.Platform/6.10"
   },
+  "zoho-mail-desktop": {
+    "attrPath": "zoho-mail-desktop",
+    "pname": "zoho-mail-desktop",
+    "appId": "org.nixpkgs.zohomaildesktop",
+    "desktopFile": "zoho-mail-desktop.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
   "zoneminder": {
     "attrPath": "zoneminder",
     "pname": "zoneminder",
     "appId": "org.nixpkgs.zoneminder",
     "desktopFile": "zoneminder.desktop",
+    "runtimeHint": "org.gnome.Platform/49"
+  },
+  "zoom-us": {
+    "attrPath": "zoom-us",
+    "pname": "zoom-us",
+    "appId": "org.nixpkgs.zoomus",
+    "desktopFile": "zoom-us.desktop",
     "runtimeHint": "org.gnome.Platform/49"
   },
   "zotero": {
