@@ -187,7 +187,9 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
             // Only run GC every 5 packages to save massive amounts of time
             if packages_since_gc >= 5 {
                 println!(">>> 5 packages built! Running Nix garbage collection to free up disk space...");
-                let _ = Command::new("nix-store").arg("--gc").status();
+                let _ = Command::new("timeout")
+                    .args(["1200", "nix-store", "--gc"])
+                    .status();
                 packages_since_gc = 0;
             } else {
                 packages_since_gc += 1;
@@ -250,7 +252,8 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                             "-a", 
                             "-s", "-screen 0 1024x768x24 +extension GLX", 
                             "timeout", "10", 
-                            "flatpak", "run", 
+                            "flatpak", "run",
+                            "--allow=userns",
                             "--env=LIBGL_ALWAYS_SOFTWARE=1", 
                             "--env=GALLIUM_DRIVER=llvmpipe", 
                             app_id
