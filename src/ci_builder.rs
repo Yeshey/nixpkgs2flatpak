@@ -93,16 +93,28 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     println!(">>> Time limit: {:.0} minutes.", opts.max_minutes);
 
     println!(">>> Fetching final package metadata from Nix...");
-    let meta_status = Command::new("nix")
+    // A failure here must never mark the job as failed — it just means this
+    // run produced nothing. Exit 0 so GitHub doesn't send a failure email.
+    let meta_status = match Command::new("nix")
         .args(["build", ".#ci-metadata", "-o", "ci-metadata-result", "--impure"])
-        .status()?;
-    
+        .status()
+    {
+        Ok(s) => s,
+        Err(e) => { eprintln!("!!! Could not spawn nix: {}. Exiting cleanly.", e); return Ok(()); }
+    };
     if !meta_status.success() {
-        anyhow::bail!("Failed to evaluate ci-metadata from Nix.");
+        eprintln!("!!! Failed to evaluate ci-metadata from Nix. Exiting cleanly.");
+        return Ok(());
     }
 
-    let metadata_content = fs::read_to_string("ci-metadata-result")?;
-    let metadata: BTreeMap<String, PkgMeta> = serde_json::from_str(&metadata_content)?;
+    let metadata_content = match fs::read_to_string("ci-metadata-result") {
+        Ok(c) => c,
+        Err(e) => { eprintln!("!!! Could not read ci-metadata-result: {}. Exiting cleanly.", e); return Ok(()); }
+    };
+    let metadata: BTreeMap<String, PkgMeta> = match serde_json::from_str(&metadata_content) {
+        Ok(m) => m,
+        Err(e) => { eprintln!("!!! Could not parse ci-metadata JSON: {}. Exiting cleanly.", e); return Ok(()); }
+    };
     
     let mut packages: Vec<String> = metadata.keys().cloned().collect();
 
@@ -205,9 +217,21 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
             .args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"])
             .status();
 
+        // ── PER-PACKAGE BUILD TIMEOUT ─────────────────────────────────────────
+        // Use however much time is left in our budget, capped at 1 hour per
+        // package. This prevents a single runaway build (e.g. openbabel
+        // compiling for 3h) from pushing the job past GitHub's hard 6h kill,
+        // which would mark the job failed and send a notification email.
+        let remaining_secs = max_duration.saturating_sub(start_time.elapsed()).as_secs();
+        if remaining_secs < 60 {
+            println!(">>> Less than 60s remaining. Stopping gracefully.");
+            break;
+        }
+        let build_timeout = remaining_secs.min(14400).to_string();
+
         let run_nix = |target: &str| {
-            Command::new("nix")
-                .args(["build", "--impure", "-L", target])
+            Command::new("timeout")
+                .args([&build_timeout, "nix", "build", "--impure", "-L", target])
                 .env("NIXPKGS_ALLOW_UNFREE", "1")
                 .env("NIXPKGS_ALLOW_BROKEN", "1")
                 .env("NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM", "1")

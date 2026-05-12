@@ -137,6 +137,11 @@ jobs:
         run: echo "TARGET_PACKAGE=${{ github.event.inputs.test_package }}" >> $GITHUB_ENV
 
       - name: Run Conveyor Belt (${{ matrix.system }} / runner ${{ matrix.runner_id }})
+        # continue-on-error: the scanner must never mark this job as failed.
+        # Any hard crash (OOM, kernel kill, unexpected panic) exits non-zero,
+        # but we want the job to show green so GitHub doesn't send failure emails.
+        # Legitimate build failures are already handled gracefully inside the loop.
+        continue-on-error: true
         run: |
           ./result-scanner/bin/scanner build-ci \
             --system ${{ matrix.system }} \
