@@ -189,6 +189,12 @@
                 add_header Access-Control-Allow-Origin "*";
                 add_header Cache-Control "public, max-age=300";
               }
+
+              # Silently discard requests from vulnerability scanners probing common paths.
+              # These generate noise in the logs but are otherwise harmless.
+              location ~* ^/(actuator|\.env|\.git|\.ssh|wp-admin|wp-login|phpMyAdmin|admin|shell) {
+                return 444;  # 444 = nginx closes connection immediately, no response sent
+              }
             '';
           };
         };
