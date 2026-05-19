@@ -145,12 +145,6 @@
         # ── Nginx ──
         services.nginx = {
           enable = true;
-          serviceConfig = {
-            ExecStartPre = [
-              "${pkgs.coreutils}/bin/sh -c 'fuser -k 80/tcp 443/tcp || true'"
-            ];
-            TimeoutStopSec = "10s";
-          };
           virtualHosts.${cfg.domain} = {
             enableACME = cfg.enableSSL;
             forceSSL   = cfg.enableSSL;
@@ -200,13 +194,24 @@
 
               # Silently discard requests from vulnerability scanners probing common paths.
               # These generate noise in the logs but are otherwise harmless.
-              location ~* ^/(actuator|\.env|\.git|\.ssh|wp-admin|wp-login|phpMyAdmin|admin|shell|vendor|phpunit) {
+              location ~* \.(bak|save|lock|template|env|env\.[a-z]+|dockerenv)$ {
                 return 444;
               }
-              location ~* \.php$ {
+              location ~* ^/\.(env|dockerenv|git|ssh) {
                 return 444;
               }
             '';
+          };
+        };
+
+        systemd.services.nginx = {
+          # Use mkBefore so this port-clearing script runs BEFORE nginx does its built-in configuration syntax check
+          preStart = lib.mkBefore ''
+            ${pkgs.psmisc}/bin/fuser -k 80/tcp 443/tcp || true
+          '';
+          
+          serviceConfig = {
+            TimeoutStopSec = "10s";
           };
         };
 
