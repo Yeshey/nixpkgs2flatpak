@@ -145,7 +145,12 @@
         # ── Nginx ──
         services.nginx = {
           enable = true;
-
+          serviceConfig = {
+            ExecStartPre = [
+              "${pkgs.coreutils}/bin/sh -c 'fuser -k 80/tcp 443/tcp || true'"
+            ];
+            TimeoutStopSec = "10s";
+          };
           virtualHosts.${cfg.domain} = {
             enableACME = cfg.enableSSL;
             forceSSL   = cfg.enableSSL;
@@ -163,6 +168,9 @@
 
               # 1. Objects are immutable (they never change hashes). Cache them for a year!
               location ^~ /objects/ {
+                directio 512k;
+                aio threads;
+                output_buffers 2 512k;
                 add_header Access-Control-Allow-Origin "*";
                 add_header Cache-Control "public, max-age=31536000";
                 add_header Content-Type application/octet-stream;
@@ -192,8 +200,11 @@
 
               # Silently discard requests from vulnerability scanners probing common paths.
               # These generate noise in the logs but are otherwise harmless.
-              location ~* ^/(actuator|\.env|\.git|\.ssh|wp-admin|wp-login|phpMyAdmin|admin|shell) {
-                return 444;  # 444 = nginx closes connection immediately, no response sent
+              location ~* ^/(actuator|\.env|\.git|\.ssh|wp-admin|wp-login|phpMyAdmin|admin|shell|vendor|phpunit) {
+                return 444;
+              }
+              location ~* \.php$ {
+                return 444;
               }
             '';
           };
