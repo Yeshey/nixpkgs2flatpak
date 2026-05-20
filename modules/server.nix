@@ -80,6 +80,7 @@
           
           serviceConfig = {
             Type                 = "oneshot";
+            TimeoutStartSec = "infinity";
             User                 = "root";
             Nice                 = 10;
             IOSchedulingClass    = "best-effort";
@@ -219,7 +220,7 @@
           description = "Periodically regenerate nixpkgs2flatpak Flatpak repo summary";
           wantedBy    = [ "timers.target" ];
           timerConfig = {
-            OnCalendar         = "*-*-* *:00/5:00";
+            OnCalendar = "hourly";
             Persistent         = true;
             RandomizedDelaySec = "5min";
           };
@@ -253,8 +254,8 @@
 
             # Same VFS warm-up as the summary service — delta generation takes even
             # longer, so a fresh directory cache is essential.
-            echo "Warming rclone VFS directory cache for refs/..."
-            find "$REPO/refs" -follow -type f >/dev/null 2>&1 || true
+            # echo "Warming rclone VFS directory cache for refs/..."
+            # find "$REPO/refs" -follow -maxdepth 3 -type f >/dev/null 2>&1 || true
 
             echo "Preparing OverlayFS Trapdoor..."
             umount -q "$MERGED" 2>/dev/null || true
