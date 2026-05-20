@@ -124,10 +124,10 @@
             }
             trap cleanup EXIT
 
-            echo "Updating OSTree summary at $MERGED ..."
+            echo "Updating OSTree summary at $REPO ..."
             flatpak build-update-repo \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
-              "$MERGED"
+              "$REPO"
 
             echo "Removing OverlayFS whiteout devices..."
             find "$UPPER" -type c -delete
@@ -220,9 +220,9 @@
           description = "Periodically regenerate nixpkgs2flatpak Flatpak repo summary";
           wantedBy    = [ "timers.target" ];
           timerConfig = {
-            OnCalendar = "*-*-* 00/6:00:00";
-            Persistent         = true;
-            RandomizedDelaySec = "5min";
+            OnCalendar = "*-*-* 00:00:00";
+            OnBootSec = "10min";
+            Persistent = false;
           };
         };
 
@@ -285,7 +285,7 @@
             # This passes through FUSE, guaranteeing the VFS cache is instantly consistent!
             rclone copy "$UPPER" "$REPO" \
               --config /root/.config/rclone/rclone.conf \
-              --fast-list --transfers 4 --checkers 8
+              --fast-list --transfers 2 --tpslimit 3 --tpslimit-burst 5 --checkers 8
 
             echo "Delta generation complete."
           '';
