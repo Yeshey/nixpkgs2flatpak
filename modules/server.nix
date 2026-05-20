@@ -107,8 +107,8 @@
             # so invalidation can't happen mid-run. This find forces rclone to eagerly
             # populate fresh directory entries right before the overlay mounts, so the
             # 2-hour clock starts from a known-good state.
-            echo "Warming rclone VFS directory cache for refs/..."
-            find "$REPO/refs" -follow -type f >/dev/null 2>&1 || true
+            # echo "Warming rclone VFS directory cache for refs/..."
+            # find "$REPO/refs" -follow -type f >/dev/null 2>&1 || true
 
             echo "Preparing OverlayFS Trapdoor..."
             umount -q "$MERGED" 2>/dev/null || true
