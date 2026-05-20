@@ -66,6 +66,11 @@
         };
 
         # ── Summary regeneration timer ──────────────────────────────────────────
+        # CI runners are ephemeral and only see a slice of the full package set,
+        # so they never touch the summary file. The server, which has the complete
+        # OneDrive repo mounted, owns the summary and regenerates it here.
+        # Hourly: fast summary update — what flatpak remote-ls and installs need.
+        # No static deltas here; those are expensive and handled separately below.
         systemd.services.nixpkgs2flatpak-update-summary = {
           description = "Regenerate nixpkgs2flatpak Flatpak repo summary";
           after       = [ "remote-fs.target" ];
@@ -81,20 +86,56 @@
             IOSchedulingClass    = "best-effort";
             IOSchedulingPriority = 5;
           };
-          
-          # Cleaned up script!
           script = ''
             set -euo pipefail
             
             REPO="${cfg.repoPath}"
+            CACHE_DIR="/var/cache/nixpkgs2flatpak-overlay"
+            UPPER="$CACHE_DIR/upper"
+            WORK="$CACHE_DIR/work"
+            MERGED="$CACHE_DIR/merged"
 
-            echo "Updating OSTree summary at $REPO ..."
+            echo "Preparing OverlayFS Trapdoor..."
+            umount -l "$MERGED" 2>/dev/null || true
+            rm -rf "$CACHE_DIR"
+            mkdir -p "$UPPER" "$WORK" "$MERGED"
+
+            mount -t overlay overlay -o lowerdir="$REPO",upperdir="$UPPER",workdir="$WORK" "$MERGED"
+
+            cleanup() {
+              echo "Cleaning up OverlayFS..."
+              umount -l "$MERGED" 2>/dev/null || true
+              rm -rf "$CACHE_DIR"
+            }
+            trap cleanup EXIT
+
+            echo "Updating OSTree summary at $MERGED ..."
             flatpak build-update-repo \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
-              "$REPO"
+              "$MERGED"
+
+            echo "Removing OverlayFS whiteout devices..."
+            find "$UPPER" -type c -delete
+
+            echo "Pushing compiled metadata DIRECTLY into the active mount..."
+            # Using rclone local-to-local copy directly into the mount folder.
+            # This passes through FUSE, guaranteeing the VFS cache is instantly consistent!
+            rclone copy "$UPPER" "$REPO" \
+              --config /root/.config/rclone/rclone.conf \
+              --fast-list --transfers 4
 
             echo "Summary successfully updated."
           '';
+        };
+
+        systemd.timers.nixpkgs2flatpak-update-summary = {
+          description = "Periodically regenerate nixpkgs2flatpak Flatpak repo summary";
+          wantedBy    = [ "timers.target" ];
+          timerConfig = {
+            OnCalendar = "*-*-* 00:00:00";
+            OnBootSec  = "10min";
+            Persistent = false;
+          };
         };
 
         # ── Nginx ──
@@ -115,6 +156,7 @@
               disable_symlinks off;
               add_header Access-Control-Allow-Origin "*";
 
+              # 1. Objects are immutable (they never change hashes). Cache them for a year!
               location ^~ /objects/ {
                 directio 512k;
                 aio threads;
@@ -124,6 +166,7 @@
                 add_header Content-Type application/octet-stream;
               }
 
+              # 2. Summary and Refs change constantly. NEVER cache them!
               location = /summary {
                 add_header Access-Control-Allow-Origin "*";
                 add_header Cache-Control "no-cache, no-store, must-revalidate";
@@ -139,11 +182,20 @@
                 add_header Cache-Control "no-cache, no-store, must-revalidate";
               }
               
+              # Fallback for anything else
               location / {
                 add_header Access-Control-Allow-Origin "*";
                 add_header Cache-Control "public, max-age=300";
               }
 
+              # Silently discard requests from vulnerability scanners probing common paths.
+              # These generate noise in the logs but are otherwise harmless.
+              location ~* \.php {
+                return 444;
+              }
+              location ~* /vendor/phpunit {
+                return 444;
+              }
               location ~* \.(bak|save|lock|template|env|env\.[a-z]+|dockerenv)$ {
                 return 444;
               }
@@ -155,7 +207,7 @@
         };
 
         systemd.services.nginx = {
-          # Clear stale ports if workers got stuck in D-state
+          # Use mkBefore so this port-clearing script runs BEFORE nginx does its built-in configuration syntax check
           preStart = lib.mkBefore ''
             ${pkgs.psmisc}/bin/fuser -k 80/tcp 443/tcp || true
           '';
@@ -166,22 +218,14 @@
           };
         };
 
-        systemd.timers.nixpkgs2flatpak-update-summary = {
-          description = "Periodically regenerate nixpkgs2flatpak Flatpak repo summary";
-          wantedBy    = [ "timers.target" ];
-          timerConfig = {
-            OnCalendar = "*-*-* 00:00:00";
-            OnBootSec  = "10min";
-            Persistent = false;
-          };
-        };
-
-        # ── Static Delta Generation Timer ───────────────────────────────────────
+        # Weekly: expensive static delta generation — improves update download
+        # size for existing users but not required for installs or remote-ls.
         systemd.services.nixpkgs2flatpak-generate-deltas = {
           description = "Generate static deltas for nixpkgs2flatpak Flatpak repo";
           after       = [ "remote-fs.target" ];
           requires    = [ "remote-fs.target" ];
           
+          # Inject required commands into the systemd environment
           path        = with pkgs;[ util-linux coreutils findutils flatpak rclone rsync ];
           
           serviceConfig = {
@@ -191,18 +235,44 @@
             IOSchedulingClass    = "idle";
             TimeoutStartSec      = "infinity";
           };
-          
-          # Cleaned up script!
           script = ''
             set -euo pipefail
 
             REPO="${cfg.repoPath}"
+            CACHE_DIR="/var/cache/nixpkgs2flatpak-delta-overlay"
+            UPPER="$CACHE_DIR/upper"
+            WORK="$CACHE_DIR/work"
+            MERGED="$CACHE_DIR/merged"
 
-            echo "Generating static deltas at $REPO ..."
+            echo "Preparing OverlayFS Trapdoor..."
+            umount -l "$MERGED" 2>/dev/null || true
+            rm -rf "$CACHE_DIR"
+            mkdir -p "$UPPER" "$WORK" "$MERGED"
+
+            mount -t overlay overlay -o lowerdir="$REPO",upperdir="$UPPER",workdir="$WORK" "$MERGED"
+
+            cleanup() {
+              echo "Cleaning up OverlayFS..."
+              umount -l "$MERGED" 2>/dev/null || true
+              rm -rf "$CACHE_DIR"
+            }
+            trap cleanup EXIT
+
+            echo "Generating static deltas at $MERGED ..."
             flatpak build-update-repo \
               --generate-static-deltas \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
-              "$REPO"
+              "$MERGED"
+
+            echo "Removing OverlayFS whiteout devices..."
+            find "$UPPER" -type c -delete
+
+            echo "Pushing deltas DIRECTLY into the active mount..."
+            # Using rclone local-to-local copy directly into the mount folder.
+            # This passes through FUSE, guaranteeing the VFS cache is instantly consistent!
+            rclone copy "$UPPER" "$REPO" \
+              --config /root/.config/rclone/rclone.conf \
+              --fast-list --transfers 2 --tpslimit 3 --tpslimit-burst 5 --checkers 8
 
             echo "Delta generation complete."
           '';
