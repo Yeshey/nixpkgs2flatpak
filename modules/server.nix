@@ -66,11 +66,6 @@
         };
 
         # ── Summary regeneration timer ──────────────────────────────────────────
-        # CI runners are ephemeral and only see a slice of the full package set,
-        # so they never touch the summary file. The server, which has the complete
-        # OneDrive repo mounted, owns the summary and regenerates it here.
-        # Hourly: fast summary update — what flatpak remote-ls and installs need.
-        # No static deltas here; those are expensive and handled separately below.
         systemd.services.nixpkgs2flatpak-update-summary = {
           description = "Regenerate nixpkgs2flatpak Flatpak repo summary";
           after       = [ "remote-fs.target" ];
@@ -80,64 +75,23 @@
           
           serviceConfig = {
             Type                 = "oneshot";
-            TimeoutStartSec = "infinity";
+            TimeoutStartSec      = "infinity";
             User                 = "root";
             Nice                 = 10;
             IOSchedulingClass    = "best-effort";
             IOSchedulingPriority = 5;
           };
+          
+          # Cleaned up script!
           script = ''
             set -euo pipefail
             
             REPO="${cfg.repoPath}"
-            CACHE_DIR="/var/cache/nixpkgs2flatpak-overlay"
-            UPPER="$CACHE_DIR/upper"
-            WORK="$CACHE_DIR/work"
-            MERGED="$CACHE_DIR/merged"
-
-            # Warm the rclone VFS directory cache before mounting the OverlayFS.
-            #
-            # Root cause of "Stale file handle" errors:
-            #   rclone's default --dir-cache-time is 5 minutes. flatpak build-update-repo
-            #   takes 10+ minutes to walk all refs. Halfway through, rclone silently
-            #   invalidates and rebuilds its directory cache — but OverlayFS is still
-            #   holding the old inode handles into the FUSE lowerdir → ESTALE.
-            #
-            # The rclone mount now uses --dir-cache-time 2h (see rclone-mount-onedrive.nix)
-            # so invalidation can't happen mid-run. This find forces rclone to eagerly
-            # populate fresh directory entries right before the overlay mounts, so the
-            # 2-hour clock starts from a known-good state.
-            # echo "Warming rclone VFS directory cache for refs/..."
-            # find "$REPO/refs" -follow -type f >/dev/null 2>&1 || true
-
-            echo "Preparing OverlayFS Trapdoor..."
-            umount -q "$MERGED" 2>/dev/null || true
-            rm -rf "$CACHE_DIR"
-            mkdir -p "$UPPER" "$WORK" "$MERGED"
-
-            mount -t overlay overlay -o lowerdir="$REPO",upperdir="$UPPER",workdir="$WORK" "$MERGED"
-
-            cleanup() {
-              echo "Cleaning up OverlayFS..."
-              umount -q "$MERGED" 2>/dev/null || true
-              rm -rf "$CACHE_DIR"
-            }
-            trap cleanup EXIT
 
             echo "Updating OSTree summary at $REPO ..."
             flatpak build-update-repo \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
               "$REPO"
-
-            echo "Removing OverlayFS whiteout devices..."
-            find "$UPPER" -type c -delete
-
-            echo "Pushing compiled metadata DIRECTLY into the active mount..."
-            # Using rclone local-to-local copy directly into the mount folder.
-            # This passes through FUSE, guaranteeing the VFS cache is instantly consistent!
-            rclone copy "$UPPER" "$REPO" \
-              --config /root/.config/rclone/rclone.conf \
-              --fast-list --transfers 4
 
             echo "Summary successfully updated."
           '';
@@ -161,7 +115,6 @@
               disable_symlinks off;
               add_header Access-Control-Allow-Origin "*";
 
-              # 1. Objects are immutable (they never change hashes). Cache them for a year!
               location ^~ /objects/ {
                 directio 512k;
                 aio threads;
@@ -171,7 +124,6 @@
                 add_header Content-Type application/octet-stream;
               }
 
-              # 2. Summary and Refs change constantly. NEVER cache them!
               location = /summary {
                 add_header Access-Control-Allow-Origin "*";
                 add_header Cache-Control "no-cache, no-store, must-revalidate";
@@ -187,14 +139,11 @@
                 add_header Cache-Control "no-cache, no-store, must-revalidate";
               }
               
-              # Fallback for anything else
               location / {
                 add_header Access-Control-Allow-Origin "*";
                 add_header Cache-Control "public, max-age=300";
               }
 
-              # Silently discard requests from vulnerability scanners probing common paths.
-              # These generate noise in the logs but are otherwise harmless.
               location ~* \.(bak|save|lock|template|env|env\.[a-z]+|dockerenv)$ {
                 return 444;
               }
@@ -206,13 +155,14 @@
         };
 
         systemd.services.nginx = {
-          # Use mkBefore so this port-clearing script runs BEFORE nginx does its built-in configuration syntax check
+          # Clear stale ports if workers got stuck in D-state
           preStart = lib.mkBefore ''
             ${pkgs.psmisc}/bin/fuser -k 80/tcp 443/tcp || true
           '';
           
           serviceConfig = {
             TimeoutStopSec = "10s";
+            KillMode       = "mixed";
           };
         };
 
@@ -221,19 +171,17 @@
           wantedBy    = [ "timers.target" ];
           timerConfig = {
             OnCalendar = "*-*-* 00:00:00";
-            OnBootSec = "10min";
+            OnBootSec  = "10min";
             Persistent = false;
           };
         };
 
-        # Weekly: expensive static delta generation — improves update download
-        # size for existing users but not required for installs or remote-ls.
+        # ── Static Delta Generation Timer ───────────────────────────────────────
         systemd.services.nixpkgs2flatpak-generate-deltas = {
           description = "Generate static deltas for nixpkgs2flatpak Flatpak repo";
           after       = [ "remote-fs.target" ];
           requires    = [ "remote-fs.target" ];
           
-          # Inject required commands into the systemd environment
           path        = with pkgs;[ util-linux coreutils findutils flatpak rclone rsync ];
           
           serviceConfig = {
@@ -243,49 +191,18 @@
             IOSchedulingClass    = "idle";
             TimeoutStartSec      = "infinity";
           };
+          
+          # Cleaned up script!
           script = ''
             set -euo pipefail
 
             REPO="${cfg.repoPath}"
-            CACHE_DIR="/var/cache/nixpkgs2flatpak-delta-overlay"
-            UPPER="$CACHE_DIR/upper"
-            WORK="$CACHE_DIR/work"
-            MERGED="$CACHE_DIR/merged"
 
-            # Same VFS warm-up as the summary service — delta generation takes even
-            # longer, so a fresh directory cache is essential.
-            # echo "Warming rclone VFS directory cache for refs/..."
-            # find "$REPO/refs" -follow -maxdepth 3 -type f >/dev/null 2>&1 || true
-
-            echo "Preparing OverlayFS Trapdoor..."
-            umount -q "$MERGED" 2>/dev/null || true
-            rm -rf "$CACHE_DIR"
-            mkdir -p "$UPPER" "$WORK" "$MERGED"
-
-            mount -t overlay overlay -o lowerdir="$REPO",upperdir="$UPPER",workdir="$WORK" "$MERGED"
-
-            cleanup() {
-              echo "Cleaning up OverlayFS..."
-              umount -q "$MERGED" 2>/dev/null || true
-              rm -rf "$CACHE_DIR"
-            }
-            trap cleanup EXIT
-
-            echo "Generating static deltas at $MERGED ..."
+            echo "Generating static deltas at $REPO ..."
             flatpak build-update-repo \
               --generate-static-deltas \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
-              "$MERGED"
-
-            echo "Removing OverlayFS whiteout devices..."
-            find "$UPPER" -type c -delete
-
-            echo "Pushing deltas DIRECTLY into the active mount..."
-            # Using rclone local-to-local copy directly into the mount folder.
-            # This passes through FUSE, guaranteeing the VFS cache is instantly consistent!
-            rclone copy "$UPPER" "$REPO" \
-              --config /root/.config/rclone/rclone.conf \
-              --fast-list --transfers 2 --tpslimit 3 --tpslimit-burst 5 --checkers 8
+              "$REPO"
 
             echo "Delta generation complete."
           '';
@@ -296,7 +213,7 @@
           wantedBy    = [ "timers.target" ];
           timerConfig = {
             OnCalendar         = "Sun 03:00";
-            Persistent         = true;
+            Persistent         = false;
             RandomizedDelaySec = "30min";
           };
         };
