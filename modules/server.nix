@@ -188,18 +188,34 @@
                 add_header Cache-Control "public, max-age=300";
               }
 
-              # Silently discard requests from vulnerability scanners probing common paths.
-              # These generate noise in the logs but are otherwise harmless.
-              location ~* \.php {
+              # ─────────────────────────────────────────────────────────────────
+              # Block vulnerability scanners & bots to save OneDrive API calls!
+              # ─────────────────────────────────────────────────────────────────
+              
+              # 1. Browsers always ask for this. Return an empty success to save I/O.
+              location = /favicon.ico {
+                return 204;
+                access_log off;
+                log_not_found off;
+              }
+
+              # 2. Block ANY hidden files or directories (e.g. /.env, /.git, /.ssh, /.bash_history)
+              location ~ /\. {
                 return 444;
               }
-              location ~* /vendor/phpunit {
+
+              # 3. Block ANY PHP files (even with trailing paths) or known PHP test directories
+              location ~* (\.php|/vendor/|/phpunit/) {
                 return 444;
               }
-              location ~* \.(bak|save|lock|template|env|env\.[a-z]+|dockerenv)$ {
+
+              # 4. Block common web-app routes probed by bots (login, admin, wordpress, etc.)
+              location ~* ^/(login|admin|wp-|api|containers|test|tests|demo|backup|workspace|blog|cms|crm|panel|v[1-9]|zend|yii|laravel|lib|www|ws|app|apps|public)(/|$) {
                 return 444;
               }
-              location ~* ^/\.(env|dockerenv|git|ssh) {
+
+              # 5. Block configuration, database dumps, and environment files
+              location ~* \.(py|json|js|yaml|yml|ini|xml|bak|save|lock|template|env|env\.[a-z]+|dockerenv|sql|tar|gz|zip|db)$ {
                 return 444;
               }
             '';
