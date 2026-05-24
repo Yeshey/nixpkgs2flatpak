@@ -45,12 +45,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            max-jobs = 1
+            cores = 4
       - name: Fetch nix-index
         run: |
           mkdir -p ~/.cache/nix-index
           curl -L https://github.com/nix-community/nix-index-database/releases/latest/download/index-x86_64-linux -o ~/.cache/nix-index/files
       - name: Build scanner
-        run: nix build .#scanner -o result-scanner
+        run: nix build .#scanner -o result-scanner --max-jobs 1 --cores 4
       - name: Run Discover
         run: ./result-scanner/bin/scanner discover
       - name: Run Discover Unfree
@@ -64,16 +68,6 @@ jobs:
           git commit -m "chore: update discovered.json" && git push || echo "No changes."
 
   # ── JOB 2: CONVEYOR BELT (PARALLEL) ────────────────────────────────────────
-  # 2 runners per architecture = 4 runners total.
-  #
-  # Runner 1 works forward from the start of the alphabetically-sorted list (a…).
-  # Runner 2 works backward from the end (…z). They converge in the middle,
-  # so partial runs still achieve good coverage from both ends.
-  #
-  # Each runner maintains its own state bookmark (github_runners_state/) and its
-  # own failed-apps shard (failed_apps/{arch}/runner{N}.txt) on OneDrive, so
-  # runners never conflict. The merge-failed-apps job below combines all shards
-  # into the final failed_apps_{system}.txt files after all runners finish.
   conveyor-belt:
     needs: [update-list]
     if: ${{ !cancelled() && (needs.update-list.result == 'success' || needs.update-list.result == 'skipped') }}
@@ -83,14 +77,11 @@ jobs:
         system: [x86_64-linux, aarch64-linux]
         runner_id: [1, 2]
         exclude:
-          # Handle manual overrides from workflow_dispatch.
-          # Excluding by system alone drops all runner_id combinations for that arch.
           - system: >-
               ${{ github.event.inputs.architecture == 'aarch64-linux' && 'x86_64-linux' || '' }}
           - system: >-
               ${{ github.event.inputs.architecture == 'x86_64-linux' && 'aarch64-linux' || '' }}
 
-    # Use native ARM for ARM, standard for x86
     runs-on: ${{ matrix.system == 'aarch64-linux' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
 
     permissions:
@@ -104,6 +95,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Create Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 13
+
+      - name: Enable Zswap
+        run: |
+          echo zstd | sudo tee /sys/module/zswap/parameters/compressor || true
+          echo zsmalloc | sudo tee /sys/module/zswap/parameters/zpool || true
+          echo 1 | sudo tee /sys/module/zswap/parameters/enabled || true
+
       - name: Free up disk space
         uses: wimpysworld/nothing-but-nix@main
         with:
@@ -112,6 +114,10 @@ jobs:
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            max-jobs = 1
+            cores = 4
 
       - name: Setup Rclone Config
         env:
@@ -130,17 +136,13 @@ jobs:
           nix run nixpkgs#ostree -- init --mode=bare-user-only --repo=/var/lib/flatpak/repo
 
       - name: Build Scanner Utility
-        run: nix build .#scanner -o result-scanner
+        run: nix build .#scanner -o result-scanner --max-jobs 1 --cores 4
 
       - name: Set Target Package (If requested)
         if: ${{ github.event.inputs.test_package != '' }}
         run: echo "TARGET_PACKAGE=${{ github.event.inputs.test_package }}" >> $GITHUB_ENV
 
       - name: Run Conveyor Belt (${{ matrix.system }} / runner ${{ matrix.runner_id }})
-        # continue-on-error: the scanner must never mark this job as failed.
-        # Any hard crash (OOM, kernel kill, unexpected panic) exits non-zero,
-        # but we want the job to show green so GitHub doesn't send failure emails.
-        # Legitimate build failures are already handled gracefully inside the loop.
         continue-on-error: true
         run: |
           ./result-scanner/bin/scanner build-ci \
@@ -150,10 +152,6 @@ jobs:
             --max-minutes ${{ github.event.inputs.max_minutes || '360' }} || true
 
   # ── JOB 3: MERGE FAILED-APPS SHARDS ───────────────────────────────────────
-  # After all conveyor-belt runners finish (or time out), collect the per-runner
-  # shard files from OneDrive and merge them into the canonical
-  # failed_apps_{system}.txt files.  Runs even if some runners failed so we
-  # always get an up-to-date picture of what's broken.
   merge-failed-apps:
     needs: [conveyor-belt]
     if: ${{ !cancelled() && needs.conveyor-belt.result != 'skipped' }}
@@ -177,8 +175,6 @@ jobs:
 
       - name: Merge shards into final lists
         run: |
-          # Concatenate all shards, sort and deduplicate, produce the canonical file.
-          # `|| true` keeps the step green if no shards exist yet (first-ever run).
           cat failed_apps/x86/runner*.txt     2>/dev/null | sort -u > failed_apps_x86_64-linux.txt  || true
           cat failed_apps/aarch64/runner*.txt 2>/dev/null | sort -u > failed_apps_aarch64-linux.txt || true
           echo "x86_64-linux failures:  $(wc -l < failed_apps_x86_64-linux.txt)"
