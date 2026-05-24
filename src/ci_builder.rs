@@ -269,11 +269,21 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
             if !app_id.is_empty() {
                 println!(">>> Testing application launch on virtual display for {}...", app_id);
                 let _ = Command::new("flatpak").args(["--user", "remote-add", "--no-gpg-verify", "--if-not-exists", "test_repo", local_repo]).status();
-                let _ = Command::new("flatpak").args(["--user", "install", "--noninteractive", "-y", "test_repo", app_id]).status();
+                // Timeout on install: downloading Flathub runtimes (org.gnome.Platform,
+                // org.kde.Platform, etc.) can be several GB. 10 minutes is generous;
+                // without this the runner hangs for hours on a slow Flathub connection.
+                let _ = Command::new("timeout")
+                    .args(["1200", "flatpak", "--user", "install", "--noninteractive", "-y", "test_repo", app_id])
+                    .status();
 
-                let test_output = Command::new("xvfb-run")
+                // Outer timeout on xvfb-run: the inner `timeout 10 flatpak run` only
+                // covers the app process, not Xvfb startup itself. If Xvfb hangs on
+                // launch (no free display, GPU init failure, etc.) the whole command
+                // blocks. 60s = 10s app test + generous buffer for Xvfb startup.
+                let test_output = Command::new("timeout")
                     .args([
-                        "-a", "-s", "-screen 0 1024x768x24 +extension GLX",
+                        "60",
+                        "xvfb-run", "-a", "-s", "-screen 0 1024x768x24 +extension GLX",
                         "timeout", "10", "flatpak", "run",
                         "--env=LIBGL_ALWAYS_SOFTWARE=1", "--env=GALLIUM_DRIVER=llvmpipe", app_id
                     ]).output();
@@ -319,7 +329,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                         &format!("{}/objects", local_repo), &format!("{}/objects", opts.remote),
                         "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
                         "--fast-list", "--size-only",
-                        "--retries", "20", "--retries-sleep", "30s",
+                        "--retries", "5", "--retries-sleep", "15s",
                     ]).status();
 
                 // Emergency check after objects upload.
