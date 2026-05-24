@@ -362,29 +362,48 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                 }
 
                 println!(">>> Uploading new objects to OneDrive...");
-                let objects_status = Command::new("rclone")
-                    .args([
-                        "copy", &format!("{}/objects", local_repo), &format!("{}/objects", opts.remote),
-                        "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
-                        "--fast-list", "--size-only",
-                        "--retries", "20",
-                        "--retries-sleep", "30s",
-                    ])
-                    .status();
 
-                if objects_status.map_or(false, |s| s.success()) {
-                    let _ = Command::new("rclone")
+                // Guard: skip the upload entirely if less than 15 minutes remain.
+                // A stalled OneDrive upload with no timeout would otherwise push
+                // the job past GitHub's hard 6-hour kill, marking it as cancelled
+                // and triggering a failure email. This is the main cause of x86
+                // runners hitting exactly 6h 0m in the CI logs.
+                let remaining_for_upload = max_duration.saturating_sub(start_time.elapsed()).as_secs();
+                if remaining_for_upload < 900 {
+                    println!(">>> Less than 15 min remaining. Skipping upload to stay within the 6h limit.");
+                } else {
+                    // Cap the object upload at 45 minutes. OneDrive is throttled, but
+                    // a single package bundle should never need longer than that.
+                    let upload_timeout = remaining_for_upload.min(2700).to_string();
+
+                    let objects_status = Command::new("timeout")
                         .args([
-                            "copy", local_repo, &opts.remote,
+                            &upload_timeout,
+                            "rclone", "copy",
+                            &format!("{}/objects", local_repo), &format!("{}/objects", opts.remote),
                             "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
                             "--fast-list", "--size-only",
-                            "--exclude", "/objects/**",
-                            "--exclude", "summary",
-                            "--exclude", "summary.sig",
+                            "--retries", "5",
+                            "--retries-sleep", "15s",
                         ])
                         .status();
-                } else {
-                    println!(">>> Warning: Failed to upload objects. Skipping refs upload to prevent remote corruption.");
+
+                    if objects_status.map_or(false, |s| s.success()) {
+                        // refs/config are tiny — 5 minutes is far more than enough.
+                        let _ = Command::new("timeout")
+                            .args([
+                                "300",
+                                "rclone", "copy", local_repo, &opts.remote,
+                                "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
+                                "--fast-list", "--size-only",
+                                "--exclude", "/objects/**",
+                                "--exclude", "summary",
+                                "--exclude", "summary.sig",
+                            ])
+                            .status();
+                    } else {
+                        println!(">>> Warning: Failed to upload objects. Skipping refs upload to prevent remote corruption.");
+                    }
                 }
             }
         }

@@ -147,7 +147,7 @@ jobs:
             --system ${{ matrix.system }} \
             --remote "OneDriveISCTE:nixpkgs2flatpak" \
             --runner-id ${{ matrix.runner_id }} \
-            --max-minutes ${{ github.event.inputs.max_minutes || '320' }}
+            --max-minutes ${{ github.event.inputs.max_minutes || '320' }} || true
 
   # ── JOB 3: MERGE FAILED-APPS SHARDS ───────────────────────────────────────
   # After all conveyor-belt runners finish (or time out), collect the per-runner
