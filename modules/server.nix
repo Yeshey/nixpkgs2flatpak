@@ -215,7 +215,7 @@
               }
 
               # 5. Block configuration, database dumps, and environment files
-              location ~* \.(py|json|js|yaml|yml|ini|xml|bak|save|lock|template|env|env\.[a-z]+|dockerenv|sql|tar|gz|zip|db)$ {
+              location ~* \.(py|json|js|yaml|yml|ini|xml|bak|save|lock|template|env|env\.[a-z]+|dockerenv|sql|tar|zip|db)$ {
                 return 444;
               }
             '';
