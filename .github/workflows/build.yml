@@ -150,6 +150,17 @@ jobs:
             --remote "OneDriveISCTE:nixpkgs2flatpak" \
             --runner-id ${{ matrix.runner_id }} \
             --max-minutes ${{ github.event.inputs.max_minutes || '360' }} || true
+      - name: Check for OOM Kills in System Logs
+        if: always()
+        run: |
+          echo "=== Checking dmesg for Out Of Memory (OOM) kills ==="
+          sudo dmesg -T | grep -i -E "oom|out of memory|killed process" || echo "No OOM kills found in dmesg."
+          
+          echo "=== Memory/Swap Status ==="
+          free -h
+          
+          echo "=== Disk Space Left ==="
+          df -h
 
   # ── JOB 3: MERGE FAILED-APPS SHARDS ───────────────────────────────────────
   merge-failed-apps:
