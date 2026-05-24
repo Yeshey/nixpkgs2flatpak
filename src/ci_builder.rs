@@ -2,7 +2,6 @@ use anyhow::Result;
 use std::collections::BTreeMap;
 use std::fs;
 use std::io::Write;
-use std::path::Path;
 use std::process::Command;
 use std::time::{Duration, Instant};
 use serde::{Deserialize, Serialize};
@@ -88,9 +87,14 @@ fn push_state(remote: &str, system: &str, runner_id: u8) {
 
 pub fn run(opts: BuildCiOptions) -> Result<()> {
     let start_time = Instant::now();
-    
-    let max_duration = Duration::from_secs_f64(opts.max_minutes * 60.0); // ← hardcoded default: 320 minutes (5h 20m), set via --max-minutes
-    println!(">>> Time limit: {:.0} minutes.", opts.max_minutes);
+
+    // Hard 6h ceiling — matches GitHub's job limit.
+    // The 3:15h "don't start new builds" guard below ensures we always have
+    // enough budget to finish a 3h build + upload before hitting this wall.
+    let max_duration = Duration::from_secs(360 * 60);
+    // Per-package build timeout: 3 hours.
+    let limit_3h = 10800u64;
+    println!(">>> Strict time limit: 6 hours (360 minutes).");
 
     println!(">>> Fetching final package metadata from Nix...");
     // A failure here must never mark the job as failed — it just means this
@@ -115,7 +119,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         Ok(m) => m,
         Err(e) => { eprintln!("!!! Could not parse ci-metadata JSON: {}. Exiting cleanly.", e); return Ok(()); }
     };
-    
+
     let mut packages: Vec<String> = metadata.keys().cloned().collect();
 
     // Sort: Curated apps FIRST, then alphabetically
@@ -157,7 +161,7 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
     let state = pull_state(&opts.remote, &opts.system, opts.runner_id);
     let mut idx = 0;
-    
+
     // Only resume from state if we are doing the endless loop
     if single_pkg.is_none() {
         if let Some(last) = &state.last_package {
@@ -179,9 +183,13 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
     let mut packages_since_gc = 0;
 
     loop {
-        // Stop when the time limit is reached.
-        if start_time.elapsed() > max_duration {
-            println!(">>> Time limit ({:.0} min) reached. Stopping gracefully.", opts.max_minutes);
+        let remaining = max_duration.saturating_sub(start_time.elapsed()).as_secs();
+
+        // Don't start a new package if less than 3h15m remain.
+        // This ensures we always have enough budget to finish a 3h build + upload.
+        // The 20min emergency guard lives inside the loop body (mid-build / mid-upload).
+        if remaining < 11700 {
+            println!(">>> Less than 3:15h remaining. Not starting new packages. Finishing action.");
             break;
         }
 
@@ -190,18 +198,14 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
         let tag = if is_curated { "[CURATED]" } else { "[AUTO]" };
         println!("\n>>> [ {}/{} ] {} Building: {}", idx + 1, packages.len(), tag, pkg);
 
-        // ─── DISK SPACE MANAGEMENT ───
         let local_repo = "local_repo";
         let _ = fs::remove_dir_all("result");
         let _ = fs::remove_dir_all(local_repo);
 
         if single_pkg.is_none() {
-            // Only run GC every 5 packages to save massive amounts of time
             if packages_since_gc >= 5 {
-                println!(">>> 5 packages built! Running Nix garbage collection to free up disk space...");
-                let _ = Command::new("timeout")
-                    .args(["1200", "nix-store", "--gc"])
-                    .status();
+                println!(">>> 5 packages built! Running Nix garbage collection...");
+                let _ = Command::new("timeout").args(["1200", "nix-store", "--gc"]).status();
                 packages_since_gc = 0;
             } else {
                 packages_since_gc += 1;
@@ -210,207 +214,205 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
 
         println!(">>> Initializing clean local OSTree repo for this package...");
         let _ = fs::create_dir_all(local_repo);
-        let _ = Command::new("ostree")
-            .args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)])
-            .status();
-        let _ = Command::new("ostree")
-            .args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"])
-            .status();
+        let _ = Command::new("ostree").args(["init", "--mode=archive-z2", &format!("--repo={}", local_repo)]).status();
+        let _ = Command::new("ostree").args(["config", "--repo", local_repo, "set", "core.min-free-space-percent", "0"]).status();
 
-        // ── PER-PACKAGE BUILD TIMEOUT ─────────────────────────────────────────
-        // Use however much time is left in our budget, capped at 1 hour per
-        // package. This prevents a single runaway build (e.g. openbabel
-        // compiling for 3h) from pushing the job past GitHub's hard 6h kill,
-        // which would mark the job failed and send a notification email.
-        let remaining_secs = max_duration.saturating_sub(start_time.elapsed()).as_secs();
-        if remaining_secs < 60 {
-            println!(">>> Less than 60s remaining. Stopping gracefully.");
-            break;
-        }
-        let build_timeout = remaining_secs.min(14400).to_string();
+        let pkg_start = Instant::now();
 
+        // Build timeout is the lesser of:
+        //   • 3h per-package hard cap
+        //   • time left before the 20min pre-limit safety margin
         let run_nix = |target: &str| {
+            let left_3h = limit_3h.saturating_sub(pkg_start.elapsed().as_secs());
+            let left_6h = max_duration.saturating_sub(Duration::from_secs(1200)).saturating_sub(start_time.elapsed()).as_secs();
+            let to = left_3h.min(left_6h).to_string();
+
             Command::new("timeout")
-                .args([&build_timeout, "nix", "build", "--impure", "-L", target])
+                .args([&to, "nix", "build", "--impure", "-L", target])
                 .env("NIXPKGS_ALLOW_UNFREE", "1")
                 .env("NIXPKGS_ALLOW_BROKEN", "1")
                 .env("NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM", "1")
                 .status()
         };
 
-        let build_result = run_nix(&format!(".#{}", pkg));
-        let final_status = match build_result {
-            Ok(s) if s.success() => Ok(s),
-            _ => {
-                println!(">>> Standard build failed. Attempting -fixed icon fallback...");
-                run_nix(&format!(".#{}-fixed", pkg))
-            }
-        };
+        let mut final_status = run_nix(&format!(".#{}", pkg));
+
+        // Emergency check: did the build eat into our 20min safety margin?
+        if max_duration.saturating_sub(start_time.elapsed()).as_secs() <= 1200 {
+            println!(">>> 20min before 6h limit after first build. Stopping without saving state.");
+            break;
+        }
+
+        // Only attempt the -fixed fallback if the build failed quickly (not a 3h timeout).
+        if !final_status.as_ref().map_or(false, |s| s.success()) && pkg_start.elapsed().as_secs() < limit_3h - 10 {
+            println!(">>> Standard build failed. Attempting -fixed icon fallback...");
+            final_status = run_nix(&format!(".#{}-fixed", pkg));
+        }
+
+        // Emergency check again after the fallback build.
+        if max_duration.saturating_sub(start_time.elapsed()).as_secs() <= 1200 {
+            println!(">>> 20min before 6h limit after fallback build. Stopping without saving state.");
+            break;
+        }
 
         let app_id = &metadata[&pkg].app_id;
+        let mut is_failure = false;
+        let mut log_text = String::new();
 
-        if let Ok(status) = final_status {
-            if status.success() {
-                println!(">>> Build succeeded. Importing into local repo...");
-                let _ = Command::new("bash")
-                    .arg("-c")
-                    .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
-                    .status();
-                    
-                // ── TESTING PHASE ──
-                if !app_id.is_empty() {
-                    println!(">>> Testing application launch on virtual display for {}...", app_id);
+        if final_status.as_ref().map_or(false, |s| s.success()) {
+            println!(">>> Build succeeded. Importing into local repo...");
+            let _ = Command::new("bash")
+                .arg("-c")
+                .arg(format!("flatpak build-import-bundle {} result/*.flatpak", local_repo))
+                .status();
 
-                    let _ = Command::new("flatpak")
-                        .args(["--user", "remote-add", "--no-gpg-verify", "--if-not-exists", "test_repo", local_repo])
-                        .status();
+            if !app_id.is_empty() {
+                println!(">>> Testing application launch on virtual display for {}...", app_id);
+                let _ = Command::new("flatpak").args(["--user", "remote-add", "--no-gpg-verify", "--if-not-exists", "test_repo", local_repo]).status();
+                let _ = Command::new("flatpak").args(["--user", "install", "--noninteractive", "-y", "test_repo", app_id]).status();
 
-                    // --noninteractive forces Flatpak to auto-download required runtimes from Flathub
-                    let _ = Command::new("flatpak")
-                        .args(["--user", "install", "--noninteractive", "-y", "test_repo", app_id])
-                        .status();
+                let test_output = Command::new("xvfb-run")
+                    .args([
+                        "-a", "-s", "-screen 0 1024x768x24 +extension GLX",
+                        "timeout", "10", "flatpak", "run",
+                        "--env=LIBGL_ALWAYS_SOFTWARE=1", "--env=GALLIUM_DRIVER=llvmpipe", app_id
+                    ]).output();
 
-                    // RUN THE TEST AND CAPTURE THE OUTPUT (stdout & stderr)
-                    let test_output = Command::new("xvfb-run")
-                        .args([
-                            "-a",
-                            "-s", "-screen 0 1024x768x24 +extension GLX",
-                            "timeout", "10",
-                            "flatpak", "run",
-                            "--env=LIBGL_ALWAYS_SOFTWARE=1",
-                            "--env=GALLIUM_DRIVER=llvmpipe",
-                            app_id
-                        ])
-                        .output();
+                let _ = Command::new("flatpak").args(["--user", "uninstall", "--noninteractive", "-y", app_id]).status();
 
-                    let _ = Command::new("flatpak")
-                        .args(["--user", "uninstall", "--noninteractive", "-y", app_id])
-                        .status();
-
-                    // Evaluate test results
-                    let (passed, output_text) = match test_output {
-                        Ok(out) => {
-                            let code = out.status.code().unwrap_or(0);
-                            // 0 = Clean exit, 124 = Time ran out, 137/143 = Terminated
-                            let p = code == 0 || code == 124 || code == 137 || code == 143;
-                            
-                            let mut text = String::from_utf8_lossy(&out.stdout).to_string();
-                            text.push_str("\n--- STDERR ---\n");
-                            text.push_str(&String::from_utf8_lossy(&out.stderr));
-                            (p, text)
-                        },
-                        Err(e) => (false, format!("Failed to execute xvfb-run: {}", e)),
-                    };
-
-                    if !passed {
-                        println!("!!! TEST FAILED: {} crashed upon launch. Skipping upload.", app_id);
-
-                        // Each runner writes its own shard file so concurrent runners never
-                        // race on the same file.  A dedicated merge job in CI combines all
-                        // shards into the final failed_apps_{system}.txt after the run.
-                        let arch = arch_folder(&opts.system);
-                        let runner_failed_file = format!("failed_apps/{}/runner{}.txt", arch, opts.runner_id);
-                        let remote_failed_file = format!("{}/failed_apps/{}/runner{}.txt", opts.remote, arch, opts.runner_id);
-
-                        // 1. Download this runner's existing shard from OneDrive (accumulates across days)
-                        let _ = Command::new("rclone")
-                            .args(["copyto", &remote_failed_file, &runner_failed_file, "--retries", "3"])
-                            .status();
-
-                        // 2. Append to local shard
-                        let _ = fs::create_dir_all(format!("failed_apps/{}", arch));
-                        if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(&runner_failed_file) {
-                            let _ = writeln!(f, "{} ({})", pkg, app_id);
+                match test_output {
+                    Ok(out) => {
+                        let code = out.status.code().unwrap_or(0);
+                        // 0 = clean exit, 124 = timed out, 137/143 = terminated — all acceptable
+                        let p = code == 0 || code == 124 || code == 137 || code == 143;
+                        if !p {
+                            is_failure = true;
+                            log_text = String::from_utf8_lossy(&out.stdout).to_string();
+                            log_text.push_str("\n--- STDERR ---\n");
+                            log_text.push_str(&String::from_utf8_lossy(&out.stderr));
                         }
-                        
-                        // 3. Upload updated shard back to OneDrive
-                        let _ = Command::new("rclone")
-                            .args(["copyto", &runner_failed_file, &remote_failed_file, "--retries", "3"])
-                            .status();
-
-                        // 4. Save the detailed crash log locally
-                        let _ = fs::create_dir_all("failed_logs");
-                        let log_filename = format!("failed_logs/{}_{}.log", app_id, opts.system);
-                        let _ = fs::write(&log_filename, &output_text);
-
-                        // 5. Upload detailed crash log to the failed_apps folder on OneDrive
-                        let _ = Command::new("rclone")
-                            .args(["copyto", &log_filename, &format!("{}/failed_apps/{}_{}.log", opts.remote, app_id, opts.system)])
-                            .status();
-
-                        if single_pkg.is_some() {
-                            println!(">>> Single package test complete. Exiting without altering state bookmark.");
-                            break; 
-                        }
-
-                        let new_state = State { last_package: Some(pkg.clone()) };
-                        let filename = state_filename(&opts.system, opts.runner_id);
-                        let tmp_filename = format!("{}.tmp", filename);
-                        let _ = fs::create_dir_all("github_runners_state");
-                        if let Ok(json) = serde_json::to_string_pretty(&new_state) {
-                            if fs::write(&tmp_filename, &json).is_ok() {
-                                let _ = fs::rename(&tmp_filename, &filename);
-                            }
-                        }
-                        push_state(&opts.remote, &opts.system, opts.runner_id);
-                        
-                        idx = (idx + 1) % packages.len();
-                        continue;
-                    } else {
-                        println!(">>> Test passed! App successfully stayed alive.");
+                    },
+                    Err(e) => {
+                        is_failure = true;
+                        log_text = format!("Failed to execute xvfb-run: {}", e);
                     }
+                }
+            }
+
+            if !is_failure {
+                println!(">>> Test passed! App successfully stayed alive.");
+
+                // If less than 1h remains, skip the upload entirely.
+                // Do NOT save state so this package is retried next run.
+                if max_duration.saturating_sub(start_time.elapsed()).as_secs() < 3600 {
+                    println!(">>> Less than 1h remaining. Skipping upload; will retry package next run.");
+                    break;
                 }
 
                 println!(">>> Uploading new objects to OneDrive...");
+                // Cap the upload at (time_left − 20min) so we never run into GitHub's hard kill.
+                let left_6h = max_duration.saturating_sub(Duration::from_secs(1200)).saturating_sub(start_time.elapsed()).as_secs();
+                let objects_status = Command::new("timeout")
+                    .args([
+                        &left_6h.to_string(),
+                        "rclone", "copy",
+                        &format!("{}/objects", local_repo), &format!("{}/objects", opts.remote),
+                        "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
+                        "--fast-list", "--size-only",
+                        "--retries", "20", "--retries-sleep", "30s",
+                    ]).status();
 
-                // Guard: skip the upload entirely if less than 15 minutes remain.
-                // A stalled OneDrive upload with no timeout would otherwise push
-                // the job past GitHub's hard 6-hour kill, marking it as cancelled
-                // and triggering a failure email. This is the main cause of x86
-                // runners hitting exactly 6h 0m in the CI logs.
-                let remaining_for_upload = max_duration.saturating_sub(start_time.elapsed()).as_secs();
-                if remaining_for_upload < 900 {
-                    println!(">>> Less than 15 min remaining. Skipping upload to stay within the 6h limit.");
-                } else {
-                    // Cap the object upload at 45 minutes. OneDrive is throttled, but
-                    // a single package bundle should never need longer than that.
-                    let upload_timeout = remaining_for_upload.min(2700).to_string();
+                // Emergency check after objects upload.
+                if max_duration.saturating_sub(start_time.elapsed()).as_secs() <= 1200 {
+                    println!(">>> 20min before 6h limit during objects upload. Stopping without saving state.");
+                    break;
+                }
 
-                    let objects_status = Command::new("timeout")
+                if objects_status.map_or(false, |s| s.success()) {
+                    let left_6h = max_duration.saturating_sub(Duration::from_secs(1200)).saturating_sub(start_time.elapsed()).as_secs();
+                    let _ = Command::new("timeout")
                         .args([
-                            &upload_timeout,
-                            "rclone", "copy",
-                            &format!("{}/objects", local_repo), &format!("{}/objects", opts.remote),
+                            &left_6h.to_string(),
+                            "rclone", "copy", local_repo, &opts.remote,
                             "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
                             "--fast-list", "--size-only",
-                            "--retries", "5",
-                            "--retries-sleep", "15s",
-                        ])
-                        .status();
+                            "--exclude", "/objects/**",
+                            "--exclude", "summary", "--exclude", "summary.sig",
+                        ]).status();
+                } else {
+                    println!(">>> Warning: Failed to upload objects. Skipping refs upload to prevent remote corruption.");
+                }
 
-                    if objects_status.map_or(false, |s| s.success()) {
-                        // refs/config are tiny — 5 minutes is far more than enough.
-                        let _ = Command::new("timeout")
-                            .args([
-                                "300",
-                                "rclone", "copy", local_repo, &opts.remote,
-                                "--transfers", "4", "--checkers", "8", "--tpslimit", "5",
-                                "--fast-list", "--size-only",
-                                "--exclude", "/objects/**",
-                                "--exclude", "summary",
-                                "--exclude", "summary.sig",
-                            ])
-                            .status();
-                    } else {
-                        println!(">>> Warning: Failed to upload objects. Skipping refs upload to prevent remote corruption.");
-                    }
+                // Emergency check after refs upload.
+                if max_duration.saturating_sub(start_time.elapsed()).as_secs() <= 1200 {
+                    println!(">>> 20min before 6h limit during refs upload. Stopping without saving state.");
+                    break;
                 }
             }
+        } else if pkg_start.elapsed().as_secs() >= limit_3h - 30 {
+            // Build was killed by the 3h timeout — record it as a hard failure.
+            is_failure = true;
+            log_text = "Build exceeded 3 hour limit and was stopped.".to_string();
+        }
+        // Builds that fail quickly (not a timeout) are silently skipped — we just
+        // advance the state bookmark and move on.
+
+        if is_failure {
+            println!("!!! FAILED: {} crashed or timed out. Skipping upload.", app_id);
+
+            let arch = arch_folder(&opts.system);
+            let runner_failed_file = format!("failed_apps/{}/runner{}.txt", arch, opts.runner_id);
+            let remote_failed_file = format!("{}/failed_apps/{}/runner{}.txt", opts.remote, arch, opts.runner_id);
+
+            // 1. Download this runner's existing shard from OneDrive (accumulates across days).
+            let left_6h = max_duration.saturating_sub(Duration::from_secs(1200)).saturating_sub(start_time.elapsed()).as_secs();
+            let _ = Command::new("timeout").args([&left_6h.to_string(), "rclone", "copyto", &remote_failed_file, &runner_failed_file, "--retries", "3"]).status();
+
+            // 2. Append to local shard.
+            let _ = fs::create_dir_all(format!("failed_apps/{}", arch));
+            if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(&runner_failed_file) {
+                let _ = writeln!(f, "{} ({})", pkg, app_id);
+            }
+
+            // 3. Upload updated shard back to OneDrive.
+            let left_6h = max_duration.saturating_sub(Duration::from_secs(1200)).saturating_sub(start_time.elapsed()).as_secs();
+            let _ = Command::new("timeout").args([&left_6h.to_string(), "rclone", "copyto", &runner_failed_file, &remote_failed_file, "--retries", "3"]).status();
+
+            // 4. Save detailed crash/timeout log locally and upload it.
+            let _ = fs::create_dir_all("failed_logs");
+            let log_filename = format!("failed_logs/{}_{}.log", app_id, opts.system);
+            let _ = fs::write(&log_filename, &log_text);
+            let left_6h = max_duration.saturating_sub(Duration::from_secs(1200)).saturating_sub(start_time.elapsed()).as_secs();
+            let _ = Command::new("timeout").args([&left_6h.to_string(), "rclone", "copyto", &log_filename, &format!("{}/failed_apps/{}_{}.log", opts.remote, app_id, opts.system)]).status();
+
+            if max_duration.saturating_sub(start_time.elapsed()).as_secs() <= 1200 {
+                println!(">>> 20min before 6h limit during failed log upload. Stopping without saving state.");
+                break;
+            }
+
+            if single_pkg.is_some() {
+                println!(">>> Single package test complete. Exiting without altering state bookmark.");
+                break;
+            }
+
+            let new_state = State { last_package: Some(pkg.clone()) };
+            let filename = state_filename(&opts.system, opts.runner_id);
+            let tmp_filename = format!("{}.tmp", filename);
+            let _ = fs::create_dir_all("github_runners_state");
+            if let Ok(json) = serde_json::to_string_pretty(&new_state) {
+                if fs::write(&tmp_filename, &json).is_ok() {
+                    let _ = fs::rename(&tmp_filename, &filename);
+                }
+            }
+            push_state(&opts.remote, &opts.system, opts.runner_id);
+
+            idx = (idx + 1) % packages.len();
+            continue;
         }
 
         if single_pkg.is_some() {
             println!(">>> Single package test complete. Exiting without altering state bookmark.");
-            break; 
+            break;
         }
 
         let new_state = State { last_package: Some(pkg.clone()) };

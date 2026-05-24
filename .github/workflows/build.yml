@@ -20,9 +20,9 @@ on:
         type: boolean
         default: false
       max_minutes:
-        description: 'How many minutes each runner should build before stopping gracefully (default: 320 = 5h20m)'
+        description: 'How many minutes each runner should build before stopping gracefully (default: 360 = 6h)'
         required: false
-        default: '320'
+        default: '360'
         type: string
       skip_unfree:
         description: 'Skip discovering and building unfree packages'
@@ -147,7 +147,7 @@ jobs:
             --system ${{ matrix.system }} \
             --remote "OneDriveISCTE:nixpkgs2flatpak" \
             --runner-id ${{ matrix.runner_id }} \
-            --max-minutes ${{ github.event.inputs.max_minutes || '320' }} || true
+            --max-minutes ${{ github.event.inputs.max_minutes || '360' }} || true
 
   # ── JOB 3: MERGE FAILED-APPS SHARDS ───────────────────────────────────────
   # After all conveyor-belt runners finish (or time out), collect the per-runner
