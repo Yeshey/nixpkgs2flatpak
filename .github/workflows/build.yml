@@ -135,6 +135,16 @@ jobs:
           sudo chown $USER:$USER /var/lib/flatpak/repo
           nix run nixpkgs#ostree -- init --mode=bare-user-only --repo=/var/lib/flatpak/repo
 
+      - name: Mock NixOS Icon Theme Path
+        run: |
+          # Some Nix/Flatpak scripts expect to be running on NixOS and will 
+          # fail/hang if this exact path is missing on the Ubuntu runner.
+          sudo mkdir -p /run/current-system/sw/share/icons/hicolor
+          
+          # Create a minimal, valid icon index.theme file
+          echo "[Icon Theme]" | sudo tee /run/current-system/sw/share/icons/hicolor/index.theme > /dev/null
+          echo "Name=Hicolor" | sudo tee -a /run/current-system/sw/share/icons/hicolor/index.theme > /dev/null
+
       - name: Build Scanner Utility
         run: nix build .#scanner -o result-scanner --max-jobs 1 --cores 4
 
