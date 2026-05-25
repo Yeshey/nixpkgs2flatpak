@@ -272,8 +272,11 @@ pub fn run(opts: BuildCiOptions) -> Result<()> {
                 // Timeout on install: downloading Flathub runtimes (org.gnome.Platform,
                 // org.kde.Platform, etc.) can be several GB. 10 minutes is generous;
                 // without this the runner hangs for hours on a slow Flathub connection.
+                // --no-related: skip GL extensions, codec packs, locale packs.
+                // These are not needed since we test with LIBGL_ALWAYS_SOFTWARE=1,
+                // and skipping them reduces the Flathub download from ~4 GB to ~1.5 GB.
                 let _ = Command::new("timeout")
-                    .args(["1200", "flatpak", "--user", "install", "--noninteractive", "-y", "test_repo", app_id])
+                    .args(["1200", "flatpak", "--user", "install", "--noninteractive", "-y", "--no-related", "test_repo", app_id])
                     .status();
 
                 // Outer timeout on xvfb-run: the inner `timeout 10 flatpak run` only

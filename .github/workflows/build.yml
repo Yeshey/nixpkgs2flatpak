@@ -54,7 +54,7 @@ jobs:
           mkdir -p ~/.cache/nix-index
           curl -L https://github.com/nix-community/nix-index-database/releases/latest/download/index-x86_64-linux -o ~/.cache/nix-index/files
       - name: Build scanner
-        run: nix build .#scanner -o result-scanner --max-jobs 1 --cores 4
+        run: nix build .#scanner -o result-scanner
       - name: Run Discover
         run: ./result-scanner/bin/scanner discover
       - name: Run Discover Unfree
@@ -68,6 +68,12 @@ jobs:
           git commit -m "chore: update discovered.json" && git push || echo "No changes."
 
   # ── JOB 2: CONVEYOR BELT (PARALLEL) ────────────────────────────────────────
+  # 1 runner per architecture = 2 runners total.
+  #
+  # Each runner maintains its own state bookmark (github_runners_state/) and its
+  # own failed-apps shard (failed_apps/{arch}/runner{N}.txt) on OneDrive, so
+  # runners never conflict. The merge-failed-apps job below combines all shards
+  # into the final failed_apps_{system}.txt files after all runners finish.
   conveyor-belt:
     needs: [update-list]
     if: ${{ !cancelled() && (needs.update-list.result == 'success' || needs.update-list.result == 'skipped') }}
@@ -75,13 +81,16 @@ jobs:
       fail-fast: false
       matrix:
         system: [x86_64-linux, aarch64-linux]
-        runner_id: [1, 2]
+        runner_id: [1]
         exclude:
+          # Handle manual overrides from workflow_dispatch.
+          # Excluding by system alone drops all runner_id combinations for that arch.
           - system: >-
               ${{ github.event.inputs.architecture == 'aarch64-linux' && 'x86_64-linux' || '' }}
           - system: >-
               ${{ github.event.inputs.architecture == 'x86_64-linux' && 'aarch64-linux' || '' }}
 
+    # Use native ARM for ARM, standard for x86
     runs-on: ${{ matrix.system == 'aarch64-linux' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
 
     permissions:
@@ -90,6 +99,10 @@ jobs:
       NIXPKGS_ALLOW_UNFREE: 1
       NIXPKGS_ALLOW_BROKEN: 1
       NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM: 1
+      # Route flatpak user data to the /nix loop device (102 GB free) instead of
+      # /dev/root (only ~13 GB free). org.gnome.Platform/49 alone installs to ~2 GB;
+      # without this, the runner runs out of space mid-install and flatpak cancels.
+      XDG_DATA_HOME: /nix/user-xdg
 
     steps:
       - name: Checkout repository
@@ -118,7 +131,6 @@ jobs:
           extra_nix_config: |
             max-jobs = 1
             cores = 4
-
       - name: Setup Rclone Config
         env:
           RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
@@ -135,15 +147,14 @@ jobs:
           sudo chown $USER:$USER /var/lib/flatpak/repo
           nix run nixpkgs#ostree -- init --mode=bare-user-only --repo=/var/lib/flatpak/repo
 
-      - name: Mock NixOS Icon Theme Path
-        run: |
-          # Some Nix/Flatpak scripts expect to be running on NixOS and will 
-          # fail/hang if this exact path is missing on the Ubuntu runner.
+          # 2. Create the XDG_DATA_HOME dir on the /nix loop device (102 GB free)
+          mkdir -p /nix/user-xdg
+
+          # 3. Stub the NixOS icon theme path that flatpak's post-install hook tries
+          #    to copy from. On Ubuntu this path doesn't exist, causing flatpak to
+          #    roll back the install and print "Error: The operation was canceled."
           sudo mkdir -p /run/current-system/sw/share/icons/hicolor
-          
-          # Create a minimal, valid icon index.theme file
           echo "[Icon Theme]" | sudo tee /run/current-system/sw/share/icons/hicolor/index.theme > /dev/null
-          echo "Name=Hicolor" | sudo tee -a /run/current-system/sw/share/icons/hicolor/index.theme > /dev/null
 
       - name: Build Scanner Utility
         run: nix build .#scanner -o result-scanner --max-jobs 1 --cores 4
@@ -153,6 +164,13 @@ jobs:
         run: echo "TARGET_PACKAGE=${{ github.event.inputs.test_package }}" >> $GITHUB_ENV
 
       - name: Run Conveyor Belt (${{ matrix.system }} / runner ${{ matrix.runner_id }})
+        # continue-on-error: the scanner must never mark this job as failed.
+        # Any hard crash (OOM, kernel kill, unexpected panic) exits non-zero,
+        # but we want the job to show green so GitHub doesn't send failure emails.
+        # Legitimate build failures are already handled gracefully inside the loop.
+        # The `|| true` is belt-and-suspenders for SIGTERM from cancel-in-progress:
+        # when a new workflow run cancels this one, Rust's default SIGTERM handler
+        # exits 143 before the process can clean up — `|| true` swallows that.
         continue-on-error: true
         run: |
           ./result-scanner/bin/scanner build-ci \
@@ -173,6 +191,10 @@ jobs:
           df -h
 
   # ── JOB 3: MERGE FAILED-APPS SHARDS ───────────────────────────────────────
+  # After all conveyor-belt runners finish (or time out), collect the per-runner
+  # shard files from OneDrive and merge them into the canonical
+  # failed_apps_{system}.txt files.  Runs even if some runners failed so we
+  # always get an up-to-date picture of what's broken.
   merge-failed-apps:
     needs: [conveyor-belt]
     if: ${{ !cancelled() && needs.conveyor-belt.result != 'skipped' }}
@@ -196,6 +218,8 @@ jobs:
 
       - name: Merge shards into final lists
         run: |
+          # Concatenate all shards, sort and deduplicate, produce the canonical file.
+          # `|| true` keeps the step green if no shards exist yet (first-ever run).
           cat failed_apps/x86/runner*.txt     2>/dev/null | sort -u > failed_apps_x86_64-linux.txt  || true
           cat failed_apps/aarch64/runner*.txt 2>/dev/null | sort -u > failed_apps_aarch64-linux.txt || true
           echo "x86_64-linux failures:  $(wc -l < failed_apps_x86_64-linux.txt)"
