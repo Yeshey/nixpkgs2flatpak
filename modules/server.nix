@@ -95,8 +95,20 @@
             WORK="$CACHE_DIR/work"
             MERGED="$CACHE_DIR/merged"
 
-            echo "Preparing OverlayFS Trapdoor..."
-            umount -l "$MERGED" 2>/dev/null || true
+            # Force-unmount any leftover overlay from a previous crashed run,
+            # then wait until the mount is actually gone before rm-ing the dir.
+            # `umount -l` (lazy) detaches from the namespace but the kernel keeps
+            # the mount alive until all open fds are closed, so rm -rf would
+            # silently skip the still-mounted directory and leave 9+ GB of garbage.
+            if mountpoint -q "$MERGED" 2>/dev/null; then
+              echo "Stale overlay detected. Force-unmounting..."
+              umount -l "$MERGED"
+              # Poll until the kernel releases it (usually <1s).
+              for i in $(seq 1 30); do
+                mountpoint -q "$MERGED" 2>/dev/null || break
+                sleep 1
+              done
+            fi
             rm -rf "$CACHE_DIR"
             mkdir -p "$UPPER" "$WORK" "$MERGED"
 
@@ -105,7 +117,12 @@
             cleanup() {
               echo "Cleaning up OverlayFS..."
               umount -l "$MERGED" 2>/dev/null || true
-              rm -rf "$CACHE_DIR"
+              # Same poll-then-delete pattern so the EXIT trap also cleans up fully.
+              for i in $(seq 1 30); do
+                mountpoint -q "$MERGED" 2>/dev/null || break
+                sleep 1
+              done
+              rm -rf "$CACHE_DIR" || true
             }
             trap cleanup EXIT
 
@@ -260,8 +277,15 @@
             WORK="$CACHE_DIR/work"
             MERGED="$CACHE_DIR/merged"
 
-            echo "Preparing OverlayFS Trapdoor..."
-            umount -l "$MERGED" 2>/dev/null || true
+            # Same stale-mount guard as the summary service.
+            if mountpoint -q "$MERGED" 2>/dev/null; then
+              echo "Stale overlay detected. Force-unmounting..."
+              umount -l "$MERGED"
+              for i in $(seq 1 30); do
+                mountpoint -q "$MERGED" 2>/dev/null || break
+                sleep 1
+              done
+            fi
             rm -rf "$CACHE_DIR"
             mkdir -p "$UPPER" "$WORK" "$MERGED"
 
@@ -270,7 +294,11 @@
             cleanup() {
               echo "Cleaning up OverlayFS..."
               umount -l "$MERGED" 2>/dev/null || true
-              rm -rf "$CACHE_DIR"
+              for i in $(seq 1 30); do
+                mountpoint -q "$MERGED" 2>/dev/null || break
+                sleep 1
+              done
+              rm -rf "$CACHE_DIR" || true
             }
             trap cleanup EXIT
 
