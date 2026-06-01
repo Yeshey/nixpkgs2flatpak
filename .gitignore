@@ -4,6 +4,7 @@
 /bundles/
 /flatpak-repo/
 .nix-index/
+*sync-conflict*
 
 # Add these lines to ignore only the heavy parts of the repo:
 /local_repo/objects/
