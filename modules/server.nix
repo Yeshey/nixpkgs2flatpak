@@ -128,6 +128,7 @@
 
             echo "Updating OSTree summary at $MERGED ..."
             flatpak build-update-repo \
+              --no-update-appstream \
               ${lib.optionalString (cfg.gpgKeyId != null) ''--gpg-sign="${cfg.gpgKeyId}"''} \
               "$MERGED"
 
